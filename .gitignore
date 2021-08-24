@@ -1,0 +1,8 @@
+.idea
+!sample/
+*.tif
+*.png
+*.json
+*.wld
+*.xml
+*.ini
