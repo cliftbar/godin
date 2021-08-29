@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "main.css",
-	"sourceRoot": "/Users/cameronbarclift/MyFiles/mycode/godin/ssg",
+	"sourceRoot": "/home/runner/work/godin/godin/ssg",
 	"sources": [
 		"stdin"
 	],
