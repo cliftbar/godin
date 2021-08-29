@@ -1,6 +1,6 @@
 baseURL = 'https://odin.cliftbar.site'
 languageCode = 'en-us'
-title = 'Godin'
+title = 'Odin'
 theme = "ananke"
 canonifyURLs = "true"
 disable_share = "true"
