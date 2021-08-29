@@ -15,8 +15,8 @@ import (
 
 
 func main(){
-	// stormID := "al082021" //Henri
-	stormID := "al092021" //Ida
+	stormID := "al082021" //Henri
+	// stormID := "al092021" //Ida
 	atcf.FetchATCFBDeckTrack(stormID)
 	atcf.FetchATCFForecastTrack(stormID)
 	event := atcf.FetchAtcfEvent(stormID, 15, 0.9)
@@ -26,11 +26,11 @@ func main(){
 	toRaster(ce)
 	trakXYZ := ce.TrackToDelimited(true)
 
-	_ = ioutil.WriteFile(fmt.Sprintf("%s_%d_%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trakXYZ), 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trakXYZ), 0644)
 
 	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 
-	_ = ioutil.WriteFile(fmt.Sprintf("%s_%d_%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 	fmt.Println(ce.Info.Bounds)
 }
 
@@ -71,7 +71,7 @@ func toRaster(ce hurricane.CalculatedEvent) {
 		}
 	}
 
-	o, _ := os.Create(fmt.Sprintf("%s_%d_%d.png", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY))
+	o, _ := os.Create(fmt.Sprintf("%s_%dx%d.png", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY))
 
 	_ = png.Encode(o, raster)
 }

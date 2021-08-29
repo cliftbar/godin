@@ -1,6 +1,8 @@
 from google.cloud import storage
 
 from pathlib import PurePath, Path
+import os
+import zipfile
 
 
 def list_blobs_with_prefix(bucket_name, prefix, delimiter=None):
@@ -112,10 +114,29 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
         )
     )
 
+def zipdir(path: str, ziph: zipfile.ZipFile):
+    # ziph is zipfile handle
+    # for root, dirs, files in os.walk(path):
+    zip_path: Path = Path(path)
+    for file in zip_path.glob("*"):
+        fi_path: Path = Path(file)
+        if fi_path.is_dir() or fi_path.name == ".DS_Store" or fi_path.suffix == ".zip":
+            continue
+        print(file)
+        ziph.write(
+            fi_path,
+            fi_path.name
+        )
+
 
 if __name__ == "__main__":
     bucket = "godin_hurricane_data"
-    stormName = "ida2021"
+    stormName = "henri2021"
+    filename = "henri2021_100x100_20210829T1600-04"
+
+    zipf = zipfile.ZipFile(f"../data/{stormName}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
+    zipdir(f"../data/{stormName}", zipf)
+    zipf.close()
 
     blobs = list_blobs_with_prefix(bucket_name=bucket, prefix=f"{stormName}/latest")
     for blob in blobs:
@@ -125,7 +146,6 @@ if __name__ == "__main__":
         move_blob(bucket_name=bucket, blob_name=blob.name, destination_bucket_name=bucket, destination_blob_name=f"{stormName}/past/{blobPath.name}")
 
     # ZIP data
-    filename = "ida2021_100x100_20210829T1400-4"
     source = f"../data/{stormName}/{filename}.zip"
     dest = f"{stormName}/latest/{filename}.zip"
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)

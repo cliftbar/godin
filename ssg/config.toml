@@ -4,5 +4,6 @@ title = 'Godin'
 theme = "ananke"
 canonifyURLs = "true"
 disable_share = "true"
-[param]
+[params]
     description = "Hurricane modeling tracking"
+    mainSections = ["posts", "hurricane"]
