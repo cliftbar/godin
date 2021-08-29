@@ -6,3 +6,4 @@
 *.wld
 *.xml
 *.ini
+.DS_Store

@@ -148,10 +148,10 @@ func (ei EventInformation) CalculateEvent(pixPerDegLatY int, pixPerDegLonX int, 
 func (ce CalculatedEvent) TrackToXYZ(headers bool) string {
 	outString := ""
 	if headers{
-		outString = "x, y, z\n"
+		outString = "ts, lonX, latY, maxWindKts, headingDeg, rMax, source, fSpeedKts\n"
 	}
 	for _, row := range ce.Info.Track {
-		rowString := fmt.Sprintf("%f, %f, %f\n", row.LonXDeg, row.LatYDeg, row.MaxWindVelocityKts)
+		rowString := fmt.Sprintf("%s, %f, %f, %f, %f, %f, %s, %f\n", row.Timestamp.Format(time.RFC3339), row.LonXDeg, row.LatYDeg, row.MaxWindVelocityKts, row.CycloneHeadingDeg, row.RadiusMaxWindNmi, row.Source, row.CycloneForwardSpeedKts)
 		outString = outString + rowString
 	}
 	return outString

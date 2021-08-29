@@ -32,7 +32,7 @@ func FetchATCFBDeckData(stormID string) (data string) {
 	data = string(respData)
 	fmt.Printf(data)
 
-	AtcfParser(data)
+	AtcfParser(data, 15)
 
 	return data
 }
@@ -52,7 +52,7 @@ func FetchATCFForecastData(stormID string) (data string) {
 	data = string(respData)
 	fmt.Printf(data)
 
-	AtcfParser(data)
+	AtcfParser(data, 15)
 
 	return data
 }
@@ -68,10 +68,19 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 	btrackData := FetchATCFBDeckData(stormID)
 	ftrackData := FetchATCFForecastData(stormID)
 
-	btrackPoints := AtcfParser(btrackData)
-	ftrackPoints := AtcfParser(ftrackData)
+	btrackPoints := AtcfParser(btrackData, rMaxNmi)
+	ftrackPoints := AtcfParser(ftrackData, rMaxNmi)
 
-	entireTrackPointsUnfiltered := append(btrackPoints, ftrackPoints...)
+	// entireTrackPointsUnfiltered := append(btrackPoints, ftrackPoints...)
+
+	entireTrackPointsUnfiltered := btrackPoints
+
+	for _, tp := range ftrackPoints {
+		if tp.Timestamp.After(btrackPoints[len(btrackPoints) - 1].Timestamp){
+			entireTrackPointsUnfiltered =
+				append(entireTrackPointsUnfiltered, tp)
+		}
+	}
 
 	// filter for duplicate timestamps
 	checkMap := map[time.Time]bool{}
@@ -125,7 +134,7 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 			LonXDeg:                      curr.LonXDeg,
 			MaxWindVelocityKts:           curr.MaxWindVelocityKts,
 			MinCentralPressureMb:         curr.MinCentralPressureMb,
-			RadiusMaxWindNmi:             rMaxNmi,
+			RadiusMaxWindNmi:             curr.RMaxNmi,
 			CycloneForwardSpeedKts:       fspeedKts,
 			CycloneHeadingDeg:            headingDeg,
 			GradientWindAdjustmentFactor: gwaf,
@@ -149,17 +158,21 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 
 		iSeq := curr.TrackSequence
 		for t := curr.Timestamp.Add(interpolationStep); t.Before(next.Timestamp); t = t.Add(interpolationStep) {
+			iLast := interpolatedTrack[len(interpolatedTrack) - 1]
+			iLatYDeg := utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.LatYDeg, next.LatYDeg)
+			iLonXDeg := utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.LonXDeg, next.LonXDeg)
+			iBearingDeg := utilities.CalcBearingNorthZero(iLast.LatYDeg, iLast.LonXDeg, iLatYDeg, iLonXDeg)
 			iSeq += 0.1
 			itp := hurricane.TrackPoint{
 				Timestamp:                    t,
 				TrackSequence:                iSeq,
-				LatYDeg:                      utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.LatYDeg, next.LatYDeg),
-				LonXDeg:                      utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.LonXDeg, next.LonXDeg),
+				LatYDeg:                      iLatYDeg,
+				LonXDeg:                      iLonXDeg,
 				MaxWindVelocityKts:           utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.MaxWindVelocityKts, next.MaxWindVelocityKts),
 				MinCentralPressureMb:         utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.MinCentralPressureMb, next.MinCentralPressureMb),
 				RadiusMaxWindNmi:             utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.RadiusMaxWindNmi, next.RadiusMaxWindNmi),
 				CycloneForwardSpeedKts:       utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.CycloneForwardSpeedKts, next.CycloneForwardSpeedKts),
-				CycloneHeadingDeg:            utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.CycloneHeadingDeg, next.CycloneHeadingDeg),
+				CycloneHeadingDeg:            iBearingDeg,
 				GradientWindAdjustmentFactor: utilities.LinearInterpolation(float64(t.Unix()), float64(curr.Timestamp.Unix()), float64(next.Timestamp.Unix()), curr.GradientWindAdjustmentFactor, next.GradientWindAdjustmentFactor),
 				Source:                       "INTRP",
 			}
@@ -186,12 +199,12 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 	return event
 }
 
-func AtcfParser(data string) (tps []atcfTrackPoint){
+func AtcfParser(data string, rMaxDefault float64) (tps []atcfTrackPoint){
 	// All trimming will happen on demand
 	dataRows := strings.Split(strings.TrimSpace(data), "\n")
 
 	for _, row := range dataRows {
-		parsedRow := atcfRowParser(row)
+		parsedRow := atcfRowParser(row, rMaxDefault)
 		fmt.Printf("%v\n", parsedRow)
 		tps = append(tps, parsedRow)
 	}
@@ -199,7 +212,7 @@ func AtcfParser(data string) (tps []atcfTrackPoint){
 	return tps
 }
 
-func atcfRowParser(row string) (trackPoint atcfTrackPoint) {
+func atcfRowParser(row string, rMaxDefault float64) (trackPoint atcfTrackPoint) {
 
 	values := strings.Split(row, ",")
 
@@ -220,15 +233,18 @@ func atcfRowParser(row string) (trackPoint atcfTrackPoint) {
 	day, _ := strconv.Atoi(strings.TrimSpace(values[2])[6:8])
 	hour, _ := strconv.Atoi(strings.TrimSpace(values[2])[8:])
 
-	minuteVal := strings.TrimSpace(values[3])
+	//minuteVal := strings.TrimSpace(values[3])
 	minute := 0
-	if minuteVal != "" && source == hurricane.Best {
-		minute, _ = strconv.Atoi(minuteVal)
-	}
+	//if minuteVal != "" && source == hurricane.Best {
+	//	minute, _ = strconv.Atoi(minuteVal)
+	//}
 
 	timestamp := time.Date(year, time.Month(month), day, hour, minute, 0, 0, time.UTC)
 
-	// tau, _ := strconv.Atoi(strings.TrimSpace(values[5]))
+	tau, tauErr := strconv.Atoi(strings.TrimSpace(values[5]))
+	if tauErr == nil && 0 < tau {
+		timestamp = timestamp.Add(time.Duration(tau) * time.Hour)
+	}
 
 	latVal := strings.TrimSpace(values[6])
 	latYDegDec, _ := strconv.Atoi(latVal[0:len(latVal) - 1])
@@ -252,6 +268,12 @@ func atcfRowParser(row string) (trackPoint atcfTrackPoint) {
 		mslpMb = -1
 	}
 
+	rMax := rMaxDefault
+	rMaxValue, rMaxErr := strconv.ParseFloat(strings.TrimSpace(values[19]), 64)
+	if rMaxErr == nil && 0.0 < rMaxValue {
+		rMax = rMaxValue
+	}
+
 	name := strings.TrimSpace(values[27])
 
 	atp := atcfTrackPoint {
@@ -262,6 +284,7 @@ func atcfRowParser(row string) (trackPoint atcfTrackPoint) {
 		MinCentralPressureMb:         mslpMb,
 		Source:                       source,
 		Name:						  name,
+		RMaxNmi:					  rMax,
 	}
 
 	return atp
@@ -275,4 +298,5 @@ type atcfTrackPoint struct {
 	MinCentralPressureMb float64
 	Source hurricane.TrackPointSource
 	Name string
+	RMaxNmi float64
 }

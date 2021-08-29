@@ -1,0 +1,15 @@
+{{ $path     := .Get "path" }}
+{{ $filepath := printf "static/%s" $path }}
+{{ $files    := readDir $filepath }}
+{{ $ext := default "-" (.Get "type" )}}
+{{ if (fileExists $filepath)}}
+
+<ul>
+{{ range readDir $filepath }}
+  {{ if (findRE "^[^.*zip]" .Name) }}
+    <li> {{ .Name }}</li>
+  {{ end }}
+{{ end }}
+</ul>
+
+{{end}}
