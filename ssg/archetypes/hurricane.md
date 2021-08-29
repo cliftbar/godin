@@ -12,7 +12,7 @@ cloud_filename_base: {{.Name}}{{now.Format "2006"}}_100x100_{{now.Format "200601
 ## Latest Windfield Map
 ![gis_img](https://storage.googleapis.com/godin_hurricane_data/{{<param storm_name>}}/latest/{{<param cloud_filename_base>}}.png)
 
-- as of {{< param LastMod >}}
+- as of {{% current_time %}}
 - 100px per degree
 - GWAF 0.9
 - No Friction

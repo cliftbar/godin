@@ -1,7 +1,6 @@
 package atcf
 
 import (
-	"fmt"
 	"godin/hurricane"
 	"godin/utilities"
 	"io/ioutil"
@@ -30,7 +29,7 @@ func FetchATCFBDeckData(stormID string) (data string) {
 
 	respData, _ := ioutil.ReadAll(resp.Body)
 	data = string(respData)
-	fmt.Printf(data)
+	//fmt.Printf(data)
 
 	AtcfParser(data, 15)
 
@@ -50,7 +49,7 @@ func FetchATCFForecastData(stormID string) (data string) {
 
 	respData, _ := ioutil.ReadAll(resp.Body)
 	data = string(respData)
-	fmt.Printf(data)
+	//fmt.Printf(data)
 
 	AtcfParser(data, 15)
 
@@ -205,7 +204,7 @@ func AtcfParser(data string, rMaxDefault float64) (tps []atcfTrackPoint){
 
 	for _, row := range dataRows {
 		parsedRow := atcfRowParser(row, rMaxDefault)
-		fmt.Printf("%v\n", parsedRow)
+		//fmt.Printf("%v\n", parsedRow)
 		tps = append(tps, parsedRow)
 	}
 

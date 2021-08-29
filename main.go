@@ -13,8 +13,34 @@ import (
 	"time"
 )
 
-
 func main(){
+	singleCalc()
+}
+
+
+func cloudCalc(stormID string){
+	// bucket := "godin_hurricane_data"
+	rMaxNmiDefault := 15.0
+	gwaf := 0.9
+	maxCalculationDistance := 360.0
+	pxPerDegree := 10
+	atcf.FetchATCFBDeckTrack(stormID)
+	atcf.FetchATCFForecastTrack(stormID)
+	event := atcf.FetchAtcfEvent(stormID, rMaxNmiDefault, gwaf)
+
+	ce := event.CalculateEvent(pxPerDegree, pxPerDegree, maxCalculationDistance)
+
+	toRaster(ce)
+	trakXYZ := ce.TrackToDelimited(true)
+
+	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trakXYZ), 0644)
+
+	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
+
+	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
+}
+
+func singleCalc(){
 	stormID := "al082021" //Henri
 	// stormID := "al092021" //Ida
 	atcf.FetchATCFBDeckTrack(stormID)
@@ -24,9 +50,9 @@ func main(){
 	ce := event.CalculateEvent(100, 100, 360)
 
 	toRaster(ce)
-	trakXYZ := ce.TrackToDelimited(true)
+	trackXYZ := ce.TrackToDelimited(true)
 
-	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trakXYZ), 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trackXYZ), 0644)
 
 	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 
@@ -63,8 +89,6 @@ func toRaster(ce hurricane.CalculatedEvent) {
 	i := 0
 	for y := height; y > 0; y-- {
 		for x := 0; x < width; x++ {
-		//for x := width; 0 < x; x-- {
-
 			val := uint8(ce.WindField[i].Value)
 			raster.SetGray(x, y, color.Gray{Y: val})
 			i++

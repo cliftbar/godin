@@ -11,7 +11,12 @@ cloud_filename_base: ida2021_100x100_20210829T1400-4
 
 ## Latest Windfield Map
 ![gis_img](https://storage.googleapis.com/godin_hurricane_data/{{<param storm_name>}}/latest/{{<param cloud_filename_base>}}.png)
-as of 2021-08-29 14:00 UTC-4
+
+- as of {{% current_time %}}
+- 100px per degree
+- GWAF 0.9
+- No Friction
+- default radius of maximum wind is 15kts
 
 ## Useful Links
 [NOAA Active Cyclones](https://www.nhc.noaa.gov/)
