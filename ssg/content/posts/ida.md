@@ -5,6 +5,7 @@ draft: false
 summary: Hurricane Ida en route to New Orleans
 disable_share: true
 ---
+*DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 
 ## Latest Windfield Map
 ![gis_img](/data/ida2021/ida2021_2021-08-28.png)
