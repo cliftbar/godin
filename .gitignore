@@ -1,9 +1,9 @@
 .idea
 !sample/
-*.tif
-*.png
-*.json
-*.wld
-*.xml
-*.ini
+#*.tif
+#*.png
+#*.json
+#*.wld
+#*.xml
+#*.ini
 .DS_Store
