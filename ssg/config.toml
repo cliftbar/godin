@@ -1,4 +1,4 @@
-baseURL = 'https://cliftbar.github.io'
+baseURL = 'https://cliftbar.github.io/godin'
 languageCode = 'en-us'
 title = 'Godin'
 theme = "ananke"
