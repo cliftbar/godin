@@ -1,7 +1,7 @@
 ---
 title: "Ida"
 date: 2021-08-28T17:18:55-04:00
-draft: true
+draft: false
 summary: Hurricane Ida en route to New Orleans
 ---
 
@@ -11,7 +11,7 @@ summary: Hurricane Ida en route to New Orleans
 
 [Tropical Tidbits](https://www.tropicaltidbits.com/storminfo/)
 
-# Latest Windfile Map
+# Latest Windfield Map
 ![gis_img](/img/ida_100x100_2021-08-28T17:43.png)
 
 # Latest Data Files
