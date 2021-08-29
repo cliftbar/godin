@@ -3,6 +3,7 @@ title: "Ida"
 date: 2021-08-28T17:18:55-04:00
 draft: false
 summary: Hurricane Ida en route to New Orleans
+disable_share: true
 ---
 
 ## Latest Windfield Map

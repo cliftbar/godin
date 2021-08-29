@@ -2,4 +2,7 @@ baseURL = 'https://cliftbar.github.io/godin'
 languageCode = 'en-us'
 title = 'Godin'
 theme = "ananke"
-canonifyURLs="true"
+canonifyURLs = "true"
+disable_share = "true"
+[param]
+    description = "Hurricane modeling tracking"
