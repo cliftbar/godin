@@ -2,3 +2,4 @@ baseURL = 'https://cliftbar.github.io/godin'
 languageCode = 'en-us'
 title = 'Godin'
 theme = "ananke"
+canonifyURLs="true"
