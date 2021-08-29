@@ -1,6 +1,6 @@
 ---
 title: "Ida"
-date: 2021-08-28T17:18:55-04:00
+date: 2021-08-29T14:23:00-04:00
 draft: false
 summary: Hurricane Ida en route to New Orleans
 disable_share: true
