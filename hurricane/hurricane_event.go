@@ -145,9 +145,9 @@ func (ei EventInformation) CalculateEvent(pixPerDegLatY int, pixPerDegLonX int, 
 	return event
 }
 
-func (ce CalculatedEvent) TrackToXYZ(headers bool) string {
+func (ce CalculatedEvent) TrackToDelimited(header bool) string {
 	outString := ""
-	if headers{
+	if header {
 		outString = "ts, lonX, latY, maxWindKts, headingDeg, rMax, source, fSpeedKts\n"
 	}
 	for _, row := range ce.Info.Track {

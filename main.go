@@ -24,7 +24,7 @@ func main(){
 	ce := event.CalculateEvent(100, 100, 360)
 
 	toRaster(ce)
-	trakXYZ := ce.TrackToXYZ(true)
+	trakXYZ := ce.TrackToDelimited(true)
 
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%d_%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trakXYZ), 0644)
 
