@@ -8,7 +8,7 @@ disable_share: true
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 
 ## Latest Windfield Map
-![gis_img](https://storage.googleapis.com/godin_hurricane_data/ida2021/ida2021_2021-08-28.png)
+![gis_img](https://storage.googleapis.com/godin_hurricane_data/ida2021/latest/ida2021_100x100_20210829T1400-4.png)
 as of 2021-08-28 22:36 GMT-4
 
 ## Useful Links
@@ -18,6 +18,6 @@ as of 2021-08-28 22:36 GMT-4
 [Tropical Tidbits](https://www.tropicaltidbits.com/storminfo/)
 
 ## Latest Data Files
-[Download Zip](https://storage.googleapis.com/godin_hurricane_data/ida2021/ida2021_100x100_2021-08-28.zip)
+[Download Zip](https://storage.googleapis.com/godin_hurricane_data/ida2021/latest/ida2021_100x100_20210829T1400-4.zip)
 
 {{< list_data path="data/ida2021" type="conf">}}
