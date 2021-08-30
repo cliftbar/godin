@@ -1,7 +1,7 @@
 ---
 title: "About"
 date: 2021-08-30T16:08:08-04:00
-draft: true
+draft: false
 ---
 
 This site is a place for me to post Hurricane model runs from a program I've developed in my free time.  The code is an implementaiton of the NWS 23 model developed by NOAA.  See my [Github](https://github.com/cliftbar) for various versions I've made over the years.

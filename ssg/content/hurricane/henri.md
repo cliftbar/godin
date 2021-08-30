@@ -1,7 +1,7 @@
 ---
 title: "Henri"
 date: 2021-08-30T16:51:33-04:00
-draft: true
+draft: false
 summary: Hurricane Henri
 disable_share: true
 storm_name: "henri"

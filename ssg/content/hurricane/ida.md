@@ -1,7 +1,7 @@
 ---
 title: "Ida"
 date: 2021-08-30T16:50:23-04:00
-draft: true
+draft: false
 summary: Hurricane Ida
 disable_share: true
 storm_name: "ida"
