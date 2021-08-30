@@ -28,7 +28,6 @@ func CalcBearingNorthZero(latRefDeg float64,
 // HaversineDegreesToMeters Haversine equation for finding the distance between two lat-lon points in meters.
 // reference: http://www.movable-type.co.uk/scripts/latlong.html, http://stackoverflow.com/questions/4102520/how-to-transform-a-distance-from-degrees-to-metres
 func HaversineDegreesToMeters(latYDegRef float64, lonXDegRef float64, latYDeg float64, lonXDeg float64) (distanceM float64){
-
 	r := 6371000.0
 	deltaLat := (latYDeg - latYDegRef) * ToRadians
 	deltaLon := (lonXDeg - lonXDegRef) * ToRadians

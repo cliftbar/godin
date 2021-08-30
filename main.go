@@ -41,8 +41,8 @@ func cloudCalc(stormID string){
 }
 
 func SingleCalc(){
-	stormID := "al082021" //Henri
-	// stormID := "al092021" //Ida
+	// stormID := "al082021" //Henri
+	stormID := "al092021" //Ida
 	atcf.FetchATCFBDeckTrack(stormID)
 	atcf.FetchATCFForecastTrack(stormID)
 	event := atcf.FetchAtcfEvent(stormID, 15, 0.9)

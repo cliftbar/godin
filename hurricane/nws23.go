@@ -135,6 +135,29 @@ func inflowAngle(rNmi float64, rmaxNmi float64) (phi float64) {
 }
 
 var tauZeroFactor float64 = math.Pow(1.0, 0.37)
+var fSpeedFactor = map[int]float64{
+	1: math.Pow(1.0, 0.63),
+	2: math.Pow(2.0, 0.63),
+	3: math.Pow(3.0, 0.63),
+	4: math.Pow(4.0, 0.63),
+	5: math.Pow(5.0, 0.63),
+	6: math.Pow(6.0, 0.63),
+	7: math.Pow(7.0, 0.63),
+	8: math.Pow(8.0, 0.63),
+	9: math.Pow(9.0, 0.63),
+	10: math.Pow(10.0, 0.63),
+	11: math.Pow(11.0, 0.63),
+	12: math.Pow(12.0, 0.63),
+	13: math.Pow(13.0, 0.63),
+	14: math.Pow(14.0, 0.63),
+	15: math.Pow(15.0, 0.63),
+	16: math.Pow(16.0, 0.63),
+	17: math.Pow(17.0, 0.63),
+	18: math.Pow(18.0, 0.63),
+	19: math.Pow(19.0, 0.63),
+	20: math.Pow(20.0, 0.63),
+}
+
 //var fSpeedFactor float64 = math.Pow(15, 0.63)
 // NWS 23 pdf page 51, page 25, equation 2.5
 // NWS 23 pdf page 263, page 269
