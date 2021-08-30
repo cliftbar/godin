@@ -1,6 +1,7 @@
 package atcf
 
 import (
+	"compress/gzip"
 	"godin/hurricane"
 	"godin/utilities"
 	"io/ioutil"
@@ -20,6 +21,7 @@ type UrlAtcf string
 const (
 	index UrlAtcf = "https://ftp.nhc.noaa.gov/atcf/"
 	bdeck UrlAtcf = "https://ftp.nhc.noaa.gov/atcf/btk/b{{.}}.dat"
+	bdeckArchive UrlAtcf = "https://ftp.nhc.noaa.gov/atcf/archive/{{.}}/b{{.}}.dat.gz"
 	forecasts UrlAtcf = "https://ftp.nhc.noaa.gov/atcf/fst/{{.}}.fst"
 )
 
@@ -27,11 +29,29 @@ func FetchATCFBDeckData(stormID string) (data string) {
 	url := strings.Replace(string(bdeck), "{{.}}", stormID, 1)
 	resp, _ := http.Get(url)
 
-	respData, _ := ioutil.ReadAll(resp.Body)
-	data = string(respData)
+	if resp.StatusCode == http.StatusOK {
+		respData, _ := ioutil.ReadAll(resp.Body)
+		data = string(respData)
+	} else {
+		client := new(http.Client)
+
+		archiveUrl := strings.Replace(string(bdeckArchive), "{{.}}", stormID[4:], 1)
+		archiveUrl = strings.Replace(string(archiveUrl), "{{.}}", stormID, 1)
+		// print(archiveUrl)
+
+		request, _ := http.NewRequest("GET", archiveUrl, nil)
+		request.Header.Add("Accept-Encoding", "gzip")
+
+		response, _ := client.Do(request)
+
+		reader, _ := gzip.NewReader(response.Body)
+
+		readerData, _ := ioutil.ReadAll(reader)
+		data = string(readerData)
+	}
 	//fmt.Printf(data)
 
-	AtcfParser(data, 15)
+	//AtcfParser(data, 15)
 
 	return data
 }
@@ -47,11 +67,13 @@ func FetchATCFForecastData(stormID string) (data string) {
 	url := strings.Replace(string(forecasts), "{{.}}", stormID, 1)
 	resp, _ := http.Get(url)
 
-	respData, _ := ioutil.ReadAll(resp.Body)
-	data = string(respData)
-	//fmt.Printf(data)
+	if resp.StatusCode == http.StatusOK {
+		respData, _ := ioutil.ReadAll(resp.Body)
+		data = string(respData)
+		//fmt.Printf(data)
+	}
 
-	AtcfParser(data, 15)
+	//AtcfParser(data, 15)
 
 	return data
 }
@@ -67,8 +89,11 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 	btrackData := FetchATCFBDeckData(stormID)
 	ftrackData := FetchATCFForecastData(stormID)
 
+	ftrackPoints := make([]atcfTrackPoint, 0)
 	btrackPoints := AtcfParser(btrackData, rMaxNmi)
-	ftrackPoints := AtcfParser(ftrackData, rMaxNmi)
+	if ftrackData != "" {
+		ftrackPoints = AtcfParser(ftrackData, rMaxNmi)
+	}
 
 	// entireTrackPointsUnfiltered := append(btrackPoints, ftrackPoints...)
 
@@ -199,7 +224,7 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 }
 
 func AtcfParser(data string, rMaxDefault float64) (tps []atcfTrackPoint){
-	// All trimming will happen on demand
+	// All trimming will happen on demand, but we get rid of a trailing newline
 	dataRows := strings.Split(strings.TrimSpace(data), "\n")
 
 	for _, row := range dataRows {
@@ -268,12 +293,19 @@ func atcfRowParser(row string, rMaxDefault float64) (trackPoint atcfTrackPoint) 
 	}
 
 	rMax := rMaxDefault
-	rMaxValue, rMaxErr := strconv.ParseFloat(strings.TrimSpace(values[19]), 64)
-	if rMaxErr == nil && 0.0 < rMaxValue {
-		rMax = rMaxValue
+	if 19 < len(values) {
+		rMaxValue, rMaxErr := strconv.ParseFloat(strings.TrimSpace(values[19]), 64)
+		if rMaxErr == nil && 0.0 < rMaxValue {
+			rMax = rMaxValue
+		}
 	}
 
-	name := strings.TrimSpace(values[27])
+	var name string
+	if 27 < len(values) {
+		name = strings.TrimSpace(values[27])
+	} else {
+		name = strings.TrimSpace(values[0]) + strings.TrimSpace(values[1])
+	}
 
 	atp := atcfTrackPoint {
 		Timestamp:                    timestamp,

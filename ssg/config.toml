@@ -4,7 +4,19 @@ title = 'Odin'
 theme = "ananke"
 canonifyURLs = "true"
 disable_share = "true"
+
+sectionPagesMenu = "main"
+
+enableRobotsTXT = true
+paginate = 3
+
+[sitemap]
+  changefreq = "monthly"
+  priority = 0.5
+  filename = "sitemap.xml"
+
 [params]
     description = "Hurricane modeling tracking"
     mainSections = ["posts", "hurricane"]
     site_logo = "/img/godin_icon.png"
+    favicon = "/img/godin_icon.png"

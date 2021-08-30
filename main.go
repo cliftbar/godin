@@ -41,10 +41,11 @@ func cloudCalc(stormID string){
 }
 
 func SingleCalc(){
-	// stormID := "al082021" //Henri
-	stormID := "al092021" //Ida
-	atcf.FetchATCFBDeckTrack(stormID)
-	atcf.FetchATCFForecastTrack(stormID)
+	// stormID := "al082021" //Henri 2021
+	//stormID := "al092021" //Ida 2021
+	stormID := "al122005" // katrina 2005
+	//atcf.FetchATCFBDeckTrack(stormID)
+	//atcf.FetchATCFForecastTrack(stormID)
 	event := atcf.FetchAtcfEvent(stormID, 15, 0.9)
 
 	startTime := time.Now().UTC()
@@ -56,7 +57,7 @@ func SingleCalc(){
 	toRaster(ce)
 	trackXYZ := ce.TrackToDelimited(true)
 
-	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trackXYZ), 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("%s_%d_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trackXYZ), 0644)
 
 	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 

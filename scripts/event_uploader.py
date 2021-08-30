@@ -78,7 +78,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     blob.upload_from_filename(source_file_name)
 
     print(
-        "File {} uploaded to Storage Bucket with Bob name  {} successfully .".format(
+        "File {} uploaded to Storage Bucket with Blob name  {} successfully .".format(
             source_file_name, destination_blob_name
         )
     )
@@ -131,8 +131,8 @@ def zipdir(path: str, ziph: zipfile.ZipFile):
 
 if __name__ == "__main__":
     bucket = "godin_hurricane_data"
-    stormName = "ida2021"
-    filename = "ida2021_100x100_20210830T1400-04"
+    stormName = "katrina2005"
+    filename = f"{stormName}_100x100_20210830T1900-04"
 
     zipf = zipfile.ZipFile(f"../data/{stormName}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
     zipdir(f"../data/{stormName}", zipf)
