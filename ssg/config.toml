@@ -7,3 +7,4 @@ disable_share = "true"
 [params]
     description = "Hurricane modeling tracking"
     mainSections = ["posts", "hurricane"]
+    site_logo = "/img/godin_icon.png"
