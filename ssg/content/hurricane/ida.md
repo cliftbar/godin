@@ -12,7 +12,7 @@ cloud_filename_base: ida2021_100x100_20210829T1400-4
 ## Latest Windfield Map
 ![gis_img](https://storage.googleapis.com/godin_hurricane_data/{{<param storm_name>}}/latest/{{<param cloud_filename_base>}}.png)
 
-- as of {{% current_time %}}
+- as of {{% last_mod_time %}}
 - 100px per degree
 - GWAF 0.9
 - No Friction
