@@ -27,15 +27,18 @@ func CalcBearingNorthZero(latRefDeg float64,
 
 // HaversineDegreesToMeters Haversine equation for finding the distance between two lat-lon points in meters.
 // reference: http://www.movable-type.co.uk/scripts/latlong.html, http://stackoverflow.com/questions/4102520/how-to-transform-a-distance-from-degrees-to-metres
-func HaversineDegreesToMeters(latYDegRef float64, lonXDegRef float64, latYDeg float64, lonYDeg float64) (distanceM float64){
+func HaversineDegreesToMeters(latYDegRef float64, lonXDegRef float64, latYDeg float64, lonXDeg float64) (distanceM float64){
 
 	r := 6371000.0
 	deltaLat := (latYDeg - latYDegRef) * ToRadians
-	deltaLon := (lonYDeg - lonXDegRef) * ToRadians
+	deltaLon := (lonXDeg - lonXDegRef) * ToRadians
 
-	a := math.Pow(math.Sin(deltaLat / 2), 2) +
+	dLatSin := math.Sin(deltaLat / 2)
+	dLonSin := math.Sin(deltaLon / 2)
+
+	a := (dLatSin * dLatSin) +
 		 math.Cos(latYDegRef * ToRadians) * math.Cos(latYDeg * ToRadians) *
-		 math.Pow(math.Sin(deltaLon / 2), 2)
+			 (dLonSin * dLonSin)
 	c := 2.0 * math.Atan2(math.Sqrt(a), math.Sqrt(1 - a))
 	return r * c
 }
@@ -45,4 +48,12 @@ func CalculateSpeedMps(latYStart float64, lonXStart float64, tsStart time.Time, 
 	durationSec := tsEnd.Sub(tsStart).Seconds()
 
 	return distanceMeters / durationSec
+}
+
+func FastDistanceDegSq(latYDegRef float64, lonXDegRef float64, latYDeg float64, lonXDeg float64) (distanceDegSq float64) {
+	y := latYDeg - latYDegRef
+	x := lonXDeg - lonXDegRef
+
+	return  (x * x) + (y * y)
+
 }

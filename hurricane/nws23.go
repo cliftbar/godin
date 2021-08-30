@@ -51,8 +51,9 @@ func radialDecay(rNmi float64, rMaxNmi float64) (radialDecayFactor float64) {
 
 	if rMaxNmi < rNmi {
 		// NWS 23 pdf page 53
-		slope := (-0.051 * math.Log(rMaxNmi)) - 0.1757
-		intercept := (0.4244 * math.Log(rMaxNmi)) + 0.7586
+		rMaxLog := math.Log(rMaxNmi)
+		slope := (-0.051 * rMaxLog) - 0.1757
+		intercept := (0.4244 * rMaxLog) + 0.7586
 		ret = (slope * math.Log(rNmi)) + intercept
 	}
 	// Skip this else block as a concession for modeling time series, where everything within the max wind radius is
@@ -108,7 +109,7 @@ func inflowAngle(rNmi float64, rmaxNmi float64) (phi float64) {
 	rPhiMax := (3.0688 * rmaxNmi) - 2.7151
 
 	if rNmi < rPhiMax {
-		a := 11.438 * math.Pow(rmaxNmi, -1.416)
+			a := 11.438 * math.Pow(rmaxNmi, -1.416)
 		b := (1.1453 * rmaxNmi) + 1.4536
 		phiMax := 9.7043566358*math.Log(rmaxNmi) - 2.7295806727
 		phi = phiMax / (1 + math.Exp(-1*a*(rNmi-b)))
@@ -120,7 +121,8 @@ func inflowAngle(rNmi float64, rmaxNmi float64) (phi float64) {
 		x3 := (-0.0000000592 * rmaxNmi * rmaxNmi) + (0.0000019826 * rmaxNmi) - 0.0000020198
 		c := (9.7043566341 * math.Log(rmaxNmi)) - 2.7295806689
 
-		phi = (x3 * math.Pow(rNmiUse-rPhiMax, 3)) + (x2 * math.Pow(rNmiUse-rPhiMax, 2)) + (x1 * (rNmiUse - rPhiMax)) + c
+		phiPrime := rNmiUse-rPhiMax
+		phi = (x3 * phiPrime * phiPrime * phiPrime) + (x2 * phiPrime * phiPrime) + (x1 * phiPrime) + c
 
 		if 130 < rNmi && rNmi < 360 { // justification on NWS23 pdf page 287 page 263
 			deltaPhi := utilities.LinearInterpolation(rNmi, 130, 360, phi, phi-2)
@@ -132,6 +134,8 @@ func inflowAngle(rNmi float64, rmaxNmi float64) (phi float64) {
 	return phi
 }
 
+var tauZeroFactor float64 = math.Pow(1.0, 0.37)
+//var fSpeedFactor float64 = math.Pow(15, 0.63)
 // NWS 23 pdf page 51, page 25, equation 2.5
 // NWS 23 pdf page 263, page 269
 // NWS 23 pdf page 281, page 257
@@ -143,13 +147,16 @@ func asymmetryFactor(fSpeedKts float64,
 	bearingFromCenterDeg float64,
 	cycloneBearingDeg float64) (asym float64, beta float64) {
 
-	to := 1.0
 	phiR := inflowAngle(rNmi, rMaxNmi)       // need to figure out direction
 	phiRmax := inflowAngle(rMaxNmi, rMaxNmi) // need to figure out direction
 	phiBeta := math.Mod(phiR-phiRmax, 360)
 	bearingShift := math.Mod(90.0-bearingFromCenterDeg+cycloneBearingDeg, 360)
 	beta = math.Mod(phiBeta+bearingShift, 360)
-	asym = 1.5 * math.Pow(fSpeedKts, 0.63) * math.Pow(to, 0.37) * math.Cos(beta*utilities.ToRadians)
+
+	//to := 1.0
+	//asym = 1.5 * math.Pow(fSpeedKts, 0.63) * math.Pow(to, 0.37) * math.Cos(beta*utilities.ToRadians)
+	asym = 1.5 * math.Pow(fSpeedKts, 0.63) * tauZeroFactor * math.Cos(beta*utilities.ToRadians)
+	//fmt.Printf("%f - %f\n", fSpeedKts, math.Pow(fSpeedKts, 0.63))
 
 	return asym, beta
 }

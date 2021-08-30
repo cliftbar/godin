@@ -117,8 +117,13 @@ func (ei EventInformation) CalculateEvent(pixPerDegLatY int, pixPerDegLonX int, 
 		maxWindSpeedAtCoordinate := 0.0
 
 		for _, tp := range ei.Track {
-			distanceToCenterNmi := utilities.HaversineDegreesToMeters(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg) / 1000.0 * 0.539957 // convert to nautical miles
-			if distanceToCenterNmi < maxCalculationDistanceNmi {
+			//distanceToCenterNmi := utilities.HaversineDegreesToMeters(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg) / 1000.0 * 0.539957 // convert to nautical miles
+			maxDistDegApprox := maxCalculationDistanceNmi / 60
+			checkDistSq := utilities.FastDistanceDegSq(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg)
+
+			if checkDistSq < (maxDistDegApprox * maxDistDegApprox) {
+
+				distanceToCenterNmi := utilities.HaversineDegreesToMeters(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg) / 1000.0 * 0.539957 // convert to nautical miles
 
 				bearingFromCenter := utilities.CalcBearingNorthZero(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg)
 

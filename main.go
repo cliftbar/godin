@@ -14,7 +14,7 @@ import (
 )
 
 func main(){
-	singleCalc()
+	SingleCalc()
 }
 
 
@@ -40,14 +40,18 @@ func cloudCalc(stormID string){
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 }
 
-func singleCalc(){
+func SingleCalc(){
 	stormID := "al082021" //Henri
 	// stormID := "al092021" //Ida
 	atcf.FetchATCFBDeckTrack(stormID)
 	atcf.FetchATCFForecastTrack(stormID)
 	event := atcf.FetchAtcfEvent(stormID, 15, 0.9)
 
+	startTime := time.Now().UTC()
+	fmt.Printf("Calc Start time: %s\n", startTime.Format(time.RFC3339))
 	ce := event.CalculateEvent(100, 100, 360)
+	endTime := time.Now().UTC()
+	fmt.Printf("Calc End time: %s, Duration: %fs\n", endTime.Format(time.RFC3339), endTime.Sub(startTime).Seconds())
 
 	toRaster(ce)
 	trackXYZ := ce.TrackToDelimited(true)
@@ -57,7 +61,7 @@ func singleCalc(){
 	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
-	fmt.Println(ce.Info.Bounds)
+	//fmt.Println(ce.Info.Bounds)
 }
 
 func main2(){
@@ -78,7 +82,7 @@ func main2(){
 }
 
 func toRaster(ce hurricane.CalculatedEvent) {
-	println(ce.Info.Name)
+	//println(ce.Info.Name)
 
 	width := ce.Info.Bounds.GetBlockWidth(ce.PixPerDegreeLonX)
 	height := ce.Info.Bounds.GetBlockHeight(ce.PixPerDegreeLatY)
