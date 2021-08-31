@@ -131,8 +131,8 @@ def zipdir(path: str, ziph: zipfile.ZipFile):
 
 if __name__ == "__main__":
     bucket = "godin_hurricane_data"
-    stormName = "katrina2005"
-    filename = f"{stormName}_100x100_20210830T1900-04"
+    stormName = "sandy2012"
+    filename = f"{stormName}_100x100_20210831T1700-04"
 
     zipf = zipfile.ZipFile(f"../data/{stormName}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
     zipdir(f"../data/{stormName}", zipf)

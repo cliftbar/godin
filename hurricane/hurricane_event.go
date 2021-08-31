@@ -84,6 +84,7 @@ func (bb BoundingBox) toPoints(blocksPerDegLatY int, blocksPerDegLonX int) []Coo
 type EventInformation struct {
 	ID string `json:"id"`
 	Name string `json:"name"`
+	Year int `json:"year"`
 
 	Track []TrackPoint `json:"track"`
 

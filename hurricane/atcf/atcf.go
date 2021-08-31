@@ -86,6 +86,7 @@ func FetchATCFForecastTrack(stormID string) (track []hurricane.TrackPoint) {
 }
 
 func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.EventInformation {
+	stormYear, _ := strconv.Atoi(stormID[4:])
 	btrackData := FetchATCFBDeckData(stormID)
 	ftrackData := FetchATCFForecastData(stormID)
 
@@ -206,11 +207,18 @@ func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.Eve
 
 	interpolatedTrack = append(interpolatedTrack, updatedTrack[len(updatedTrack) - 1])
 
-	stormName := btrackPoints[len(btrackPoints)-1].Name
+	stormName := stormID
+	for i := len(btrackPoints) - 1; 0 < i; i-- {
+		if btrackPoints[i].Name != "" {
+			stormName = btrackPoints[i].Name
+			break
+		}
+	}
 
 	event := hurricane.EventInformation{
 		ID:     stormID,
 		Name:   stormName,
+		Year: stormYear,
 		Track:  interpolatedTrack,
 		Bounds: hurricane.BoundingBox{
 			LatYTopDeg:    int(math.Round(bboxMaxLatY)),
@@ -300,11 +308,9 @@ func atcfRowParser(row string, rMaxDefault float64) (trackPoint atcfTrackPoint) 
 		}
 	}
 
-	var name string
+	name := ""
 	if 27 < len(values) {
 		name = strings.TrimSpace(values[27])
-	} else {
-		name = strings.TrimSpace(values[0]) + strings.TrimSpace(values[1])
 	}
 
 	atp := atcfTrackPoint {
