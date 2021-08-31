@@ -22,4 +22,4 @@ googleAnalytics = "G-KWNZJ4607L"
     mainSections = ["posts", "hurricane"]
     site_logo = "/img/godin_icon.png"
     favicon = "/img/godin_icon.png"
-    env = "production"
+
