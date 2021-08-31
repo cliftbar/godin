@@ -1,6 +1,5 @@
 User-agent: *
 # robotstxt.org - if ENV production variable is false robots will be disallowed.
 
-Allow: /
-Sitemap: https://odin.cliftbar.site/sitemap.xml
+Disallow: /
 
