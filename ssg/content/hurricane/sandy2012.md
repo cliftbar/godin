@@ -1,12 +1,12 @@
 ---
-title: "Henri"
-date: 2021-08-30T16:51:33-04:00
-draft: false
-summary: Hurricane Henri
-disable_share: true
-storm_name: "henri"
-storm_year: 2021
-cloud_filename_part: _100x100_20210829T1600-04
+title: "Sandy 2012"
+date: 2021-08-31T16:56:34-04:00
+draft: true
+summary: Hurricane Sandy 2012
+disable_share: false
+storm_name: sandy
+storm_year: 2012
+cloud_filename_part: _100x100_20210831T1700-04
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 
