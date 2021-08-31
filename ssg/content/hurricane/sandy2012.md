@@ -1,9 +1,9 @@
 ---
 title: "Sandy 2012"
 date: 2021-08-31T16:56:34-04:00
-draft: true
+draft: false
 summary: Hurricane Sandy 2012
-disable_share: false
+disable_share: true
 storm_name: sandy
 storm_year: 2012
 cloud_filename_part: _100x100_20210831T1700-04
