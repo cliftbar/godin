@@ -114,15 +114,21 @@ func (ei EventInformation) CalculateEvent(pixPerDegLatY int, pixPerDegLonX int, 
 	var windField []CoordinateValue
 
 	gridPoints := ei.Bounds.toPoints(pixPerDegLatY, pixPerDegLonX)
-	for _, c := range gridPoints {
+
+	maxDistDegApproxDeg := maxCalculationDistanceNmi / 60 // convert nmi to degrees
+	maxDistDegApproxDegSq := maxDistDegApproxDeg * maxDistDegApproxDeg
+
+	//for _, c := range gridPoints {
+	for i := 0; i < len(gridPoints); i++ {
+		//c := gridPoints[i]
+		var c = &gridPoints[i]
 		maxWindSpeedAtCoordinate := 0.0
-
-		for _, tp := range ei.Track {
-			//distanceToCenterNmi := utilities.HaversineDegreesToMeters(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg) / 1000.0 * 0.539957 // convert to nautical miles
-			maxDistDegApprox := maxCalculationDistanceNmi / 60
-			checkDistSq := utilities.FastDistanceDegSq(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg)
-
-			if checkDistSq < (maxDistDegApprox * maxDistDegApprox) {
+		//for _, tp := range ei.Track {
+		for tpj := 0; tpj < len(ei.Track); tpj++ {
+			var tp = &ei.Track[tpj]
+			// PERF use a less accurate, simpler max distance check - this is huge
+			checkDistDegSq := utilities.FastDistanceDegSq(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg) // get the square of the distance to check against
+			if checkDistDegSq < maxDistDegApproxDegSq {
 
 				distanceToCenterNmi := utilities.HaversineDegreesToMeters(tp.LatYDeg, tp.LonXDeg, c.latYDeg, c.lonXDeg) / 1000.0 * 0.539957 // convert to nautical miles
 

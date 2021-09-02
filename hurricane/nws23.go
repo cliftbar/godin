@@ -34,6 +34,81 @@ const MpsToKts float64 = 1.94384
 const KpaToInHg float64 = 0.2953
 const MbToInHg float64 = 0.02953
 
+// Lookup table for Rmax calculations in Inflow Method
+var rMaxInflowFactor = map[int]float64{
+	1: math.Pow(1.0, -1.416),
+	2: math.Pow(2.0, -1.416),
+	3: math.Pow(3.0, -1.416),
+	4: math.Pow(4.0, -1.416),
+	5: math.Pow(5.0, -1.416),
+	6: math.Pow(6.0, -1.416),
+	7: math.Pow(7.0, -1.416),
+	8: math.Pow(8.0, -1.416),
+	9: math.Pow(9.0, -1.416),
+	10: math.Pow(10.0, -1.416),
+	11: math.Pow(11.0, -1.416),
+	12: math.Pow(12.0, -1.416),
+	13: math.Pow(13.0, -1.416),
+	14: math.Pow(14.0, -1.416),
+	15: math.Pow(15.0, -1.416),
+	16: math.Pow(16.0, -1.416),
+	17: math.Pow(17.0, -1.416),
+	18: math.Pow(18.0, -1.416),
+	19: math.Pow(19.0, -1.416),
+	20: math.Pow(20.0, -1.416),
+	30: math.Pow(30.0, -1.416),
+	31: math.Pow(31.0, -1.416),
+	32: math.Pow(32.0, -1.416),
+	33: math.Pow(33.0, -1.416),
+	34: math.Pow(34.0, -1.416),
+	35: math.Pow(35.0, -1.416),
+	36: math.Pow(36.0, -1.416),
+	37: math.Pow(37.0, -1.416),
+	38: math.Pow(38.0, -1.416),
+	39: math.Pow(39.0, -1.416),
+	40: math.Pow(40.0, -1.416),
+	41: math.Pow(41.0, -1.416),
+	42: math.Pow(42.0, -1.416),
+	43: math.Pow(43.0, -1.416),
+	44: math.Pow(44.0, -1.416),
+	45: math.Pow(45.0, -1.416),
+	46: math.Pow(46.0, -1.416),
+	47: math.Pow(47.0, -1.416),
+	48: math.Pow(48.0, -1.416),
+	49: math.Pow(49.0, -1.416),
+	50: math.Pow(50.0, -1.416),
+	51: math.Pow(51.0, -1.416),
+	52: math.Pow(52.0, -1.416),
+	53: math.Pow(53.0, -1.416),
+	54: math.Pow(54.0, -1.416),
+	55: math.Pow(55.0, -1.416),
+	56: math.Pow(56.0, -1.416),
+	57: math.Pow(57.0, -1.416),
+	58: math.Pow(58.0, -1.416),
+	59: math.Pow(59.0, -1.416),
+	60: math.Pow(60.0, -1.416),
+	61: math.Pow(61.0, -1.416),
+	62: math.Pow(62.0, -1.416),
+	63: math.Pow(63.0, -1.416),
+	64: math.Pow(64.0, -1.416),
+	65: math.Pow(65.0, -1.416),
+	66: math.Pow(66.0, -1.416),
+	67: math.Pow(67.0, -1.416),
+	68: math.Pow(68.0, -1.416),
+	69: math.Pow(69.0, -1.416),
+	70: math.Pow(70.0, -1.416),
+	71: math.Pow(71.0, -1.416),
+	72: math.Pow(72.0, -1.416),
+	73: math.Pow(73.0, -1.416),
+	74: math.Pow(74.0, -1.416),
+	75: math.Pow(75.0, -1.416),
+	76: math.Pow(76.0, -1.416),
+	77: math.Pow(77.0, -1.416),
+	78: math.Pow(78.0, -1.416),
+	79: math.Pow(79.0, -1.416),
+	80: math.Pow(80.0, -1.416),
+}
+
 // TODO: confirm that there are two multiplications times 2.0 here
 const wCoriolisConstant float64 = 2.0 * 2.0 * math.Pi / 24
 
@@ -74,7 +149,7 @@ func radialDecay(rNmi float64, rMaxNmi float64) (radialDecayFactor float64) {
 //
 // return coriolis factor in hr^-1
 func coriolisFrequency(latDeg float64) (coriolisFreq float64) {
-	return wCoriolisConstant * math.Sin(latDeg*utilities.ToRadians)
+	return wCoriolisConstant * math.Sin(latDeg * utilities.ToRadians)
 }
 
 // NWS 23 pdf page 50, page 24, figure 2.10, empirical relationship (linear regression)
@@ -84,7 +159,7 @@ func coriolisFrequency(latDeg float64) (coriolisFreq float64) {
 // SPH: (65-68.1)/(45-24) = -0.147619048
 // PMH: (66.2 - 70.1)/(45 - 24) = -0.185714286
 func kDensityCoefficient(latDeg float64) (densityCoef float64) {
-	return 69.1952184 / (1 + math.Exp(0.20252*(latDeg-58.72458)))
+	return 69.1952184 / (1 + math.Exp(0.20252*(latDeg - 58.72458)))
 }
 
 // NWS 23 pdf page 49, page 23, equation 2.2
@@ -97,29 +172,34 @@ func gradientWindAtRadius(pwInHg float64,
 	k := kDensityCoefficient(latDeg)
 	f := coriolisFrequency(latDeg)
 
-	gradientWind = (k * math.Pow(pwInHg-cpInHg, 0.5)) - ((rNmi * f) / 2)
+	gradientWind = (k * math.Pow(pwInHg - cpInHg, 0.5)) - ((rNmi * f) / 2)
 	return gradientWind, k, f
 }
 
 // Empirical inflow angle calculation of PMH
 // NWS 23 pdf page 55
 // NOAA_NWS23_Inflow_Calc.xlsx
-func inflowAngle(rNmi float64, rmaxNmi float64) (phi float64) {
+func inflowAngle(rNmi float64, rMaxNmi float64) (phi float64) {
 
-	rPhiMax := (3.0688 * rmaxNmi) - 2.7151
+	rPhiMax := (3.0688 * rMaxNmi) - 2.7151
 
 	if rNmi < rPhiMax {
-			a := 11.438 * math.Pow(rmaxNmi, -1.416)
-		b := (1.1453 * rmaxNmi) + 1.4536
-		phiMax := 9.7043566358*math.Log(rmaxNmi) - 2.7295806727
-		phi = phiMax / (1 + math.Exp(-1*a*(rNmi-b)))
+		// PERF lookup table for rMaxNmi up to 60
+		// a := 11.438 * math.Pow(rMaxNmi, -1.416)
+
+		a := 11.438 * rMaxInflowFactor[int(rMaxNmi)]
+		b := (1.1453 * rMaxNmi) + 1.4536
+		phiMax := 9.7043566358 * math.Log(rMaxNmi) - 2.7295806727
+		phi = phiMax / (1 + math.Exp(-1 * a * (rNmi - b)))
 	} else {
 		rNmiUse := math.Min(rNmi, 130)
 
-		x1 := (0.0000896902 * rmaxNmi * rmaxNmi) - (0.0036924418 * rmaxNmi) + 0.0072307906
-		x2 := (0.000002966 * rmaxNmi * rmaxNmi) - (0.000090532 * rmaxNmi) - 0.0010373287
-		x3 := (-0.0000000592 * rmaxNmi * rmaxNmi) + (0.0000019826 * rmaxNmi) - 0.0000020198
-		c := (9.7043566341 * math.Log(rmaxNmi)) - 2.7295806689
+		// PERF precalculate rMax Squared
+		rMaxNmiSq := rMaxNmi * rMaxNmi
+		x1 := (0.0000896902 * rMaxNmiSq) - (0.0036924418 * rMaxNmi) + 0.0072307906
+		x2 := (0.000002966 * rMaxNmiSq) - (0.000090532 * rMaxNmi) - 0.0010373287
+		x3 := (-0.0000000592 * rMaxNmiSq) + (0.0000019826 * rMaxNmi) - 0.0000020198
+		c := (9.7043566341 * math.Log(rMaxNmi)) - 2.7295806689
 
 		phiPrime := rNmiUse-rPhiMax
 		phi = (x3 * phiPrime * phiPrime * phiPrime) + (x2 * phiPrime * phiPrime) + (x1 * phiPrime) + c
@@ -134,7 +214,8 @@ func inflowAngle(rNmi float64, rmaxNmi float64) (phi float64) {
 	return phi
 }
 
-var tauZeroFactor float64 = math.Pow(1.0, 0.37)
+// PERF precalculate tau zero and fspeed calculations
+var tauZeroFactor = math.Pow(1.0, 0.37) * 1.5
 var fSpeedFactor = map[int]float64{
 	1: math.Pow(1.0, 0.63),
 	2: math.Pow(2.0, 0.63),
@@ -173,14 +254,13 @@ func asymmetryFactor(fSpeedKts float64,
 	phiR := inflowAngle(rNmi, rMaxNmi)       // need to figure out direction
 	phiRmax := inflowAngle(rMaxNmi, rMaxNmi) // need to figure out direction
 	phiBeta := math.Mod(phiR-phiRmax, 360)
-	bearingShift := math.Mod(90.0-bearingFromCenterDeg+cycloneBearingDeg, 360)
-	beta = math.Mod(phiBeta+bearingShift, 360)
+	bearingShift := math.Mod(90.0 - bearingFromCenterDeg + cycloneBearingDeg, 360)
+	beta = math.Mod(phiBeta + bearingShift, 360)
 
+	// PERF precalculate tau zero and fspeed
 	//to := 1.0
 	//asym = 1.5 * math.Pow(fSpeedKts, 0.63) * math.Pow(to, 0.37) * math.Cos(beta*utilities.ToRadians)
-	asym = 1.5 * math.Pow(fSpeedKts, 0.63) * tauZeroFactor * math.Cos(beta*utilities.ToRadians)
-	//fmt.Printf("%f - %f\n", fSpeedKts, math.Pow(fSpeedKts, 0.63))
-
+	asym = tauZeroFactor * fSpeedFactor[int(fSpeedKts)] * math.Cos(beta*utilities.ToRadians)
 	return asym, beta
 }
 
