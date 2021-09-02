@@ -118,12 +118,10 @@ func (ei EventInformation) CalculateEvent(pixPerDegLatY int, pixPerDegLonX int, 
 	maxDistDegApproxDeg := maxCalculationDistanceNmi / 60 // convert nmi to degrees
 	maxDistDegApproxDegSq := maxDistDegApproxDeg * maxDistDegApproxDeg
 
-	//for _, c := range gridPoints {
+	// PERF use pointers and basic iterators instead of range and assignment to dodge duffcopy
 	for i := 0; i < len(gridPoints); i++ {
-		//c := gridPoints[i]
 		var c = &gridPoints[i]
 		maxWindSpeedAtCoordinate := 0.0
-		//for _, tp := range ei.Track {
 		for tpj := 0; tpj < len(ei.Track); tpj++ {
 			var tp = &ei.Track[tpj]
 			// PERF use a less accurate, simpler max distance check - this is huge
