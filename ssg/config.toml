@@ -9,9 +9,8 @@ sectionPagesMenu = "main"
 
 enableRobotsTXT = true
 paginate = 3
+
 googleAnalytics = "G-KWNZJ4607L"
-# googleAdsense=c"a-pub-2365307104378138"
-# env = production
 
 [sitemap]
   changefreq = "monthly"
@@ -19,8 +18,9 @@ googleAnalytics = "G-KWNZJ4607L"
   filename = "sitemap.xml"
 
 [params]
-    description = "Hurricane modeling tracking"
-    mainSections = ["posts", "hurricane"]
-    site_logo = "/img/godin_icon.png"
-    favicon = "/img/godin_icon.png"
-
+  description = "Hurricane modeling tracking"
+  mainSections = ["posts", "hurricane"]
+  site_logo = "/img/godin_icon.png"
+  favicon = "/img/godin_icon.png"
+  env = "production"
+  googleAdsense="ca-pub-2365307104378138"
