@@ -10,8 +10,8 @@ sectionPagesMenu = "main"
 enableRobotsTXT = true
 paginate = 3
 googleAnalytics = "G-KWNZJ4607L"
-googleAdsense=ca-pub-2365307104378138
-env = production
+# googleAdsense=c"a-pub-2365307104378138"
+# env = production
 
 [sitemap]
   changefreq = "monthly"
