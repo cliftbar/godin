@@ -185,9 +185,9 @@ func inflowAngle(rNmi float64, rMaxNmi float64) (phi float64) {
 
 	if rNmi < rPhiMax {
 		// PERF lookup table for rMaxNmi up to 60
-		// a := 11.438 * math.Pow(rMaxNmi, -1.416)
+		a := 11.438 * math.Pow(rMaxNmi, -1.416)
 
-		a := 11.438 * rMaxInflowFactor[int(rMaxNmi)]
+		// a := 11.438 * rMaxInflowFactor[int(rMaxNmi)]
 		b := (1.1453 * rMaxNmi) + 1.4536
 		phiMax := 9.7043566358 * math.Log(rMaxNmi) - 2.7295806727
 		phi = phiMax / (1 + math.Exp(-1 * a * (rNmi - b)))

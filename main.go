@@ -15,17 +15,18 @@ import (
 
 func main(){
 	// stormID := "al082021" //Henri 2021
-	// stormID := "al092021" //Ida 2021
+	stormID := "al092021" //Ida 2021
 	// stormID := "al122005" // katrina 2005
-	stormID := "al182012" // sandy 2012
+	// stormID := "al182012" // sandy 2012
 
-	pixPerDegLatY := 10
-	pixPerDegLonX := 10
+	pixPerDegLatY := 100
+	pixPerDegLonX := 100
 	rMaxDefaultNmi := 15.0
 	maxCalcDistNmi := 360.0
 	gwaf := 0.9
+	includeForecasts := false
 
-	SingleCalc(stormID, pixPerDegLatY, pixPerDegLonX, rMaxDefaultNmi, maxCalcDistNmi, gwaf)
+	SingleCalc(stormID, pixPerDegLatY, pixPerDegLonX, rMaxDefaultNmi, maxCalcDistNmi, gwaf, includeForecasts)
 }
 
 func cloudCalc(stormID string){
@@ -36,7 +37,7 @@ func cloudCalc(stormID string){
 	pxPerDegree := 10
 	atcf.FetchATCFBDeckTrack(stormID)
 	atcf.FetchATCFForecastTrack(stormID)
-	event := atcf.FetchAtcfEvent(stormID, rMaxNmiDefault, gwaf)
+	event := atcf.FetchAtcfEvent(stormID, rMaxNmiDefault, gwaf, true)
 
 	ce := event.CalculateEvent(pxPerDegree, pxPerDegree, maxCalculationDistance)
 
@@ -50,13 +51,13 @@ func cloudCalc(stormID string){
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 }
 
-func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaultNmi float64, maxCalcDistNmi float64, gwaf float64){
+func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaultNmi float64, maxCalcDistNmi float64, gwaf float64, includeForecasts bool){
 	// stormID := "al082021" //Henri 2021
 	//stormID := "al092021" //Ida 2021
 	// stormID := "al122005" // katrina 2005
 	//stormID := "al182012" // sandy 2012
 
-	event := atcf.FetchAtcfEvent(stormID, rMaxDefaultNmi, gwaf)
+	event := atcf.FetchAtcfEvent(stormID, rMaxDefaultNmi, gwaf, includeForecasts)
 
 	startTime := time.Now().UTC()
 	fmt.Printf("Calc Start time: %s\n", startTime.Format(time.RFC3339))

@@ -85,25 +85,25 @@ func FetchATCFForecastTrack(stormID string) (track []hurricane.TrackPoint) {
 	return t
 }
 
-func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64) hurricane.EventInformation {
+func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64, includeForecasts bool) hurricane.EventInformation {
 	stormYear, _ := strconv.Atoi(stormID[4:])
 	btrackData := FetchATCFBDeckData(stormID)
-	ftrackData := FetchATCFForecastData(stormID)
-
-	ftrackPoints := make([]atcfTrackPoint, 0)
 	btrackPoints := AtcfParser(btrackData, rMaxNmi)
-	if ftrackData != "" {
-		ftrackPoints = AtcfParser(ftrackData, rMaxNmi)
-	}
-
-	// entireTrackPointsUnfiltered := append(btrackPoints, ftrackPoints...)
-
 	entireTrackPointsUnfiltered := btrackPoints
 
-	for _, tp := range ftrackPoints {
-		if tp.Timestamp.After(btrackPoints[len(btrackPoints) - 1].Timestamp){
-			entireTrackPointsUnfiltered =
-				append(entireTrackPointsUnfiltered, tp)
+	if includeForecasts {
+		ftrackData := FetchATCFForecastData(stormID)
+		ftrackPoints := make([]atcfTrackPoint, 0)
+
+		if ftrackData != "" {
+			ftrackPoints = AtcfParser(ftrackData, rMaxNmi)
+		}
+
+		for _, tp := range ftrackPoints {
+			if tp.Timestamp.After(btrackPoints[len(btrackPoints) - 1].Timestamp){
+				entireTrackPointsUnfiltered =
+					append(entireTrackPointsUnfiltered, tp)
+			}
 		}
 	}
 
