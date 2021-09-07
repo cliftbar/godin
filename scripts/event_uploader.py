@@ -171,5 +171,5 @@ def upload_event(storm_qgis_filename: Optional[str]):
 
 
 if __name__ == "__main__":
-    qgis_filename: str = "ida2021_100x100_2021-09-07T14:12:00+00:00.png"
+    qgis_filename: str = "matthew2016_100x100_2021-09-07T14:37:00+00:00.png"
     upload_event(qgis_filename)

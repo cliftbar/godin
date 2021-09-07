@@ -15,9 +15,10 @@ import (
 
 func main(){
 	// stormID := "al082021" //Henri 2021
-	stormID := "al092021" //Ida 2021
+	// stormID := "al092021" //Ida 2021
 	// stormID := "al122005" // katrina 2005
 	// stormID := "al182012" // sandy 2012
+	stormID := "al142016"
 
 	pixPerDegLatY := 100
 	pixPerDegLonX := 100

@@ -37,7 +37,8 @@ def export_qgis_layout_png() -> None:
     style_base_path: str = f"{os.getcwd()}/qgis"
 
     # Set up hurricane variables
-    hurricane_file_base: str = "IDA_2021_100x100"
+    # hurricane_file_base: str = "IDA_2021_100x100"
+    hurricane_file_base: str = "MATTHEW_2016_100x100"
     hurricane_raster: str = f"{hurricane_file_base}.png"
     hurricane_track: str = f"{hurricane_file_base}.csv"
     hurricane_base_split: List[str] = hurricane_file_base.split("_")
