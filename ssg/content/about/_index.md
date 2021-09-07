@@ -13,7 +13,7 @@ Site Details:
 - Github Pages for site hosting
 - Google Cloud Storage for data file hosting
 - Namecheap for the domain name
-- Google AdSense and Google Analytics
+- Google Analytics and ~~Google AdSense~~ (it would seem I'm not yet worthy of AdSense)
 
 Model Details:
 - Model currently written in Golang (Python and Scala version also exist)
