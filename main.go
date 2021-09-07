@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"godin/hurricane"
 	"godin/hurricane/atcf"
@@ -13,21 +14,45 @@ import (
 	"time"
 )
 
+func myUsage() {
+	fmt.Printf("Usage: %s <stormID> <flags>...\n", os.Args[0])
+	flag.PrintDefaults()
+}
+
 func main(){
 	// stormID := "al082021" //Henri 2021
 	// stormID := "al092021" //Ida 2021
 	// stormID := "al122005" // katrina 2005
 	// stormID := "al182012" // sandy 2012
-	stormID := "al142016"
 
-	pixPerDegLatY := 100
-	pixPerDegLonX := 100
-	rMaxDefaultNmi := 15.0
-	maxCalcDistNmi := 360.0
-	gwaf := 0.9
-	includeForecasts := false
+	//stormID := "al142016" // matthew 2016
 
-	SingleCalc(stormID, pixPerDegLatY, pixPerDegLonX, rMaxDefaultNmi, maxCalcDistNmi, gwaf, includeForecasts)
+	//pixPerDegLatY := 100
+	//pixPerDegLonX := 100
+	//rMaxDefaultNmi := 15.0
+	//maxCalcDistNmi := 360.0
+	//gwaf := 0.9
+	// includeForecasts := false
+	flag.Usage = myUsage
+	includeForecasts := flag.Bool("include_forecasts", false, "whether to include forecast track points in the model run")
+	pixPerDegree := flag.Int("res", 100, "resolution of the output raster in pixels per degree")
+	rMaxDefaultNmi := flag.Float64("default_rmax", 15.0, "radius of max wind to use when not provided by track data")
+	maxCalcDistNmi := flag.Float64("max_calc_dist", 360.0, "maximum calculation distance from center of storm")
+	gwaf := flag.Float64("gwaf", 0.9, "Gradient Wind Reduction Factor")
+	flag.Parse()
+
+	var stormID string
+	if 0 < len(flag.Args()) {
+		stormID = flag.Arg(0)
+	} else {
+		fmt.Println("Specify a storm ID")
+		os.Exit(2)
+	}
+
+	pixPerDegLatY := *pixPerDegree
+	pixPerDegLonX := *pixPerDegree
+
+	SingleCalc(stormID, pixPerDegLatY, pixPerDegLonX, *rMaxDefaultNmi, *maxCalcDistNmi, *gwaf, *includeForecasts)
 }
 
 func cloudCalc(stormID string){
