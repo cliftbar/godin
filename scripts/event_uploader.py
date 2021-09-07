@@ -139,6 +139,7 @@ def upload_event(storm_qgis_filename: Optional[str]):
         print("Set a qgis filename")
         exit(2)
     bucket = "godin_hurricane_data"
+    data_path: str = "./data"
     # storm_name = "sandy2012"
     # filename = f"{storm_name}_100x100_20210831T1700-04"
 
@@ -147,8 +148,8 @@ def upload_event(storm_qgis_filename: Optional[str]):
     filename, _ = storm_qgis_filename.split(".", maxsplit=1)
 
     # zip relavent files
-    zipf = zipfile.ZipFile(f"../data/{storm_name}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
-    zipdir(f"../data/{storm_name}", zipf)
+    zipf = zipfile.ZipFile(f"{data_path}/{storm_name}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
+    zipdir(f"{data_path}/{storm_name}", zipf)
     zipf.close()
 
     blobs = list_blobs_with_prefix(bucket_name=bucket, prefix=f"{storm_name}/latest")
@@ -159,16 +160,16 @@ def upload_event(storm_qgis_filename: Optional[str]):
         move_blob(bucket_name=bucket, blob_name=blob.name, destination_bucket_name=bucket, destination_blob_name=f"{storm_name}/past/{blob_path.name}")
 
     # ZIP data
-    source = f"../data/{storm_name}/{filename}.zip"
+    source = f"{data_path}/{storm_name}/{filename}.zip"
     dest = f"{storm_name}/latest/{filename}.zip"
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)
 
     # gis
-    source = f"../data/{storm_name}/{filename}.png"
+    source = f"{data_path}/{storm_name}/{filename}.png"
     dest = f"{storm_name}/latest/{filename}.png"
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)
 
 
 if __name__ == "__main__":
-    qgis_filename: str = None
+    qgis_filename: str = "ida2021_100x100_2021-09-07T14:12:00+00:00.png"
     upload_event(qgis_filename)
