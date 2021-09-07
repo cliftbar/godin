@@ -1,8 +1,9 @@
-from google.cloud import storage
-
-from pathlib import PurePath, Path
-import os
 import zipfile
+
+from typing import List, Optional
+from pathlib import PurePath, Path
+
+from google.cloud import storage
 
 
 def list_blobs_with_prefix(bucket_name, prefix, delimiter=None):
@@ -51,6 +52,7 @@ def list_blobs_with_prefix(bucket_name, prefix, delimiter=None):
 
     return blobs
 
+
 def rename_blob(bucket_name, blob_name, new_name):
     """Renames a blob."""
     # The ID of your GCS bucket
@@ -68,6 +70,7 @@ def rename_blob(bucket_name, blob_name, new_name):
 
     print("Blob {} has been renamed to {}".format(blob.name, new_blob.name))
 
+
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     """Uploads a file to the google storage bucket."""
 
@@ -82,6 +85,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
             source_file_name, destination_blob_name
         )
     )
+
 
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
     """Moves a blob from one bucket to another with a new name."""
@@ -114,6 +118,7 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
         )
     )
 
+
 def zipdir(path: str, ziph: zipfile.ZipFile):
     # ziph is zipfile handle
     # for root, dirs, files in os.walk(path):
@@ -129,28 +134,41 @@ def zipdir(path: str, ziph: zipfile.ZipFile):
         )
 
 
-if __name__ == "__main__":
+def upload_event(storm_qgis_filename: Optional[str]):
+    if storm_qgis_filename is None:
+        print("Set a qgis filename")
+        exit(2)
     bucket = "godin_hurricane_data"
-    stormName = "sandy2012"
-    filename = f"{stormName}_100x100_20210831T1700-04"
+    # storm_name = "sandy2012"
+    # filename = f"{storm_name}_100x100_20210831T1700-04"
 
-    zipf = zipfile.ZipFile(f"../data/{stormName}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
-    zipdir(f"../data/{stormName}", zipf)
+    fi_splits: List[str] = storm_qgis_filename.split("_")
+    storm_name: str = fi_splits[0]
+    filename, _ = storm_qgis_filename.split(".", maxsplit=1)
+
+    # zip relavent files
+    zipf = zipfile.ZipFile(f"../data/{storm_name}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
+    zipdir(f"../data/{storm_name}", zipf)
     zipf.close()
 
-    blobs = list_blobs_with_prefix(bucket_name=bucket, prefix=f"{stormName}/latest")
+    blobs = list_blobs_with_prefix(bucket_name=bucket, prefix=f"{storm_name}/latest")
     for blob in blobs:
-        blobPath: PurePath = PurePath(blob.name)
+        blob_path: PurePath = PurePath(blob.name)
         if blob.name[-1] == "/":
             continue
-        move_blob(bucket_name=bucket, blob_name=blob.name, destination_bucket_name=bucket, destination_blob_name=f"{stormName}/past/{blobPath.name}")
+        move_blob(bucket_name=bucket, blob_name=blob.name, destination_bucket_name=bucket, destination_blob_name=f"{storm_name}/past/{blob_path.name}")
 
     # ZIP data
-    source = f"../data/{stormName}/{filename}.zip"
-    dest = f"{stormName}/latest/{filename}.zip"
+    source = f"../data/{storm_name}/{filename}.zip"
+    dest = f"{storm_name}/latest/{filename}.zip"
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)
 
     # gis
-    source = f"../data/{stormName}/{filename}.png"
-    dest = f"{stormName}/latest/{filename}.png"
+    source = f"../data/{storm_name}/{filename}.png"
+    dest = f"{storm_name}/latest/{filename}.png"
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)
+
+
+if __name__ == "__main__":
+    qgis_filename: str = None
+    upload_event(qgis_filename)

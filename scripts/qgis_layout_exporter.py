@@ -22,7 +22,8 @@ from qgis.core import (
 )
 
 
-# Script must use QGIS python interpreter
+# Script must use QGIS python interpreter OR use an environment with qgis installed
+#   (ex. conda install -c conda-forge qgis)
 # Export path to QGIS sqlite library if needed
 # export DYLD_INSERT_LIBRARIES="/Applications/QGIS.app/Contents/MacOS/lib/libsqlite3.dylib"
 
@@ -138,8 +139,10 @@ def export_qgis_layout_png() -> None:
     ts: datetime = datetime.utcnow().replace(tzinfo=timezone.utc)
     ts = ts.replace(microsecond=0, second=0)
 
+    export_filename: str = \
+        f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat()}.png"
     exporter.exportToImage(
-        f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat()}.png",
+        export_filename,
         img_settings
     )
 
@@ -150,6 +153,7 @@ def export_qgis_layout_png() -> None:
     # Close out qgis app
     qgis_app.exitQgis()
     print("finished")
+    print(export_filename)
 
 
 if __name__ == "__main__":
