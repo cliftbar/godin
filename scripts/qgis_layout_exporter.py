@@ -28,7 +28,7 @@ from qgis.core import (
 # export DYLD_INSERT_LIBRARIES="/Applications/QGIS.app/Contents/MacOS/lib/libsqlite3.dylib"
 
 # Run from project root
-def export_qgis_layout_png() -> None:
+def export_qgis_layout_png(hurricane_file_base: str) -> None:
     # Paths
     qgis_install_path: str = "/Applications/QGIS.app/Contents/MacOS"  # This needs to be edited for other installations
     # project_path: str = "/Users/cameronbarclift/MyFiles/qgis/projects/godin.qgz"
@@ -38,7 +38,6 @@ def export_qgis_layout_png() -> None:
 
     # Set up hurricane variables
     # hurricane_file_base: str = "IDA_2021_100x100"
-    hurricane_file_base: str = "MATTHEW_2016_100x100"
     hurricane_raster: str = f"{hurricane_file_base}.png"
     hurricane_track: str = f"{hurricane_file_base}.csv"
     hurricane_base_split: List[str] = hurricane_file_base.split("_")
@@ -155,7 +154,9 @@ def export_qgis_layout_png() -> None:
     qgis_app.exitQgis()
     print("finished")
     print(export_filename)
+    return export_filename
 
 
 if __name__ == "__main__":
-    export_qgis_layout_png()
+    hurricane_base: str = "MATTHEW_2016_100x100"
+    export_qgis_layout_png(hurricane_base)
