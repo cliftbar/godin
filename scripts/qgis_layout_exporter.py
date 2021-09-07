@@ -147,7 +147,7 @@ def export_qgis_layout_png() -> None:
     )
 
     # Save project to tracking file
-    # project_path: str = "/Users/cameronbarclift/MyFiles/qgis/projects/godin_save.qgz"
+    # project_path: str = f"{os.getcwd()}/qgis/godin_save.qgz"
     # project_instance.write(project_path)
 
     # Close out qgis app
