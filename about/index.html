@@ -67,21 +67,30 @@ Hurricane modeling tracking
 <section class="cf ph3 ph5-l pv3 pv4-l f4 center measure-wide lh-copy mid-gray">
 <p>This site is a place for me to post Hurricane model runs from a program I&rsquo;ve developed in my free time. The code is an implementaiton of the NWS 23 model developed by NOAA. See my <a href=https://github.com/cliftbar>Github</a> for various versions I&rsquo;ve made over the years.</p>
 <p>Oh, it&rsquo;s called &ldquo;Odin&rdquo; because the previous name (FlapyDisaster) was silly and I had an idea for an icon, nothing too deep there.</p>
-<p>Site Details:</p>
+<h3 id=tech>Tech</h3>
+<p>Site:</p>
 <ul>
 <li>Hugo as a Static Site Generator</li>
 <li>Github Pages for site hosting</li>
+<li>Github Actions for deployment</li>
 <li>Google Cloud Storage for data file hosting</li>
 <li>Namecheap for the domain name</li>
 <li>Google Analytics and <del>Google AdSense</del> (it would seem I&rsquo;m not yet worthy of AdSense)</li>
 </ul>
-<p>Model Details:</p>
+<p>Model:</p>
 <ul>
-<li>Model currently written in Golang (Python and Scala version also exist)</li>
+<li>Model code written in Golang (Python and Scala version also exist)</li>
 <li>The code is an implementation of the <a href=https://repository.library.noaa.gov/view/noaa/6948>NOAA NWS 23 Model</a></li>
 <li>Land Friction is currently not considered</li>
+<li>High resolution model runs (100 pixels per degree) take ~3min singlethreaded</li>
 </ul>
-<p><em>DISCLAIMER</em> Nothing on this site is official information or verified modeling, I&rsquo;m just a dude on the internet. Please follow all guidance from NOAA and your local officials.</p>
+<p>Other</p>
+<ul>
+<li>Maps generated using QGIS/PyQGIS</li>
+<li>General scripting done in Python 3</li>
+</ul>
+<h3 id=disclaimer>DISCLAIMER</h3>
+<p>Nothing on this site is official information or verified modeling, I&rsquo;m just a dude on the internet. Please follow all guidance from NOAA and your local officials.</p>
 </section>
 <aside class="flex-ns flex-wrap justify-around mt5">
 </aside>
