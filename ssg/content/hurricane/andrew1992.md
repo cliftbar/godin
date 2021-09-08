@@ -1,13 +1,13 @@
 ---
-title: "{{ substr .Name 0 (sub (len .Name) 4) | title }} {{ substr .Name (sub (len .Name) 4) }}"
-date: {{ .Date }}
+title: "Andrew 1992"
+date: 2021-09-08T10:39:28-07:00
 draft: true
-summary: Hurricane {{ substr .Name 0 (sub (len .Name) 4) | title }} {{ substr .Name (sub (len .Name) 4) }}
+summary: Hurricane Andrew 1992
 disable_share: true
-storm_name: {{ substr .Name 0 (sub (len .Name) 4) | lower }}
-storm_year: {{ substr .Name (sub (len .Name) 4) }}
-resolution: {{ cond (eq (getenv "HUGO_HURRICANE_RES") "") 100 (getenv "HUGO_HURRICANE_RES") }}
-hurricane_timestamp: {{ cond (eq (getenv "HUGO_HURRICANE_TS") "") (now.Format "20060102T1504-07") (getenv "HUGO_HURRICANE_TS") }}
+storm_name: andrew
+storm_year: 1992
+resolution: 100
+hurricane_timestamp: 2021-09-08T181000+0000
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 

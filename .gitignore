@@ -1,4 +1,5 @@
 .idea
+__pycache__
 !sample/
 #*.tif
 #*.png
@@ -8,4 +9,5 @@
 #*.ini
 .DS_Store
 godin
+!*/.keep
 data/*

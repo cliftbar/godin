@@ -24,16 +24,17 @@ from qgis.core import (
 
 # Script must use QGIS python interpreter OR use an environment with qgis installed
 #   (ex. conda install -c conda-forge qgis)
-# Export path to QGIS sqlite library if needed
+# Export path to QGIS sqlite library if needed, usually for PyCharm run
 # export DYLD_INSERT_LIBRARIES="/Applications/QGIS.app/Contents/MacOS/lib/libsqlite3.dylib"
 
 # Run from project root
-def export_qgis_layout_png(hurricane_file_base: str) -> None:
+def export_qgis_layout_png(hurricane_file_base: str) -> str:
     # Paths
-    qgis_install_path: str = "/Applications/QGIS.app/Contents/MacOS"  # This needs to be edited for other installations
-    # project_path: str = "/Users/cameronbarclift/MyFiles/qgis/projects/godin.qgz"
+    # qgis_install_path: str = "/Applications/QGIS.app/Contents/MacOS"  # This is for pycharm run
+    qgis_install_path = None
+
     project_path: str = f"{os.getcwd()}/qgis/godin.qgs"
-    data_path: str = f"{os.getcwd()}/data/tmp"
+    # data_path: str = f"{os.getcwd()}/data/tmp"
     style_base_path: str = f"{os.getcwd()}/qgis"
 
     # Set up hurricane variables
@@ -45,6 +46,8 @@ def export_qgis_layout_png(hurricane_file_base: str) -> None:
     hurricane_year: int = int(hurricane_base_split[1])
     hurricane_resolution: str = hurricane_base_split[2]
 
+    data_path: str = f"{os.getcwd()}/data/{hurricane_name.lower()}{hurricane_year}"
+
     # QGIS variables names
     raster_layer_name: str = "raster"
     track_layer_name: str = "track"
@@ -53,7 +56,6 @@ def export_qgis_layout_png(hurricane_file_base: str) -> None:
     legend_name: str = "legend"
 
     # Instantiate application
-    QgsApplication.setPrefixPath(qgis_install_path, True)
     qgis_app: QgsApplication = QgsApplication([], False)
     qgis_app.setPrefixPath(qgis_install_path, True)
     qgis_app.initQgis()
@@ -140,7 +142,7 @@ def export_qgis_layout_png(hurricane_file_base: str) -> None:
     ts = ts.replace(microsecond=0, second=0)
 
     export_filename: str = \
-        f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat()}.png"
+        f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat().replace(':', '')}.png"
     exporter.exportToImage(
         export_filename,
         img_settings

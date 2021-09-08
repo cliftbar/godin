@@ -11,11 +11,12 @@ import (
 	"image/png"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 )
 
 func myUsage() {
-	fmt.Printf("Usage: %s <stormID> <flags>...\n", os.Args[0])
+	fmt.Printf("Usage: %s [flags] stormID\n", os.Args[0])
 	flag.PrintDefaults()
 }
 
@@ -77,7 +78,7 @@ func cloudCalc(stormID string){
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 }
 
-func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaultNmi float64, maxCalcDistNmi float64, gwaf float64, includeForecasts bool){
+func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaultNmi float64, maxCalcDistNmi float64, gwaf float64, includeForecasts bool) {
 	// stormID := "al082021" //Henri 2021
 	//stormID := "al092021" //Ida 2021
 	// stormID := "al122005" // katrina 2005
@@ -91,14 +92,25 @@ func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaul
 	endTime := time.Now().UTC()
 	fmt.Printf("Calc End time: %s, Duration: %fs\n", endTime.Format(time.RFC3339), endTime.Sub(startTime).Seconds())
 
+	stormNameYear := fmt.Sprintf("%s%d", strings.ToLower(ce.Info.Name), ce.Info.Year)
+	_ = os.MkdirAll(fmt.Sprintf("data/%s/past", stormNameYear), os.ModePerm)
+	src := fmt.Sprintf("data/%s", stormNameYear)
+	dest := fmt.Sprintf("data/%s/past", stormNameYear)
+	dirEntries, _ := os.ReadDir(src)
+	for _, entry := range dirEntries {
+		if !entry.IsDir() {
+			_ = os.Rename(src + "/" + entry.Name(), dest + "/" + entry.Name())
+		}
+	}
+
 	toRaster(ce)
 	trackXYZ := ce.TrackToDelimited(true)
 
-	_ = ioutil.WriteFile(fmt.Sprintf("data/tmp/%s_%d_%dx%d.csv", ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trackXYZ), 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("data/%s/%s_%d_%dx%d.csv", stormNameYear, ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trackXYZ), 0644)
 
 	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 
-	_ = ioutil.WriteFile(fmt.Sprintf("data/tmp/%s_%d_%dx%d.wld", ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("data/%s/%s_%d_%dx%d.wld", stormNameYear, ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 }
 
 func main2(){
@@ -120,6 +132,7 @@ func main2(){
 
 func toRaster(ce hurricane.CalculatedEvent) {
 	//println(ce.Info.Name)
+	stormNameYear := fmt.Sprintf("%s%d", strings.ToLower(ce.Info.Name), ce.Info.Year)
 
 	width := ce.Info.Bounds.GetBlockWidth(ce.PixPerDegreeLonX)
 	height := ce.Info.Bounds.GetBlockHeight(ce.PixPerDegreeLatY)
@@ -136,7 +149,7 @@ func toRaster(ce hurricane.CalculatedEvent) {
 		}
 	}
 
-	o, _ := os.Create(fmt.Sprintf("data/tmp/%s_%d_%dx%d.png", ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY))
+	o, _ := os.Create(fmt.Sprintf("data/%s/%s_%d_%dx%d.png", stormNameYear, ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY))
 
 	_ = png.Encode(o, raster)
 }
