@@ -13,12 +13,20 @@
         </section>
         {{- template "_internal/pagination.html" . -}}
         <h1>Hurricanes by Year/Name</h1>
-        <ul>
-            {{ range (((.Pages.ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
-                <li>
-                    <a href="{{.Permalink}}">{{.Params.storm_year}} | {{.Params.storm_name | title }}</a>
-                </li>
-            {{ end }}
-        </ul>
+        
+        {{ $years := slice }}
+        {{ range .Pages }}
+            {{ $years = $years | append .Params.storm_year }}
+        {{ end }}
+        {{ range sort (uniq $years) "" "desc"}}
+            <h3>{{ . }}</h3>
+            <ul>
+                {{ range ((((where site.Pages ".Params.storm_year" "==" .).ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
+                    <li>
+                        <a href="{{.Permalink}}">{{.Params.storm_name | title }}</a>
+                    </li>
+                {{ end }}
+            </ul>
+        {{ end }}
     </article>
 {{ end }}
