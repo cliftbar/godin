@@ -18,7 +18,7 @@ googleAnalytics = "G-KWNZJ4607L"
   filename = "sitemap.xml"
 
 [params]
-  description = "Hurricane modeling tracking"
+  description = "Tropical Cyclone Modeling"
   mainSections = ["posts", "hurricane"]
   site_logo = "/img/godin_icon.png"
   favicon = "/img/godin_icon.png"
