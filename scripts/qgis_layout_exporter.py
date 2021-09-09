@@ -1,3 +1,4 @@
+import gc
 import os
 
 from typing import List
@@ -21,6 +22,11 @@ from qgis.core import (
     QgsLayerTreeLayer
 )
 
+from osgeo import gdal
+
+# Suppress error
+gdal.PushErrorHandler('CPLQuietErrorHandler')
+
 
 # Script must use QGIS python interpreter OR use an environment with qgis installed
 #   (ex. conda install -c conda-forge qgis)
@@ -34,11 +40,9 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     qgis_install_path = None
 
     project_path: str = f"{os.getcwd()}/qgis/godin.qgs"
-    # data_path: str = f"{os.getcwd()}/data/tmp"
     style_base_path: str = f"{os.getcwd()}/qgis"
 
     # Set up hurricane variables
-    # hurricane_file_base: str = "IDA_2021_100x100"
     hurricane_raster: str = f"{hurricane_file_base}.png"
     hurricane_track: str = f"{hurricane_file_base}.csv"
     hurricane_base_split: List[str] = hurricane_file_base.split("_")
@@ -74,8 +78,8 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     new_raster_layer: QgsRasterLayer = QgsRasterLayer(f"{data_path}/{hurricane_raster}", raster_layer_name)
     new_raster_layer.setCrs(wgs84)
     new_raster_layer.loadNamedStyle(f"{style_base_path}/hurricane_cat_raster.qml")
-    print(new_raster_layer.isValid())
     if not new_raster_layer.isValid():
+        print(f"Raster Layer error: {new_raster_layer.error()}")
         exit(2)
 
     new_delim_layer: QgsVectorLayer = QgsVectorLayer(
@@ -84,8 +88,8 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
         "delimitedtext")
     new_delim_layer.setCrs(wgs84)
     new_delim_layer.loadNamedStyle(f"{style_base_path}/hurricane_track.qml")
-    print(new_delim_layer.isValid())
     if not new_delim_layer.isValid():
+        print(f"Delim Layer error: {new_delim_layer.error()}")
         exit(2)
 
     # Add layers to project
@@ -142,7 +146,7 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     ts = ts.replace(microsecond=0, second=0)
 
     export_filename: str = \
-        f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat().replace(':', '')}.png"
+        f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat().replace(':', '')}.jpeg"
     exporter.exportToImage(
         export_filename,
         img_settings
@@ -153,9 +157,10 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     # project_instance.write(project_path)
 
     # Close out qgis app
-    qgis_app.exitQgis()
-    print("finished")
-    print(export_filename)
+    # qgis_app.exitQgis()
+    qgis_app.exit()
+    # print("finished")
+    # print(export_filename)
     return export_filename
 
 

@@ -41,14 +41,6 @@ def list_blobs_with_prefix(bucket_name, prefix, delimiter=None):
 
     blobs = [x for x in blobs]
 
-    print("Blobs:")
-    for blob in blobs:
-        print(blob.name)
-
-    if delimiter:
-        print("Prefixes:")
-        for prefix in blobs.prefixes:
-            print(prefix)
 
     return blobs
 
@@ -68,7 +60,7 @@ def rename_blob(bucket_name, blob_name, new_name):
 
     new_blob = bucket.rename_blob(blob, new_name)
 
-    print("Blob {} has been renamed to {}".format(blob.name, new_blob.name))
+    # print("Blob {} has been renamed to {}".format(blob.name, new_blob.name))
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
@@ -80,11 +72,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
     blob.upload_from_filename(source_file_name)
 
-    print(
-        "File {} uploaded to Storage Bucket with Blob name  {} successfully .".format(
-            source_file_name, destination_blob_name
-        )
-    )
+    # print(f"File {source_file_name} uploaded to Storage Bucket with Blob name  {destination_blob_name} successfully .")
 
 
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
@@ -109,14 +97,9 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
     )
     source_bucket.delete_blob(blob_name)
 
-    print(
-        "Blob {} in bucket {} moved to blob {} in bucket {}.".format(
-            source_blob.name,
-            source_bucket.name,
-            blob_copy.name,
-            destination_bucket.name,
-        )
-    )
+    # print(
+    #     f"Blob {source_blob.name} in bucket {source_bucket.name} moved to blob {blob_copy.name} in bucket {destination_bucket.name}."
+    # )
 
 
 def zipdir(path: str, ziph: zipfile.ZipFile):
@@ -127,7 +110,7 @@ def zipdir(path: str, ziph: zipfile.ZipFile):
         fi_path: Path = Path(file)
         if fi_path.is_dir() or fi_path.name == ".DS_Store" or fi_path.suffix == ".zip":
             continue
-        print(file)
+
         ziph.write(
             fi_path,
             fi_path.name
@@ -147,7 +130,7 @@ def upload_event(storm_qgis_filename: Optional[str]):
     storm_name: str = fi_splits[0]
     filename, _ = storm_qgis_filename.split(".", maxsplit=1)
 
-    # zip relavent files
+    # zip relevant files
     zipf = zipfile.ZipFile(f"{data_path}/{storm_name}/{filename}.zip", 'w', zipfile.ZIP_DEFLATED)
     zipdir(f"{data_path}/{storm_name}", zipf)
     zipf.close()
@@ -165,11 +148,11 @@ def upload_event(storm_qgis_filename: Optional[str]):
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)
 
     # gis
-    source = f"{data_path}/{storm_name}/{filename}.png"
-    dest = f"{storm_name}/latest/{filename}.png"
+    source = f"{data_path}/{storm_name}/{filename}.jpeg"
+    dest = f"{storm_name}/latest/{filename}.jpeg"
     upload_blob(bucket_name=bucket, source_file_name=source, destination_blob_name=dest)
 
 
 if __name__ == "__main__":
-    qgis_filename: str = "matthew2016_100x100_2021-09-07T14:37:00+00:00.png"
+    qgis_filename: str = "matthew2016_100x100_2021-09-07T14:37:00+00:00.jpeg"
     upload_event(qgis_filename)
