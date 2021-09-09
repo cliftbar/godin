@@ -1,7 +1,7 @@
 ---
 title: "No Ads for now"
 date: 2021-09-07T17:34:04-04:00
-draft: true
+draft: false
 disable_share: true
 ---
 
@@ -38,6 +38,6 @@ The Ananke theme has a file that gets included into every page called `baseof.ht
 
 Ananke checks to see if the site is in "production" to add these two bits in, so you don't serve ads to yourself during development.
 
-And that's pretty much all the setup to do from the website side.  The rest is setup in Google AdSense, and waiting to get approved.  Approval (or, in this case, rejection) took about 2 days.  The reason for the rejection was not enough content, which is fair.  TODO: add reasons from google
+And that's pretty much all the setup to do from the website side.  The rest is setup in Google AdSense, and waiting to get approved.  Approval (or, in this case, rejection) took about 2 days.  The reason for the rejection was not enough content, which is fair.  Some quick research suggests that I need 30 pages of actual content.
 
 Anyways, for now I'll disable that script on the site, and move on with adding content.
