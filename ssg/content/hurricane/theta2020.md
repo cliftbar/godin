@@ -1,7 +1,7 @@
 ---
 title: "Theta 2020"
 date: 2021-09-08T18:21:16-07:00
-draft: true
+draft: false
 summary: Hurricane Theta 2020
 disable_share: true
 storm_name: theta

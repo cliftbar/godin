@@ -1,7 +1,7 @@
 ---
 title: "Wilfred 2020"
 date: 2021-09-08T17:59:38-07:00
-draft: true
+draft: false
 summary: Hurricane Wilfred 2020
 disable_share: true
 storm_name: wilfred

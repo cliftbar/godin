@@ -1,7 +1,7 @@
 ---
 title: "Arthur 2020"
 date: 2021-09-08T16:30:19-07:00
-draft: False
+draft: false
 summary: Hurricane Arthur 2020
 disable_share: true
 storm_name: arthur

@@ -46,7 +46,7 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
                 elif line.startswith("hurricane_timestamp:"):
                     line = f"hurricane_timestamp: {file_ts}\n"
                 if not draft and line.startswith("draft:"):
-                    line = f"draft: {draft}\n"
+                    line = f"draft: {str(draft).lower}\n"
 
                 lines_out.append(line)
 

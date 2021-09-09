@@ -1,7 +1,7 @@
 ---
 title: "Josephine 2020"
 date: 2021-09-08T16:55:34-07:00
-draft: true
+draft: false
 summary: Hurricane Josephine 2020
 disable_share: true
 storm_name: josephine

@@ -1,7 +1,7 @@
 ---
 title: "Alpha 2020"
 date: 2021-09-08T18:02:48-07:00
-draft: true
+draft: false
 summary: Hurricane Alpha 2020
 disable_share: true
 storm_name: alpha

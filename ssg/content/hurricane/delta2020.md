@@ -1,7 +1,7 @@
 ---
 title: "Delta 2020"
 date: 2021-09-08T18:07:13-07:00
-draft: true
+draft: false
 summary: Hurricane Delta 2020
 disable_share: true
 storm_name: delta

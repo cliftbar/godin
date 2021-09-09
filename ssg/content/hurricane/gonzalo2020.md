@@ -1,7 +1,7 @@
 ---
 title: "Gonzalo 2020"
 date: 2021-09-08T16:47:02-07:00
-draft: true
+draft: false
 summary: Hurricane Gonzalo 2020
 disable_share: true
 storm_name: gonzalo

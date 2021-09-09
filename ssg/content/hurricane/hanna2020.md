@@ -1,7 +1,7 @@
 ---
 title: "Hanna 2020"
 date: 2021-09-08T16:48:26-07:00
-draft: true
+draft: false
 summary: Hurricane Hanna 2020
 disable_share: true
 storm_name: hanna

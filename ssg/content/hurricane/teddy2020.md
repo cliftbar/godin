@@ -1,7 +1,7 @@
 ---
 title: "Teddy 2020"
 date: 2021-09-08T17:52:43-07:00
-draft: true
+draft: false
 summary: Hurricane Teddy 2020
 disable_share: true
 storm_name: teddy
