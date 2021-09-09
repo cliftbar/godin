@@ -19,8 +19,11 @@ googleAnalytics = "G-KWNZJ4607L"
 
 [params]
   description = "Tropical Cyclone Modeling"
-  mainSections = ["posts", "hurricane"]
+  mainSections = ["posts"]
   site_logo = "/img/godin_icon.png"
   favicon = "/img/godin_icon.png"
   env = "production"
   googleAdsense="ca-pub-2365307104378138"
+  recent_copy="Latest Articles"
+  recent_hurricane_number=6
+  recent_posts_number=3
