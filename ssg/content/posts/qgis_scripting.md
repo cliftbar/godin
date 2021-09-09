@@ -1,6 +1,6 @@
 ---
 title: "QGIS Scripting"
-date: 2021-09-010T02:00:00-00:00
+date: 2021-09-10T00:00:00+00:00
 draft: false
 disable_share: true
 ---
