@@ -7,6 +7,7 @@ disable_share: true
 storm_name: matthew
 storm_year: 2016
 cloud_filename_part: _100x100_2021-09-07T14:37:00+00:00
+interesting: true
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 

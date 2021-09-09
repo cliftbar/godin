@@ -7,6 +7,7 @@ disable_share: true
 storm_name: sandy
 storm_year: 2012
 cloud_filename_part: _100x100_20210831T1700-04
+interesting: true
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 

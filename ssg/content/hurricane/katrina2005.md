@@ -7,6 +7,7 @@ disable_share: true
 storm_name: "katrina"
 storm_year: 2005
 cloud_filename_part: _100x100_20210830T1900-04
+interesting: true
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 

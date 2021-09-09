@@ -12,21 +12,41 @@
         {{ end }}
         </section>
         {{- template "_internal/pagination.html" . -}}
-        <h1>Hurricanes by Year/Name</h1>
-        
-        {{ $years := slice }}
-        {{ range .Pages }}
-            {{ $years = $years | append .Params.storm_year }}
-        {{ end }}
-        {{ range sort (uniq $years) "" "desc"}}
-            <h3>{{ . }}</h3>
-            <ul>
-                {{ range ((((where site.Pages ".Params.storm_year" "==" .).ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
-                    <li>
-                        <a href="{{.Permalink}}">{{.Params.storm_name | title }}</a>
-                    </li>
-                {{ end }}
-            </ul>
-        {{ end }}
+    </article>
+    <article class="pa3 pa4-ns nested-copy-line-height nested-img cf">
+        <div class="fl tl w-50">
+            <h1>Notable Hurricanes</h1>
+            {{ $years := slice }}
+            {{ range (where site.Pages ".Params.interesting" "!=" nil) }}
+                {{ $years = $years | append .Params.storm_year }}
+            {{ end }}
+            {{ range sort (uniq $years) "" "desc"}}
+                <h3>{{ . }}</h3>
+                <ul>
+                    {{ range ((((where (where site.Pages ".Params.interesting" "!=" nil) ".Params.storm_year" "==" .).ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
+                        <li>
+                            <a href="{{.Permalink}}">{{.Params.storm_name | title }}</a>
+                        </li>
+                    {{ end }}
+                </ul>
+            {{ end }}
+        </div>
+        <div class="fl tl w-50">
+            <h1>Hurricanes by Year/Name</h1>
+            {{ $years := slice }}
+            {{ range .Pages }}
+                {{ $years = $years | append .Params.storm_year }}
+            {{ end }}
+            {{ range sort (uniq $years) "" "desc"}}
+                <h3>{{ . }}</h3>
+                <ul>
+                    {{ range ((((where site.Pages ".Params.storm_year" "==" .).ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
+                        <li>
+                            <a href="{{.Permalink}}">{{.Params.storm_name | title }}</a>
+                        </li>
+                    {{ end }}
+                </ul>
+            {{ end }}
+        </div>
     </article>
 {{ end }}

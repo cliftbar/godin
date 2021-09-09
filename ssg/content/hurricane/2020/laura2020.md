@@ -8,6 +8,7 @@ storm_name: laura
 storm_year: 2020
 resolution: 100
 hurricane_timestamp: 2021-09-08T235900+0000
+interesting: true
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 
