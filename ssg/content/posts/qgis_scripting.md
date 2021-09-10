@@ -5,7 +5,7 @@ draft: false
 disable_share: true
 ---
 
-Well, this was a hard one
+Well, this was a hard one.
 
 So, those nice maps on each Hurricane page, I made those in a fantastic open source program called [QGIS](https://www.qgis.org/en/site/). I've been using QGIS on and off for years, and it has consistently been up to the GIS tasks I throw at it.  When I had access to ArcGIS, I'd frequently use QGIS for things ArcGIS couldn't do easily (or that was behind a paid add-on), and when I drew the short straw and lost the ArcGIS seat no one else could tell the difference.  Anyways, enough of the fanboy advertising, but seriously, check it out.  Back to the main story: one of the nice things about QGIS is that it's written in Python (well, and lots of C with Python bindings) so, while a bit cumbersome, you can pretty much `import qgis` (referred to as PyQGIS) and script anything you'd like, which is what I did once I sorted out the process manually in the main program.  Because while I could do all the steps manually in about 5 minutes, who doesn't like automation.
 
