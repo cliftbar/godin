@@ -6,6 +6,7 @@ on:
       - main  # Set a branch to deploy
   schedule:
     - cron: '35 2 * * *'
+  workflow_dispatch:
 
 
   pull_request:
