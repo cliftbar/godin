@@ -40,7 +40,7 @@
             {{ range sort (uniq $years) "" "desc"}}
                 <h3>{{ . }}</h3>
                 <ul>
-                    {{ range ((((where site.Pages ".Params.storm_year" "==" .).ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
+                    {{ range ((((where site.Pages ".Params.storm_year" "==" . ).ByParam "storm_name").Reverse).ByParam "storm_year").Reverse }}
                         <li>
                             <a href="{{.Permalink}}">{{.Params.storm_name | title }}</a>
                         </li>

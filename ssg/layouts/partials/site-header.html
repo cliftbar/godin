@@ -1,8 +1,28 @@
-{{ $featured_image := .Param "featured_image"}}
-{{ if $featured_image }}
+
+<!-- {{ $featured_image := cond (isset .Params "featured_image") (first 1 (shuffle (where .RegularPages "Section" "in" "hurricane"))) (.Param "featured_image") }} -->
+{{ $featured_image := .Param "featured_image" }}
+<!-- '{{ $featured_image }}' knbkhb -->
+{{ if (eq $featured_image nil) }}
+  <!-- {{ $featured_image }} jvjgck -->
+  
+  <!-- {{ $featured_storm := index (first 1 (shuffle (where site.RegularPages "Section" "in" "hurricane"))) 0 }} -->
+  {{ $jpeg_storm := slice }}
+  {{ range (shuffle (where site.Pages "Section" "in" "hurricane")) }}
+    <!-- {{ (print (.Param "hurricane_timestamp") ".jpeg") }} -->
+    {{ if in .Content ".jpeg" }}
+      {{ $jpeg_storm = $jpeg_storm | append . }}
+    {{ end }}
+  {{ end }}
+  
+  {{ $featured_storm = index $jpeg_storm 0 }}
+  
+  {{ $featured_image = print "https://storage.googleapis.com/godin_hurricane_data/" ($featured_storm.Param "storm_name") ($featured_storm.Param "storm_year") "/latest/" ($featured_storm.Param "storm_name") ($featured_storm.Param "storm_year") "_" ($featured_storm.Param "resolution") "x" ($featured_storm.Param "resolution") "_" ($featured_storm.Param "hurricane_timestamp") ".jpeg" }}
+  <!-- {{ $featured_image }} -->
+{{ end }}
+{{ if and $featured_image .IsHome }}
   {{/* Trimming the slash and adding absURL make sure the image works no matter where our site lives */}}
   {{ $featured_image := (trim $featured_image "/") | absURL }}
-  <header class="cover bg-top" style="background-image: url('{{ $featured_image }}');">
+  <header class="contain bg-top" style="background-image: url('{{ $featured_image }}');">
     <div class="{{ .Site.Params.cover_dimming_class | default "bg-black-60" }}">
       {{ partial "site-navigation.html" .}}
       <div class="tc-l pv4 pv6-l ph3 ph4-ns">
