@@ -11,3 +11,5 @@ __pycache__
 godin
 !*/.keep
 data/*
+
+ssg/resources/_gen/*
