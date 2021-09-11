@@ -13,3 +13,4 @@ godin
 data/*
 
 ssg/resources/_gen/*
+*.exe

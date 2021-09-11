@@ -35,13 +35,13 @@ func main(){
 	//gwaf := 0.9
 	// includeForecasts := false
 	flag.Usage = myUsage
-	includeForecasts := flag.Bool("include_forecasts", false, "whether to include forecast track points in the model run")
+	includeForecasts := flag.Bool("include_forecasts", true, "whether to include forecast track points in the model run")
 	pixPerDegree := flag.Int("res", 100, "resolution of the output raster in pixels per degree")
 	rMaxDefaultNmi := flag.Float64("default_rmax", 15.0, "radius of max wind to use when not provided by track data")
 	maxCalcDistNmi := flag.Float64("max_calc_dist", 360.0, "maximum calculation distance from center of storm")
 	gwaf := flag.Float64("gwaf", 0.9, "Gradient Wind Reduction Factor")
 	flag.Parse()
-
+	println(*includeForecasts)
 	var stormID string
 	if 0 < len(flag.Args()) {
 		stormID = flag.Arg(0)

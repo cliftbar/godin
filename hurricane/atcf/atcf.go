@@ -87,6 +87,8 @@ func FetchATCFForecastTrack(stormID string) (track []hurricane.TrackPoint) {
 
 func FetchAtcfEvent(stormID string, rMaxNmi float64, gwaf float64, includeForecasts bool) hurricane.EventInformation {
 	stormYear, _ := strconv.Atoi(stormID[4:])
+	println("blah")
+	println(stormID)
 	btrackData := FetchATCFBDeckData(stormID)
 	btrackPoints := AtcfParser(btrackData, rMaxNmi)
 	entireTrackPointsUnfiltered := btrackPoints
