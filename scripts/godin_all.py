@@ -11,7 +11,6 @@ from event_uploader import upload_event
 
 
 def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -> str:
-    print(["./godin", "-res", str(resolution), "-include_forecasts", str(include_forecasts), storm_id])
     model_proc: CompletedProcess[Any] = subprocess.run(["./godin", "-res", str(resolution), storm_id], stdout=subprocess.PIPE)
     model_proc.check_returncode()
     model_proc_out: str = str(model_proc.stdout, "utf-8")
@@ -59,7 +58,7 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
 def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = False, ssg_draft: bool = True) -> str:
     year: int = int(storm_id[-4:])
 
-#     name: str = run_model(storm_id, resolution, include_forecasts)
+    name: str = run_model(storm_id, resolution, include_forecasts)
     sleep(1)
 
     hurricane_base: str = f"{name.upper()}_{year}_{resolution}x{resolution}"

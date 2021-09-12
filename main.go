@@ -41,7 +41,7 @@ func main(){
 	maxCalcDistNmi := flag.Float64("max_calc_dist", 360.0, "maximum calculation distance from center of storm")
 	gwaf := flag.Float64("gwaf", 0.9, "Gradient Wind Reduction Factor")
 	flag.Parse()
-	println(*includeForecasts)
+
 	var stormID string
 	if 0 < len(flag.Args()) {
 		stormID = flag.Arg(0)

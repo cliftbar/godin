@@ -1,8 +1,8 @@
-import gc
 import os
 
 from typing import List
 from datetime import datetime, timezone
+from pathlib import Path
 
 from qgis.core import (
     QgsApplication,
@@ -39,8 +39,8 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     # qgis_install_path: str = "/Applications/QGIS.app/Contents/MacOS"  # This is for pycharm run
     qgis_install_path = None
 
-    project_path: str = f"{os.getcwd()}/qgis/godin.qgs"
-    style_base_path: str = f"{os.getcwd()}/qgis"
+    project_path: Path = Path(f"{os.getcwd()}/qgis/godin.qgs")
+    style_base_path: Path = Path(f"{os.getcwd()}/qgis")
 
     # Set up hurricane variables
     hurricane_raster: str = f"{hurricane_file_base}.png"
@@ -66,7 +66,7 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
 
     # Open project
     project_instance: QgsProject = QgsProject.instance()
-    project_instance.setFileName(project_path)
+    project_instance.setFileName(str(project_path))
     project_instance.read()
 
     # Set up CRS objects for project
@@ -77,20 +77,20 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     # Create raster and track layers
     new_raster_layer: QgsRasterLayer = QgsRasterLayer(f"{data_path}/{hurricane_raster}", raster_layer_name)
     new_raster_layer.setCrs(wgs84)
-    new_raster_layer.loadNamedStyle(f"{style_base_path}/hurricane_cat_raster.qml")
+    new_raster_layer.loadNamedStyle(str(style_base_path / Path("hurricane_cat_raster.qml")))
     if not new_raster_layer.isValid():
         print(f"Raster Layer error: {new_raster_layer.error()}")
         exit(2)
 
     new_delim_layer: QgsVectorLayer = QgsVectorLayer(
-        f"file://{data_path}/{hurricane_track}?delimiter=,&xField=lonX&yField=latY",
+        f"file:///{data_path / Path(hurricane_track)}?delimiter=,&xField=lonX&yField=latY",
         track_layer_name,
         "delimitedtext")
     new_delim_layer.setCrs(wgs84)
-    new_delim_layer.loadNamedStyle(f"{style_base_path}/hurricane_track.qml")
+    new_delim_layer.loadNamedStyle(str(style_base_path / Path("hurricane_track.qml")))
     if not new_delim_layer.isValid():
-        print(f"Delim Layer error: {new_delim_layer.error()}")
-        exit(2)
+        print(f"Delim Layer error: {new_delim_layer.error().messageList()}")
+        exit(3)
 
     # Add layers to project
     project_instance.addMapLayer(new_raster_layer)
@@ -145,10 +145,11 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     ts: datetime = datetime.utcnow().replace(tzinfo=timezone.utc)
     ts = ts.replace(microsecond=0, second=0)
 
-    export_filename: str = \
+    export_filename: Path = Path(
         f"{data_path}/{hurricane_name.lower()}{hurricane_year}_{hurricane_resolution}_{ts.isoformat().replace(':', '')}.jpeg"
+    )
     exporter.exportToImage(
-        export_filename,
+        str(export_filename),
         img_settings
     )
 
@@ -161,9 +162,9 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     qgis_app.exit()
     # print("finished")
     # print(export_filename)
-    return export_filename
+    return str(export_filename)
 
 
 if __name__ == "__main__":
-    hurricane_base: str = "MATTHEW_2016_100x100"
+    hurricane_base: str = "LARRY_2021_100x100"
     export_qgis_layout_png(hurricane_base)

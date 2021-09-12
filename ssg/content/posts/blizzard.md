@@ -5,7 +5,7 @@ draft: true
 ---
 Why not both?
 
-So I wasn't going to run Larry until the end of the season when I (re)run everything for the year, as it was supposed to just hang out in the Atlantic making waves for the benefit of various sea creatures.  But, its decided to turn from a Tropical Cyclone to an Extratropical System, and respec from water damage to snow damage.  It's a bold move, so I'm setting up a [model run]({{< ref "/hurricane/_index.md" >}}) of it, because respect.  Currently its slated to bring 3-5 feet of snow and a bunch of wind to Greenland.
+So I wasn't going to run Larry until the end of the season when I (re)run everything for the year, as it was supposed to just hang out in the Atlantic making waves for the benefit of various sea creatures.  But, its decided to turn from a Tropical Cyclone to an Extratropical System, and respec from water damage to snow damage.  It's a bold move, so I'm setting up a [model run]({{< ref "/hurricane/2021/larry2021.md" >}}) of it, because respect.  Currently its slated to bring 3-5 feet of snow and a bunch of wind to Greenland.
 
 Here's some links to the situation
 - https://gizmodo.com/hurricane-larry-thinks-its-a-blizzard-1847653710
