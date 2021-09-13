@@ -30,12 +30,25 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
         current_env["HUGO_HURRICANE_RES"] = str(res)
         current_env["HUGO_HURRICANE_TS"] = file_ts
         hugo_proc: CompletedProcess[Any] = subprocess.run(
-            ["hugo", "new", f"hurricane/{storm_name.lower()}{storm_year}.md"],
+            ["hugo", "new", f"hurricane/{storm_year}/{storm_name.lower()}{storm_year}.md"],
             cwd=f"{os.getcwd()}/ssg",
             stdout=subprocess.PIPE
         )
         hugo_proc.check_returncode()
         # print("Hugo post created")
+
+        if not draft:
+            lines_out: List[str] = []
+            with post_path.open("r") as p:
+                post_text: List[str] = p.readlines()
+                for line in post_text:
+                    if not draft and line.startswith("draft:"):
+                        line = f"draft: {str(draft).lower}\n"
+
+                    lines_out.append(line)
+
+            with post_path.open("w") as p:
+                p.writelines(lines_out)
     else:
         lines_out: List[str] = []
         with post_path.open("r") as p:

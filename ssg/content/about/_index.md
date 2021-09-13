@@ -21,7 +21,7 @@ Model:
 - Model code written in Golang (Python and Scala version also exist)
 - The code is an implementation of the [NOAA NWS 23 Model](https://repository.library.noaa.gov/view/noaa/6948)
 - Land Friction is currently not considered
-- High resolution model runs (100 pixels per degree) take ~3min singlethreaded
+- High resolution model runs (100 pixels per degree) take ~3min single-threaded
 
 Other
 - Maps generated using QGIS/PyQGIS
