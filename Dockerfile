@@ -3,24 +3,25 @@ FROM ubuntu:latest
 WORKDIR /odin
 
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-ENV HUGO_ID=hugo${HUGO_TYPE}_${HUGO_VERSION}
-RUN wget https://github.com`wget -qO- https://github.com/gohugoio/hugo/releases/latest | grep -oE -m 1 '\/gohugoio\/hugo\/releases\/download\/v[0-9]+.[0-9]+.[0-9]*\/hugo_[0-9]+.[0-9]+.[0-9]*_Linux-64bit.deb'` | tar -xz -C /tmp \
-    && mkdir -p /usr/local/sbin \
-    && mv /tmp/hugo /usr/local/sbin/hugo \
-    && rm -rf /tmp/${HUGO_ID}_linux_amd64 \
-    && rm -rf /tmp/LICENSE.md \
-    && rm -rf /tmp/README.md
+ENV HUGO_VERSION='0.88.1'
+ENV HUGO_NAME="hugo_extended_${HUGO_VERSION}_Linux-64bit"
+ENV HUGO_URL="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO_NAME}.deb"
+ENV BUILD_DEPS="wget"
 
-# install in batch (silent) mode, does not edit PATH or .bashrc or .bash_profile
-# -p path
-# -f force
+RUN apt-get update && \
+    apt-get install -y git "${BUILD_DEPS}" && \
+    wget "${HUGO_URL}" && \
+    apt-get install "./${HUGO_NAME}.deb" && \
+    rm -rf "./${HUGO_NAME}.deb" "${HUGO_NAME}" && \
+    apt-get remove -y "${BUILD_DEPS}" && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b
     && rm Miniconda3-latest-Linux-x86_64.sh
 
 ENV PATH=/root/miniconda3/bin:${PATH}
-
-#RUN source /root/.bashrc
-#RUN source /root/.bash_profile
 
 RUN conda update -y conda
 
@@ -31,5 +32,4 @@ RUN conda env create --file requirements/conda.yml
 
 COPY . .
 
-# start the jupyter notebook in server mode
 CMD python scripts/
