@@ -41,7 +41,6 @@ def list_blobs_with_prefix(bucket_name, prefix, delimiter=None):
 
     blobs = [x for x in blobs]
 
-
     return blobs
 
 

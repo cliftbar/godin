@@ -9,8 +9,10 @@ __pycache__
 #*.ini
 .DS_Store
 godin
-!*/.keep
 data/*
-
+bin/*
 ssg/resources/_gen/*
 *.exe
+
+# keep at the end
+!*.keep
