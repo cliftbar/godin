@@ -11,12 +11,14 @@ from event_uploader import upload_event
 
 
 def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -> str:
-    model_proc: CompletedProcess[Any] = subprocess.run(["./godin", "-res", str(resolution), storm_id], stdout=subprocess.PIPE)
+    godin_binary: Path = Path("bin", "godin")
+    model_proc: CompletedProcess[Any] = subprocess.run([str(godin_binary), "-res", str(resolution), storm_id],
+                                                       stdout=subprocess.PIPE)
     model_proc.check_returncode()
     model_proc_out: str = str(model_proc.stdout, "utf-8")
     # print(model_proc_out)
     output_lines: List[str] = model_proc_out.splitlines()
-    storm_name: str = [l for l in output_lines if l.startswith("Name:")][0].split(":")[1].strip()
+    storm_name: str = [li for li in output_lines if li.startswith("Name:")][0].split(":")[1].strip()
 
     # print(f"model run for {storm_name} finished")
     return storm_name
@@ -93,7 +95,7 @@ def godin_year():
     storm_count: int = 31
 
     resolution: int = 100
-    for i in range(1, storm_count+1):
+    for i in range(1, storm_count + 1):
         storm: str = f"al{i:02d}{year}"
 
         godin_storm(storm, resolution, False)
@@ -102,8 +104,14 @@ def godin_year():
         sleep(1)
 
 
-if __name__ == "__main__":
-#     storm: str = "al022020"
+def main():
+    #     storm: str = "al022020"
     storm: str = "al122021"
     godin_storm(storm, 100, True)
+
+
 #     godin_year()
+
+
+if __name__ == "__main__":
+    main()
