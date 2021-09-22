@@ -16,3 +16,4 @@ ssg/resources/_gen/*
 
 # keep at the end
 !*.keep
+*.env

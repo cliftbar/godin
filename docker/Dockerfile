@@ -54,6 +54,6 @@ ENV CONDA_DEFAULT_ENV=odin
 RUN conda init bash \
   && echo 'conda activate odin' >> ~/.bashrc
 
-RUN python builder.py
+RUN python requirements/builder.py
 
-CMD xvfb-run --server-args=":1 -screen 0 2560x1440x24" export DISPLAY=:1 && python scripts/godin_all.py
+CMD xvfb-run --server-args=":1 -screen 0 1920x1080x24" export DISPLAY=:1 && python scripts/godin_all.py
