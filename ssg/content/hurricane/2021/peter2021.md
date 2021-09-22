@@ -1,13 +1,13 @@
 ---
 title: "Peter 2021"
 date: 2021-09-22T06:14:16Z
-draft: <built-in method lower of str object at 0x7fbcb40e8870>
+draft: false
 summary: Hurricane Peter 2021
 disable_share: true
 storm_name: peter
 storm_year: 2021
 resolution: 10
-hurricane_timestamp: 2021-09-22T061800+0000
+hurricane_timestamp: 2021-09-22T071900+0000
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 
