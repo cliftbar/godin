@@ -7,7 +7,7 @@ disable_share: true
 storm_name: peter
 storm_year: 2021
 resolution: 10
-hurricane_timestamp: 2021-09-22T071900+0000
+hurricane_timestamp: 2021-09-22T072100+0000
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
 
