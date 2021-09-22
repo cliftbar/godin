@@ -15,7 +15,7 @@ import (
 )
 
 const mphToKts = 0.868976
-var publicAdvRegex = regexp.MustCompile(`Tropical Storm (.*) Public Advisory Number (.*)`)
+var publicAdvRegex = regexp.MustCompile(`Tropical (?:Storm|Depression) (.*) Public Advisory Number (.*)`)
 var publicAdvRegexOfDoom = regexp.MustCompile(`(?s).*(AL[0-9][0-9][0-9][0-9][0-9][0-9])\n(.*)\n.\n.*\n.\n.*SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)(?:\n[[:blank:]]\n[[:blank:]]\n).*(?:\n[[:blank:]]\n[[:blank:]]\n).*`)
 var graphicsRegex = regexp.MustCompile(`Tropical Storm (.*) Graphics`)
 
@@ -211,13 +211,16 @@ func saveToDB(info StormFeedInfo) {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	collectionName := "advisories"
-	docId := fmt.Sprintf("%s_%d", info.StormID, info.Timestamp.UTC().Unix())
+	docId := fmt.Sprintf("%s_%d", info.StormID, info.AdvNumber)
 
-	_, err = client.Collection(collectionName).Doc(docId).Set(ctx, info)
+	_, err = client.Collection("storms").Doc(info.StormID).Collection("adv").Doc(strconv.Itoa(info.AdvNumber)).Create(ctx, info)
+	if err != nil {
+		log.Printf("Doc error: %v", err)
+	}
+	_, err = client.Collection("pending").Doc(docId).Create(ctx, info)
 
 	if err != nil {
-		log.Fatalf("Doc error: %v", err)
+		log.Printf("Doc error: %v", err)
 	}
 	_ = client.Close()
 }

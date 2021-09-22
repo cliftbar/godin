@@ -3,15 +3,18 @@ import subprocess
 
 from subprocess import CompletedProcess
 from time import sleep
-from typing import Any, List
+from typing import Any, List, Generator, Dict
 from pathlib import Path
+
+from google.cloud import firestore
+from google.cloud.firestore_v1 import Client, DocumentSnapshot
 
 import qgis_layout_exporter
 from event_uploader import upload_event
 
 
 def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -> str:
-    godin_binary: Path = Path("bin", "godin")
+    godin_binary: Path = Path(".", "bin", "godin")
     model_proc: CompletedProcess[Any] = subprocess.run([str(godin_binary), "-res", str(resolution), storm_id],
                                                        stdout=subprocess.PIPE)
     model_proc.check_returncode()
@@ -71,6 +74,7 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
 
 
 def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = False, ssg_draft: bool = True) -> str:
+    print(f"running {storm_id}")
     year: int = int(storm_id[-4:])
 
     name: str = run_model(storm_id, resolution, include_forecasts)
@@ -104,12 +108,21 @@ def godin_year():
         sleep(1)
 
 
+def cloud_run():
+    db: Client = firestore.Client(project="godin-324403")
+    pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
+    for storm in pending_storms:
+        storm_dict: Dict = storm.to_dict()
+        godin_storm(storm_dict["StormID"], 100, include_forecasts=True, ssg_draft=True)
+
+
 def main():
     # storm: str = "al022020"
     # storm: str = "al122021"
-    storm: str = "al172021"
-    godin_storm(storm, 100, True)
+    # storm: str = "al172021"
+    # godin_storm(storm, 100, True)
     # godin_year()
+    cloud_run()
 
 
 if __name__ == "__main__":
