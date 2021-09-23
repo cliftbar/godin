@@ -5,7 +5,8 @@ steps:
   - name: 'gcr.io/godin-324403/stormbuilder'
     env:
       - "GOOGLE_APPLICATION_CREDENTIALS=/workspace/godin-cloud-build-sa.json"
-    secretEnv: [ 'GHT' ]
+    secretEnv:
+      - 'GHT'
   availableSecrets:
     secretManager:
       - versionName: projects/365553078633/secrets/github-token/version/latest
