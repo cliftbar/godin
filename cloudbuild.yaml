@@ -27,13 +27,7 @@ steps:
 #    - versionName: projects/365553078633/secrets/github-token/versions/latest
 #      env: 'GHT'
 - name: 'docker'
-  args:
-    - run
-    - "-e"
-    - GHT=$$GHT
-    - "-v"
-    - "/workspace/gcp-credentials.json:/workspace/gcp-credentials.json"
-    - gcr.io/godin-324403/stormbuilder
+  args: ["run", "-e", "GHT=$$GHT", "-v", "/workspace/gcp-credentials.json:/workspace/gcp-credentials.json", "gcr.io/godin-324403/stormbuilder"]
   env:
     - 'GOOGLE_APPLICATION_CREDENTIALS=/workspace/gcp-credentials.json'
   secretEnv: [ 'GHT' ]
