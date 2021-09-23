@@ -115,7 +115,7 @@ def cloud_run():
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
         godin_storm(storm_dict["StormID"], 100, include_forecasts=True, ssg_draft=False)
-        # db.collection("pending").document(storm.id).delete()
+        db.collection("pending").document(storm.id).delete()
     git_push([s.to_dict()["Name"] for s in pending_storms])
 
 
