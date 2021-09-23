@@ -9,5 +9,5 @@ steps:
     - 'GHT'
 availableSecrets:
   secretManager:
-  - versionName: projects/365553078633/secrets/github-token/version/latest
+  - versionName: projects/godin-324403/secrets/github-token/version/latest
     env: 'GHT'
