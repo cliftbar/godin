@@ -166,6 +166,10 @@ def git_push(storms: List[str]):
     proc = subprocess.run(["git", "push", "--set-upstream", "origin", "main"], stdout=subprocess.PIPE)
     # proc = subprocess.run(["git", "push", "origin"], stdout=subprocess.PIPE)
     print(str(proc.stdout, "utf-8"))
+    proc = subprocess.run(["git", "push", "origin"], stdout=subprocess.PIPE)
+    print(str(proc.stdout, "utf-8"))
+    proc = subprocess.run(["git", "st"], stdout=subprocess.PIPE)
+    print(str(proc.stdout, "utf-8"))
 
 
 def main():
