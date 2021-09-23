@@ -10,9 +10,9 @@ steps:
     - 'export'
     - 'DISPLAY=:1'
     - '&&'
-#    - 'export'
-#    - 'GHT=$$GHT'
-#    - '&&'
+    - 'export'
+    - 'GHT=$$GHT'
+    - '&&'
     - 'python'
     - 'scripts/godin_all.py'
 #    - "ls"
