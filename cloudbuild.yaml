@@ -1,13 +1,13 @@
 steps:
-  - name: gcr.io/cloud-builders/gsutil
-    args: [ 'cp', 'gs://godin-bin/security/godin-cloud-build-sa.json', 'godin-cloud-build-sa.json' ]
-  # Build image and push to GCR
-  - name: 'gcr.io/godin-324403/stormbuilder'
-    env:
-      - "GOOGLE_APPLICATION_CREDENTIALS=/workspace/godin-cloud-build-sa.json"
-    secretEnv:
-      - 'GHT'
-  availableSecrets:
-    secretManager:
-      - versionName: projects/365553078633/secrets/github-token/version/latest
-        env: 'GHT'
+- name: gcr.io/cloud-builders/gsutil
+  args: [ 'cp', 'gs://godin-bin/security/godin-cloud-build-sa.json', 'godin-cloud-build-sa.json' ]
+# Build image and push to GCR
+- name: 'gcr.io/godin-324403/stormbuilder'
+  env:
+    - 'GOOGLE_APPLICATION_CREDENTIALS=/workspace/godin-cloud-build-sa.json'
+  secretEnv:
+    - 'GHT'
+availableSecrets:
+  secretManager:
+  - versionName: projects/365553078633/secrets/github-token/version/latest
+    env: 'GHT'
