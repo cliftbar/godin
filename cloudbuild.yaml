@@ -30,7 +30,7 @@ steps:
   args:
     - run
     - "-e"
-    - "GHT=$$GHT"
+    - "GHT=$GHT"
     - "-v"
     - "/workspace/gcp-credentials.json:/workspace/gcp-credentials.json"
     - gcr.io/godin-324403/stormbuilder
