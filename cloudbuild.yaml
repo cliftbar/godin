@@ -5,8 +5,18 @@ steps:
 - name: 'gcr.io/godin-324403/stormbuilder:latest'
   args:
 #    - 'export GHT=$$GHT && xvfb-run --server-args=":1 -screen 0 1920x1080x24" export DISPLAY=:1 && python scripts/godin_all.py'
-    - "ls"
-    - "scripts"
+    - 'export'
+    - 'GHT=$$GHT'
+    - '&&'
+    - 'xvfb-run'
+    - '--server-args=":1 -screen 0 1920x1080x24"'
+    - 'export'
+    - 'DISPLAY=:1'
+    - '&&'
+    - 'python'
+    - 'scripts/godin_all.py'
+#    - "ls"
+#    - "scripts"
   env:
     - 'GOOGLE_APPLICATION_CREDENTIALS=/workspace/gcp-credentials.json'
   secretEnv:
