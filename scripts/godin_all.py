@@ -15,7 +15,7 @@ from event_uploader import upload_event
 
 def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -> str:
     godin_binary: Path = Path(".", "bin", "godin")
-    model_proc: CompletedProcess[Any] = subprocess.run([str(godin_binary), "-res", str(resolution), storm_id],
+    model_proc: CompletedProcess[Any] = subprocess.run(["./"+str(godin_binary), "-res", str(resolution), storm_id],
                                                        stdout=subprocess.PIPE)
     model_proc.check_returncode()
     model_proc_out: str = str(model_proc.stdout, "utf-8")
@@ -115,7 +115,7 @@ def cloud_run():
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
         godin_storm(storm_dict["StormID"], 100, include_forecasts=True, ssg_draft=False)
-        db.collection("pending").document(storm.id).delete()
+        # db.collection("pending").document(storm.id).delete()
     git_push([s.to_dict()["Name"] for s in pending_storms])
 
 
