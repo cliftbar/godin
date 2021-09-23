@@ -56,3 +56,4 @@ availableSecrets:
   secretManager:
     - versionName: projects/365553078633/secrets/github-token/versions/latest
       env: 'GHT'
+timeout: 1200s
