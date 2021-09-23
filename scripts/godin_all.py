@@ -134,6 +134,7 @@ def git_setup():
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
+    print(os.getenv('GHT'))
     proc = subprocess.run(["git", "remote", "add", "origin", f"https://cliftbar:{os.getenv('GHT')}@github.com/cliftbar/godin.git"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
 
