@@ -114,7 +114,7 @@ def cloud_run():
     pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
-        godin_storm(storm_dict["StormID"], 100, include_forecasts=True, ssg_draft=False)
+        godin_storm(storm_dict["StormID"], 10, include_forecasts=True, ssg_draft=False)
         db.collection("pending").document(storm.id).delete()
     git_push([s.to_dict()["Name"] for s in pending_storms])
 
