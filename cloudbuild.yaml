@@ -31,6 +31,8 @@ steps:
     - run
     - "-e"
     - "GHT=$$GHT"
+    - "-v"
+    - "$$GOOGLE_APPLICATION_CREDENTIALS:/workspace/gcp-credentials.json
     - gcr.io/godin-324403/stormbuilder
     #    - 'xvfb-run --server-args=":1 -screen 0 1920x1080x24" export GHT=$$GHT && export DISPLAY=:1 && python scripts/godin_all.py'
 #    - 'xvfb-run'
