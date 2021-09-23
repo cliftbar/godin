@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-WORKDIR /odin
+WORKDIR /workspace
 
 ENV HUGO_VERSION='0.88.1'
 ENV HUGO_NAME="hugo_extended_${HUGO_VERSION}_Linux-64bit"
@@ -41,14 +41,14 @@ RUN bash Miniconda3-latest-Linux-x86_64.sh -b \
 
 RUN conda update -y conda
 
-COPY ../requirements ./requirements
+COPY requirements ./requirements
 
 RUN conda env create --file requirements/conda.yml \
     && conda clean --all --yes --quiet
 
 SHELL ["conda", "run", "-n", "odin", "/bin/bash", "-c"]
 
-COPY . .
+COPY docker .
 
 ENV CONDA_DEFAULT_ENV=odin
 RUN conda init bash \
