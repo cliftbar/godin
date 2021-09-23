@@ -1,42 +1,14 @@
 steps:
 - name: gcr.io/cloud-builders/gsutil
   args: [ 'cp', 'gs://godin-bin/security/godin-cloud-build-sa.json', 'gcp-credentials.json' ]
-# Build image and push to GCR
-#- name: 'gcr.io/godin-324403/stormbuilder:latest'
-#  args:
-##    - 'xvfb-run --server-args=":1 -screen 0 1920x1080x24" export GHT=$$GHT && export DISPLAY=:1 && python scripts/godin_all.py'
-#    - 'xvfb-run'
-#    - '--server-args=":1 -screen 0 1920x1080x24"'
-#    - 'export GHT=$$GHT && export DISPLAY=:1 && python scripts/godin_all.py'
-##    - 'export'
-##    - 'DISPLAY=:1'
-##    - '&&'
-##    - 'export'
-##    - 'GHT=$$GHT'
-##    - '&&'
-##    - 'python'
-##    - 'scripts/godin_all.py'
-##    - "ls"
-##    - "scripts"
-#  env:
-#    - 'GOOGLE_APPLICATION_CREDENTIALS=/workspace/gcp-credentials.json'
-#  secretEnv:
-#    - 'GHT'
-#  availableSecrets:
-#    secretManager:
-#    - versionName: projects/365553078633/secrets/github-token/versions/latest
-#      env: 'GHT'
-#- name: 'docker'
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: "sh"
-#  args: ["-c", "run", "-e", "GHT=$$GHT", "-v", "/workspace/gcp-credentials.json:/workspace/gcp-credentials.json", "gcr.io/godin-324403/stormbuilder"]
   args: ["-c", "docker run -e GHT=$$GHT -v /workspace/gcp-credentials.json:/workspace/gcp-credentials.json gcr.io/godin-324403/stormbuilder"]
   env:
     - 'GOOGLE_APPLICATION_CREDENTIALS=/workspace/gcp-credentials.json'
   secretEnv: [ 'GHT' ]
 availableSecrets:
   secretManager:
-#    - versionName: projects/365553078633/secrets/github-token/versions/latest
     - versionName: projects/godin-324403/secrets/github-token/versions/latest
       env: 'GHT'
 timeout: 1200s

@@ -114,7 +114,7 @@ def cloud_run():
     pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
-        godin_storm(storm_dict["StormID"], 10, include_forecasts=True, ssg_draft=False)
+        godin_storm(storm_dict["StormID"], 100, include_forecasts=True, ssg_draft=False)
         db.collection("pending").document(storm.id).delete()
     git_push([s.to_dict()["Name"] for s in pending_storms])
 
@@ -134,7 +134,6 @@ def git_setup():
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
-    print(os.getenv('GHT'))
     proc = subprocess.run(["git", "remote", "add", "origin", f"https://cliftbar:{os.getenv('GHT')}@github.com/cliftbar/godin.git"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
 
@@ -152,12 +151,6 @@ def git_push(storms: List[str]):
     print("git push")
     proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
-
-    # proc = subprocess.run(["git", "checkout", "-b", "test"], stdout=subprocess.PIPE)
-    # print(str(proc.stdout, "utf-8"))
-    # proc = subprocess.run(["git", "checkout", "main"], stdout=subprocess.PIPE)
-    # print(str(proc.stdout, "utf-8"))
-
     proc = subprocess.run(["git", "add", "ssg/content/*"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -165,9 +158,6 @@ def git_push(storms: List[str]):
     proc = subprocess.run(["git", "commit", "-m", f'"auto build of {", ".join(storms)}"'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "push", "--set-upstream", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    # proc = subprocess.run(["git", "push", "origin"], stdout=subprocess.PIPE)
-    print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "push", "origin"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
