@@ -16,7 +16,7 @@ ENV PATH=/root/miniconda3/bin:${PATH}
 ENV PATH /opt/conda/bin:$PATH
 
 ENV QT_QPA_PLATFORM=webgl
-ENV GOOGLE_APPLICATION_CREDENTIALS=/odin/gcp-credentials.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/workspace/gcp-credentials.json
 ENV DISPLAY=:1
 
 RUN apt update \
