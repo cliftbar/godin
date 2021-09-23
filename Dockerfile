@@ -56,4 +56,6 @@ RUN conda init bash \
 
 RUN python requirements/builder.py
 
+COPY . .
+
 CMD xvfb-run --server-args=":1 -screen 0 1920x1080x24" export DISPLAY=:1 && python scripts/godin_all.py
