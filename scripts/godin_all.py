@@ -27,7 +27,7 @@ def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -
     return storm_name
 
 
-def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, draft: bool = True):
+def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, draft: bool = True, ssg_data: Dict = None):
     post_path: Path = Path(f"ssg/content/hurricane/{storm_year}/{storm_name.lower()}{storm_year}.md")
 
     if not post_path.exists():
@@ -73,7 +73,7 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
         # print("Hugo post updated")
 
 
-def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = False, ssg_draft: bool = True) -> str:
+def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = False, ssg_draft: bool = True, ssg_data: Dict = None) -> str:
     print(f"running {storm_id}")
     year: int = int(storm_id[-4:])
 
@@ -88,7 +88,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
 
     upload_event(hurricane_raster_path.name)
 
-    create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft)
+    create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
 
     # print("godin storm finished\n")
     return name
@@ -122,7 +122,7 @@ def cloud_run():
         else:
             run_dict[storm_id] = storm_dict
     for storm_id, storm in run_dict.items():
-        godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False)
+        godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm)
 
     for storm in pending_storms:
         db.collection("pending").document(storm.id).delete()
