@@ -3,7 +3,7 @@ import subprocess
 
 from subprocess import CompletedProcess
 from time import sleep
-from typing import Any, List, Generator, Dict
+from typing import Any, List, Dict
 from pathlib import Path
 
 from google.cloud import firestore
@@ -115,7 +115,7 @@ def cloud_run():
     run_dict: Dict = {}
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
-        storm_id: str = storm_dict["AdvNumber"]
+        storm_id: str = storm_dict["StormID"]
         if storm_id in run_dict:
             if storm_dict["AdvNumber"] > run_dict[storm_id]["AdvNumber"]:
                 run_dict[storm_id] = storm_dict
