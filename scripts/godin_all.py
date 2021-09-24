@@ -112,9 +112,20 @@ def cloud_run():
     git_setup()
     db: Client = firestore.Client(project="godin-324403")
     pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
+    run_dict: Dict = {}
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
-        godin_storm(storm_dict["StormID"], 100, include_forecasts=True, ssg_draft=False)
+        storm_id: str = storm_dict["AdvNumber"]
+        if storm_id in run_dict:
+            if storm_dict["AdvNumber"] > run_dict[storm_id]["AdvNumber"]:
+                run_dict[storm_id] = storm_dict
+        else:
+            run_dict[storm_id] = storm_dict
+    for storm_id, storm in run_dict.items():
+        storm_dict: Dict = storm.to_dict()
+        godin_storm(storm_dict["StormID"], 10, include_forecasts=True, ssg_draft=False)
+
+    for storm in pending_storms:
         db.collection("pending").document(storm.id).delete()
     git_push([s.to_dict()["Name"] for s in pending_storms])
 
