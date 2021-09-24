@@ -122,8 +122,7 @@ def cloud_run():
         else:
             run_dict[storm_id] = storm_dict
     for storm_id, storm in run_dict.items():
-        storm_dict: Dict = storm.to_dict()
-        godin_storm(storm_dict["StormID"], 10, include_forecasts=True, ssg_draft=False)
+        godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False)
 
     for storm in pending_storms:
         db.collection("pending").document(storm.id).delete()
