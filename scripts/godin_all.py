@@ -52,7 +52,7 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
                 post_text: List[str] = p.readlines()
                 for line in post_text:
                     if not draft and line.startswith("draft:"):
-                        line = f"draft: {str(draft).lower}\n"
+                        line = f"draft: {str(draft).lower()}\n"
 
                     lines_out.append(line)
 
