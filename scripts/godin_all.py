@@ -104,7 +104,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     hurricane_raster_path: Path = Path(hurricane_raster)
     hurricane_raster_ts: str = hurricane_raster_path.stem.split("_")[-1]
 
-    # upload_event(hurricane_raster_path.name)
+    upload_event(hurricane_raster_path.name)
 
     create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
 
@@ -127,7 +127,7 @@ def godin_year():
 
 
 def cloud_run():
-    # git_setup()
+    git_setup()
     db: Client = firestore.Client(project="godin-324403")
     pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
     run_dict: Dict = {}
@@ -142,9 +142,9 @@ def cloud_run():
     for storm_id, storm in run_dict.items():
         godin_storm(storm["StormID"], 10, include_forecasts=True, ssg_draft=False, ssg_data=storm)
 
-    # for storm in pending_storms:
-    #     db.collection("pending").document(storm.id).delete()
-    # git_push([s.to_dict()["Name"] for s in pending_storms])
+    for storm in pending_storms:
+        db.collection("pending").document(storm.id).delete()
+    git_push([s.to_dict()["Name"] for s in pending_storms])
 
 
 def git_setup():
