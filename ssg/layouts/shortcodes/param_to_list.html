@@ -1,0 +1,5 @@
+{{ with .Page.Params.adv_sources }}
+    {{ range (split . ";") }}
+    <li><a href="{{.}}">{{.}}</a></li>
+    {{ end }}
+{{ end }}

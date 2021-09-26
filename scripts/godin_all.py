@@ -1,3 +1,4 @@
+import datetime
 import os
 import subprocess
 
@@ -34,6 +35,9 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
         current_env = os.environ
         current_env["HUGO_HURRICANE_RES"] = str(res)
         current_env["HUGO_HURRICANE_TS"] = file_ts
+        current_env["HUGO_HURRICANE_ADV_NUM"] = str(ssg_data["AdvNumber"])
+        current_env["HUGO_HURRICANE_DISCUSSION"] = ssg_data["Discussion"]
+        current_env["HUGO_HURRICANE_SOURCES"] = ";".join(ssg_data["Sources"])
         hugo_proc: CompletedProcess[Any] = subprocess.run(
             ["hugo", "new", f"hurricane/{storm_year}/{storm_name.lower()}{storm_year}.md"],
             cwd=f"{os.getcwd()}/ssg",
@@ -58,19 +62,33 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
         lines_out: List[str] = []
         with post_path.open("r") as p:
             post_text: List[str] = p.readlines()
+            lines_subbed: List[str] = []
             for line in post_text:
                 if line.startswith("resolution:"):
                     line = f"resolution: {res}\n"
                 elif line.startswith("hurricane_timestamp:"):
                     line = f"hurricane_timestamp: {file_ts}\n"
-                if not draft and line.startswith("draft:"):
+                elif line.startswith("adv_number:"):
+                    line = f"adv_number: {ssg_data['AdvNumber']}\n"
+                elif line.startswith("adv_sources:"):
+                    line = f"adv_sources: {';'.join(ssg_data['Sources'])}\n"
+                elif line.startswith("last_updated:"):
+                    line = f"last_updated: {datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0).isoformat()}\n"
+                elif line.startswith("draft:") and not draft:
                     line = f"draft: {str(draft).lower()}\n"
 
-                lines_out.append(line)
+                lines_subbed.append(line)
+
+            for line in lines_subbed:
+                if str.strip(line) == "## Official Advisory Discussion":
+                    lines_out.append(line)
+                    lines_out.append(ssg_data["Discussion"])
+                    break
+                else:
+                    lines_out.append(line)
 
         with post_path.open("w") as p:
             p.writelines(lines_out)
-        # print("Hugo post updated")
 
 
 def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = False, ssg_draft: bool = True, ssg_data: Dict = None) -> str:
@@ -86,7 +104,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     hurricane_raster_path: Path = Path(hurricane_raster)
     hurricane_raster_ts: str = hurricane_raster_path.stem.split("_")[-1]
 
-    upload_event(hurricane_raster_path.name)
+    # upload_event(hurricane_raster_path.name)
 
     create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
 
@@ -109,7 +127,7 @@ def godin_year():
 
 
 def cloud_run():
-    git_setup()
+    # git_setup()
     db: Client = firestore.Client(project="godin-324403")
     pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
     run_dict: Dict = {}
@@ -122,11 +140,11 @@ def cloud_run():
         else:
             run_dict[storm_id] = storm_dict
     for storm_id, storm in run_dict.items():
-        godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm)
+        godin_storm(storm["StormID"], 10, include_forecasts=True, ssg_draft=False, ssg_data=storm)
 
-    for storm in pending_storms:
-        db.collection("pending").document(storm.id).delete()
-    git_push([s.to_dict()["Name"] for s in pending_storms])
+    # for storm in pending_storms:
+    #     db.collection("pending").document(storm.id).delete()
+    # git_push([s.to_dict()["Name"] for s in pending_storms])
 
 
 def git_setup():
@@ -176,8 +194,9 @@ def git_push(storms: List[str]):
 def main():
     # storm: str = "al022020"
     # storm: str = "al122021"
-    # storm: str = "al172021"
-    # godin_storm(storm, 100, True)
+    # storm: str = "al172021":
+    # storm: str = "al182021"
+    # godin_storm(storm, 10, True)
     # godin_year()
     cloud_run()
 
