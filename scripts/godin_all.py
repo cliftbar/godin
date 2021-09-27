@@ -4,7 +4,6 @@ import subprocess
 import time
 
 from subprocess import CompletedProcess
-from time import sleep
 from typing import Any, List, Dict
 from pathlib import Path
 
@@ -100,7 +99,6 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     year: int = int(storm_id[-4:])
 
     name: str = run_model(storm_id, resolution, include_forecasts)
-    sleep(1)
 
     raster_start: float = time.time()
     hurricane_base: str = f"{name.upper()}_{year}_{resolution}x{resolution}"
@@ -134,7 +132,6 @@ def godin_year():
         godin_storm(storm, resolution, False)
 
         print(f"{storm} finished, {i} out of {storm_count} for year {year}")
-        sleep(1)
 
 
 def cloud_run():
