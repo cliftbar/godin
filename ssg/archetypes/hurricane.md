@@ -38,6 +38,6 @@ File List:
 - `{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}_{{<param hurricane_timestamp>}}.jpeg`
 
 {{ with (getenv "HUGO_HURRICANE_DISCUSSION") }}
-## Official Advisory Disucssion
+## Official Advisory Discussion
 {{.}}
 {{ end }}
