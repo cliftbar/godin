@@ -173,7 +173,7 @@ def git_setup():
     proc = subprocess.run(["git", "remote", "add", "origin", f"https://cliftbar:{os.getenv('GHT')}@github.com/cliftbar/godin.git"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
 
-    proc = subprocess.run(["git", "fetch", "--depth", "1" "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    proc = subprocess.run(["git", "fetch", "--depth", "1", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "reset", "--hard", "origin/main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
