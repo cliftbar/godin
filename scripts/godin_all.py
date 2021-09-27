@@ -4,7 +4,7 @@ import subprocess
 import time
 
 from subprocess import CompletedProcess
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Callable
 from pathlib import Path
 
 from google.cloud import firestore
@@ -135,9 +135,18 @@ def godin_year():
 
 
 def cloud_run():
+    cloud_run_start: float = time.time()
+
+    git_setup_start: float = time.time()
     git_setup()
+    print(f"git_setup completed: {time.time() - git_setup_start}s")
+
     db: Client = firestore.Client(project="godin-324403")
+
+    pending_storms_start: float = time.time()
     pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
+    print(f"pending_storms completed: {time.time() - pending_storms_start}s")
+
     run_dict: Dict = {}
     for storm in pending_storms:
         storm_dict: Dict = storm.to_dict()
@@ -147,12 +156,22 @@ def cloud_run():
                 run_dict[storm_id] = storm_dict
         else:
             run_dict[storm_id] = storm_dict
+
     for storm_id, storm in run_dict.items():
+        godin_storm_start: float = time.time()
         godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm)
+        print(f"godin_storm completed: {time.time() - godin_storm_start}s")
 
     for storm in pending_storms:
+        pending_delete_start: float = time.time()
         db.collection("pending").document(storm.id).delete()
+        print(f"pending_delete completed: {time.time() - pending_delete_start}s")
+
+    git_push_start: float = time.time()
     git_push([s.to_dict()["Name"] for s in pending_storms])
+    print(f"git_push_start completed: {time.time() - git_push_start}s")
+
+    print(f"cloud_run completed: {time.time() - cloud_run_start}s")
 
 
 def git_setup():
