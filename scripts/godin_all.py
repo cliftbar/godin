@@ -102,15 +102,22 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     name: str = run_model(storm_id, resolution, include_forecasts)
     sleep(1)
 
+    raster_start: float = time.time()
     hurricane_base: str = f"{name.upper()}_{year}_{resolution}x{resolution}"
     hurricane_raster: str = qgis_layout_exporter.export_qgis_layout_png(hurricane_base)
 
     hurricane_raster_path: Path = Path(hurricane_raster)
     hurricane_raster_ts: str = hurricane_raster_path.stem.split("_")[-1]
+    print(f"Raster completed: {time.time() - raster_start}s")
 
+    upload_start: time.time()
     upload_event(hurricane_raster_path.name)
+    print(f"Upload completed: {time.time() - upload_start}s")
 
+    ssg_start: time.time()
     create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
+    print(f"SSG completed: {time.time() - ssg_start}s")
+
 
     # print("godin storm finished\n")
     return name
@@ -169,24 +176,24 @@ def git_setup():
     proc = subprocess.run(["git", "remote", "add", "origin", f"https://cliftbar:{os.getenv('GHT')}@github.com/cliftbar/godin.git"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
 
-    proc = subprocess.run(["git", "fetch", "--all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    proc = subprocess.run(["git", "fetch", "--depth", "1" "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "reset", "--hard", "origin/main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "pull", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "submodule", "add", "https://github.com/theNewDynamic/gohugo-theme-ananke.git themes/ananke"], cwd="ssg/themes", stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # proc = subprocess.run(["git", "pull", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # print(str(proc.stdout, "utf-8"))
+    proc = subprocess.run(["git", "submodule", "add", "--depth", "1", "https://github.com/theNewDynamic/gohugo-theme-ananke.git themes/ananke"], cwd="ssg/themes", stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
 
 
 def git_push(storms: List[str]):
     print("git push")
-    proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
+    # proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "add", "ssg/content/*"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(str(proc.stdout, "utf-8"))
+    # proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "commit", "-m", f'"auto build of {", ".join(storms)}"'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "push", "--set-upstream", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
