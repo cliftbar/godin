@@ -1,6 +1,7 @@
 import datetime
 import os
 import subprocess
+import time
 
 from subprocess import CompletedProcess
 from time import sleep
@@ -16,11 +17,14 @@ from event_uploader import upload_event
 
 def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -> str:
     godin_binary: Path = Path(".", "bin", "godin")
+    start_time: float = time.time()
     model_proc: CompletedProcess[Any] = subprocess.run(["./"+str(godin_binary), "-res", str(resolution), storm_id],
                                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     model_proc.check_returncode()
+    end_time: float = time.time()
     model_proc_out: str = str(model_proc.stdout, "utf-8")
     # print(model_proc_out)
+    print(f"model {storm_id} took {end_time - start_time}s")
     output_lines: List[str] = model_proc_out.splitlines()
     storm_name: str = [li for li in output_lines if li.startswith("Name:")][0].split(":")[1].strip()
 
