@@ -196,8 +196,8 @@ def git_setup():
     print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "reset", "--hard", "origin/main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
-    # proc = subprocess.run(["git", "pull", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    # print(str(proc.stdout, "utf-8"))
+    proc = subprocess.run(["git", "pull", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "submodule", "add", "--depth", "1", "https://github.com/theNewDynamic/gohugo-theme-ananke.git themes/ananke"], cwd="ssg/themes", stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
 
