@@ -108,11 +108,11 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     hurricane_raster_ts: str = hurricane_raster_path.stem.split("_")[-1]
     print(f"Raster completed: {time.time() - raster_start}s")
 
-    upload_start: time.time()
+    upload_start: float= time.time()
     upload_event(hurricane_raster_path.name)
     print(f"Upload completed: {time.time() - upload_start}s")
 
-    ssg_start: time.time()
+    ssg_start: float = time.time()
     create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
     print(f"SSG completed: {time.time() - ssg_start}s")
 
