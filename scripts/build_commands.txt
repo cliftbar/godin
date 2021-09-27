@@ -1,0 +1,2 @@
+docker build -f Dockerfile -t gcr.io/godin-324403/stormbuilder .
+docker push gcr.io/godin-324403/stormbuilder
