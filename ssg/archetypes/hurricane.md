@@ -32,9 +32,9 @@ adv_sources: {{ getenv "HUGO_HURRICANE_SOURCES" }}
 [Download Zip](https://storage.googleapis.com/godin_hurricane_data/{{<param storm_name>}}{{<param storm_year>}}/latest/{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}_{{<param hurricane_timestamp>}}.zip)
 
 File List:
-- `{{<param storm_name>}}{{<param storm_year>}}_100x100.csv`
-- `{{<param storm_name>}}{{<param storm_year>}}_100x100.png`
-- `{{<param storm_name>}}{{<param storm_year>}}_100x100.wld`
+- `{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}.csv`
+- `{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}.png`
+- `{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}.wld`
 - `{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}_{{<param hurricane_timestamp>}}.jpeg`
 
 {{ with (getenv "HUGO_HURRICANE_DISCUSSION") }}
