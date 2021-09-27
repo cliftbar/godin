@@ -185,9 +185,11 @@ func inflowAngle(rNmi float64, rMaxNmi float64) (phi float64) {
 
 	if rNmi < rPhiMax {
 		// PERF lookup table for rMaxNmi up to 60
-		a := 11.438 * math.Pow(rMaxNmi, -1.416)
+		//a := 11.438 * math.Pow(rMaxNmi, -1.416)
+		//a := 11.438 * rMaxInflowFactor[int(rMaxNmi)] // Not Good! RMW goes rather higher than 40 for TDs
+		a := 11.438 * utilities.FastPow(rMaxNmi, -1.416) // error: +/- 10%, 4 min faster
+		//fmt.Printf("rMaxNmi: %f, a: %f, FastPow: %f, error: %f\n", rMaxNmi, a, fastA, (fastA - a) / a * 100)
 
-		// a := 11.438 * rMaxInflowFactor[int(rMaxNmi)]
 		b := (1.1453 * rMaxNmi) + 1.4536
 		phiMax := 9.7043566358 * math.Log(rMaxNmi) - 2.7295806727
 		phi = phiMax / (1 + math.Exp(-1 * a * (rNmi - b)))
@@ -217,15 +219,15 @@ func inflowAngle(rNmi float64, rMaxNmi float64) (phi float64) {
 // PERF precalculate tau zero and fspeed calculations
 var tauZeroFactor = math.Pow(1.0, 0.37) * 1.5
 var fSpeedFactor = map[int]float64{
-	1: math.Pow(1.0, 0.63),
-	2: math.Pow(2.0, 0.63),
-	3: math.Pow(3.0, 0.63),
-	4: math.Pow(4.0, 0.63),
-	5: math.Pow(5.0, 0.63),
-	6: math.Pow(6.0, 0.63),
-	7: math.Pow(7.0, 0.63),
-	8: math.Pow(8.0, 0.63),
-	9: math.Pow(9.0, 0.63),
+	 1: math.Pow( 1.0, 0.63),
+	 2: math.Pow( 2.0, 0.63),
+	 3: math.Pow( 3.0, 0.63),
+	 4: math.Pow( 4.0, 0.63),
+	 5: math.Pow( 5.0, 0.63),
+	 6: math.Pow( 6.0, 0.63),
+	 7: math.Pow( 7.0, 0.63),
+	 8: math.Pow( 8.0, 0.63),
+	 9: math.Pow( 9.0, 0.63),
 	10: math.Pow(10.0, 0.63),
 	11: math.Pow(11.0, 0.63),
 	12: math.Pow(12.0, 0.63),
@@ -237,6 +239,26 @@ var fSpeedFactor = map[int]float64{
 	18: math.Pow(18.0, 0.63),
 	19: math.Pow(19.0, 0.63),
 	20: math.Pow(20.0, 0.63),
+	21: math.Pow(21.0, 0.63),
+	22: math.Pow(22.0, 0.63),
+	23: math.Pow(23.0, 0.63),
+	24: math.Pow(24.0, 0.63),
+	25: math.Pow(25.0, 0.63),
+	26: math.Pow(26.0, 0.63),
+	27: math.Pow(27.0, 0.63),
+	28: math.Pow(28.0, 0.63),
+	29: math.Pow(29.0, 0.63),
+	30: math.Pow(20.0, 0.63),
+	31: math.Pow(31.0, 0.63),
+	32: math.Pow(32.0, 0.63),
+	33: math.Pow(33.0, 0.63),
+	34: math.Pow(34.0, 0.63),
+	35: math.Pow(35.0, 0.63),
+	36: math.Pow(36.0, 0.63),
+	37: math.Pow(37.0, 0.63),
+	38: math.Pow(38.0, 0.63),
+	39: math.Pow(39.0, 0.63),
+	40: math.Pow(40.0, 0.63),
 }
 
 //var fSpeedFactor float64 = math.Pow(15, 0.63)

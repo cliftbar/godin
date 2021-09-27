@@ -60,3 +60,16 @@ func FastDistanceDegSq(latYDegRef float64, lonXDegRef float64, latYDeg float64, 
 	return  (x * x) + (y * y)
 
 }
+
+// public static double pow(final double a, final double b) {
+//		final long tmp = Double.doubleToLongBits(a);
+//		final long tmp2 = (long)(b * (tmp - 4606921280493453312L)) + 4606921280493453312L;
+//		return Double.longBitsToDouble(tmp2);
+// }
+// https://martin.ankerl.com/2007/10/04/optimized-pow-approximation-for-java-and-c-c/
+
+func FastPow(a float64, b float64) float64 {
+	tmp := math.Float64bits(a)
+	tmp2 := uint64(b * float64(tmp - 4606921280493453312)) + 4606921280493453312
+	return math.Float64frombits(tmp2)
+}
