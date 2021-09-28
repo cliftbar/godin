@@ -34,7 +34,7 @@ gdal.PushErrorHandler('CPLQuietErrorHandler')
 # export DYLD_INSERT_LIBRARIES="/Applications/QGIS.app/Contents/MacOS/lib/libsqlite3.dylib"
 
 # Run from project root
-def export_qgis_layout_png(hurricane_file_base: str) -> str:
+def export_qgis_layout_png(hurricane_file_base: str, include_forecasts: bool = False) -> str:
     # Paths
     # qgis_install_path: str = "/Applications/QGIS.app/Contents/MacOS"  # This is for pycharm run
     qgis_install_path = None
@@ -121,7 +121,6 @@ def export_qgis_layout_png(hurricane_file_base: str) -> str:
     legend_model: QgsLegendModel = legend.model()
     legend_group: QgsLayerTree = legend_model.rootGroup()
 
-    include_forecasts: bool = False
     for layer in ls2.children():
         if layer.name() == raster_layer_name:
             raster_node: QgsLayerTreeLayer = legend_group.findLayer(layer)

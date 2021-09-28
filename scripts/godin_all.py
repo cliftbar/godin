@@ -102,7 +102,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
 
     raster_start: float = time.time()
     hurricane_base: str = f"{name.upper()}_{year}_{resolution}x{resolution}"
-    hurricane_raster: str = qgis_layout_exporter.export_qgis_layout_png(hurricane_base)
+    hurricane_raster: str = qgis_layout_exporter.export_qgis_layout_png(hurricane_base, include_forecasts)
 
     hurricane_raster_path: Path = Path(hurricane_raster)
     hurricane_raster_ts: str = hurricane_raster_path.stem.split("_")[-1]
