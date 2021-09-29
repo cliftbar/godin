@@ -4,7 +4,7 @@ import subprocess
 import time
 
 from subprocess import CompletedProcess
-from typing import Any, List, Dict, Callable
+from typing import Any, List, Dict
 from pathlib import Path
 
 from google.cloud import firestore
@@ -31,8 +31,9 @@ def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -
     return storm_name
 
 
-def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, draft: bool = True, ssg_data: Dict = None):
-    post_path: Path = Path(f"ssg/content/hurricane/{storm_year}/{storm_name.lower()}{storm_year}.md")
+def create_update_ssg(storm_id: str, storm_name: str, storm_year: int, res: int, file_ts: str, draft: bool = True, ssg_data: Dict = None):
+    storm_ssg_name: str = f"{storm_id}_{storm_name.lower()}{storm_year}.md"
+    post_path: Path = Path(f"ssg/content/hurricane/{storm_year}/{storm_ssg_name}")
 
     if not post_path.exists():
         current_env = os.environ
@@ -41,8 +42,12 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
         current_env["HUGO_HURRICANE_ADV_NUM"] = str(ssg_data["AdvNumber"])
         current_env["HUGO_HURRICANE_DISCUSSION"] = ssg_data["Discussion"]
         current_env["HUGO_HURRICANE_SOURCES"] = ";".join(ssg_data["Sources"])
+        current_env["HUGO_HURRICANE_STORM_ID"] = storm_id
+        current_env["HUGO_HURRICANE_STORM_NAME"] = storm_name
+        current_env["HUGO_HURRICANE_STORM_YEAR"] = str(storm_year)
+
         hugo_proc: CompletedProcess[Any] = subprocess.run(
-            ["hugo", "new", f"hurricane/{storm_year}/{storm_name.lower()}{storm_year}.md"],
+            ["hugo", "new", f"hurricane/{storm_year}/{storm_ssg_name}"],
             cwd=f"{os.getcwd()}/ssg",
             stdout=subprocess.PIPE
         )
@@ -79,6 +84,10 @@ def create_update_ssg(storm_name: str, storm_year: int, res: int, file_ts: str, 
                     line = f"last_updated: {datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0).isoformat()}\n"
                 elif line.startswith("draft:") and not draft:
                     line = f"draft: {str(draft).lower()}\n"
+                elif line.startswith("title:"):
+                    line = f"title: {storm_name.title()} {storm_year}\n"
+                elif line.startswith("storm_name:"):
+                    line = f"storm_name: {storm_name.lower()}\n"
 
                 lines_subbed.append(line)
 
@@ -113,7 +122,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     print(f"Upload completed: {time.time() - upload_start}s")
 
     ssg_start: float = time.time()
-    create_update_ssg(name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
+    create_update_ssg(storm_id, name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
     print(f"SSG completed: {time.time() - ssg_start}s")
 
 
