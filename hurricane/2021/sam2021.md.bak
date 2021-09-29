@@ -1,0 +1,62 @@
+---
+title: "Sam 2021"
+date: 2021-09-25T20:28:05-07:00
+draft: false
+summary: Hurricane Sam 2021
+disable_share: true
+storm_name: sam
+storm_year: 2021
+resolution: 100
+hurricane_timestamp: 2021-09-29T192700+0000
+adv_number: 28
+last_updated: 2021-09-29T19:27:37+00:00
+adv_sources: https://www.nhc.noaa.gov/text/refresh/MIATCPAT3+shtml/291441.shtml;https://www.nhc.noaa.gov/refresh/graphics_at3+shtml/144347.shtml?cone
+storm_id: al182021
+---
+*DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
+
+## Windfield Map
+![gis_img](https://storage.googleapis.com/godin_hurricane_data/{{<param storm_name>}}{{<param storm_year>}}/latest/{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}_{{<param hurricane_timestamp>}}.jpeg)
+
+- as of {{<param last_updated>}}
+- {{<param resolution>}}px per degree
+- GWAF 0.9
+- No Friction
+- default radius of maximum wind is 15kts
+
+## Useful Links
+- [NOAA Active Cyclones](https://www.nhc.noaa.gov/)
+- [Tropical Tidbits](https://www.tropicaltidbits.com/storminfo/)
+{{< param_to_list >}}
+
+## Data Files
+[Download Zip](https://storage.googleapis.com/godin_hurricane_data/{{<param storm_name>}}{{<param storm_year>}}/latest/{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}_{{<param hurricane_timestamp>}}.zip)
+
+File List:
+- `{{<param storm_name>}}{{<param storm_year>}}_100x100.csv`
+- `{{<param storm_name>}}{{<param storm_year>}}_100x100.png`
+- `{{<param storm_name>}}{{<param storm_year>}}_100x100.wld`
+- `{{<param storm_name>}}{{<param storm_year>}}_{{<param resolution>}}x{{<param resolution>}}_{{<param hurricane_timestamp>}}.jpeg`
+
+
+## Official Advisory Discussion
+At 1100 AM AST (1500 UTC), the center of Hurricane Sam was located
+near latitude 19.4 North, longitude 57.0 West.  Sam is moving toward
+the northwest near 9 mph (15 km/h), and this general motion with an
+increase in forward speed is expected during the next couple of
+days.  A turn toward the north is forecast by Friday.  On the
+forecast track, Sam will pass well to the east-northeast of the 
+northern Leeward Islands through tonight.
+
+Maximum sustained winds are near 130 mph (215 km/h) with higher
+gusts.  Sam is a category 4 hurricane on the Saffir-Simpson
+Hurricane Wind Scale.  Some fluctuations in intensity are expected
+during the next couple of days, but Sam is forecast to remain a
+major hurricane through late this week.
+ 
+Hurricane-force winds extend outward up to 40 miles (65 km) from the
+center and tropical-storm-force winds extend outward up to 125 miles
+(205 km).
+ 
+The minimum central pressure estimated from NOAA Hurricane Hunter 
+aircraft observations is 949 mb (28.03 inches).
