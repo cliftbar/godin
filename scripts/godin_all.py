@@ -43,7 +43,7 @@ def create_update_ssg(storm_id: str, storm_name: str, storm_year: int, res: int,
         current_env["HUGO_HURRICANE_DISCUSSION"] = ssg_data["Discussion"]
         current_env["HUGO_HURRICANE_SOURCES"] = ";".join(ssg_data["Sources"])
         current_env["HUGO_HURRICANE_STORM_ID"] = storm_id
-        current_env["HUGO_HURRICANE_STORM_NAME"] = storm_name
+        current_env["HUGO_HURRICANE_STORM_NAME"] = storm_name.lower()
         current_env["HUGO_HURRICANE_STORM_YEAR"] = str(storm_year)
 
         hugo_proc: CompletedProcess[Any] = subprocess.run(

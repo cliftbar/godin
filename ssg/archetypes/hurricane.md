@@ -1,5 +1,5 @@
 ---
-title: {{ cond (eq (getenv "HUGO_HURRICANE_STORM_NAME") "") ( .Name ) (print (getenv "HUGO_HURRICANE_STORM_NAME" | title) " " (getenv "HUGO_HURRICANE_STORM_YEAR")) }}
+title: {{ cond (eq (getenv "HUGO_HURRICANE_STORM_NAME") "") ( .Name ) (print ( (getenv "HUGO_HURRICANE_STORM_NAME") | title ) " " (getenv "HUGO_HURRICANE_STORM_YEAR")) }}
 date: {{ .Date }}
 draft: true
 summary: Tropical System {{ getenv "HUGO_HURRICANE_STORM_ID" }}
