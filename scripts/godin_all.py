@@ -169,16 +169,24 @@ def cloud_run():
     for storm_id, storm in run_dict.items():
         godin_storm_start: float = time.time()
         godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm)
-        print(f"godin_storm completed: {time.time() - godin_storm_start}s")
+        print(f"godin_storm for {storm_id} completed: {time.time() - godin_storm_start}s")
 
-    for storm in pending_storms:
-        pending_delete_start: float = time.time()
-        db.collection("pending").document(storm.id).delete()
-        print(f"pending_delete completed: {time.time() - pending_delete_start}s")
+        # pending_delete_start: float = time.time()
+        db.collection("pending").document(storm_id).delete()
+        # print(f"pending_delete for {storm_id} completed: {time.time() - pending_delete_start}s")
 
-    git_push_start: float = time.time()
-    git_push([s.to_dict()["Name"] for s in pending_storms])
-    print(f"git_push_start completed: {time.time() - git_push_start}s")
+        # git_push_start: float = time.time()
+        git_push([s.to_dict()["Name"] for s in pending_storms])
+        # print(f"git_push_start completed: {time.time() - git_push_start}s")
+
+    # for storm in pending_storms:
+    #     pending_delete_start: float = time.time()
+    #     db.collection("pending").document(storm.id).delete()
+    #     print(f"pending_delete completed: {time.time() - pending_delete_start}s")
+
+    # git_push_start: float = time.time()
+    # git_push([s.to_dict()["Name"] for s in pending_storms])
+    # print(f"git_push_start completed: {time.time() - git_push_start}s")
 
     print(f"cloud_run completed: {time.time() - cloud_run_start}s")
 
