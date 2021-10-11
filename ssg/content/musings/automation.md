@@ -28,4 +28,8 @@ Over time I'll write about how I managed to get things in place, and any updates
 - Google PubSub
 - Cloud Scheduler
 
-Current Pipeline Cost for August 2021: $0.00
+## Pipeline Cost
+- August 2021: $0.00
+- September 2021: $0.10
+  - Cloud Build ($0.03): I did lots of lazy iterating of the containers in Build
+  - Storage ($0.07): I missed that the Container Registry was storing out of date images, so now I'm keeping that cleaned up

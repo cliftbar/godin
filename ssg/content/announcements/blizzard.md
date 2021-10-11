@@ -1,7 +1,7 @@
 ---
 title: "Blizzard or Hurricane?"
 date: 2021-09-10T18:26:06-07:00
-draft: true
+draft: false
 ---
 Why not both?
 
