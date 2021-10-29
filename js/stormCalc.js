@@ -7,9 +7,9 @@ const map = new mapboxgl.Map({
     zoom: 6
 });
 
-map.on('render', () => {
-    console.log(map.getZoom())
-})
+// map.on('render', () => {
+//     console.log(map.getZoom())
+// })
 
 let loaded = false
 map.on('load', () => {

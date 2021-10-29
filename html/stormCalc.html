@@ -4,12 +4,13 @@
         <meta charset="UTF-8">
         <title>Odin Storm Calculator</title>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
-        <script src="../js/wasm_exec.js"></script>
+        <link rel="icon" type="image/png" href="/img/godin_icon.png"/>
+        <script src="/js/wasm_exec.js"></script>
 
         <script>
             async function init() {
                 const go = new Go();
-                let result = await WebAssembly.instantiateStreaming(fetch("../wasm/lib.wasm"), go.importObject)
+                let result = await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"), go.importObject)
                 await go.run(result.instance);
             }
             init();
@@ -100,6 +101,6 @@
             </div>
         </section>
 
-        <script src="../js/stormCalc.js"></script>
+        <script src="/js/stormCalc.js"></script>
     </body>
 </html>
