@@ -1,9 +1,9 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2xpZnRiYXIiLCJhIjoiY2t2YTk2cXIyOTB6czJ3dDl0cDJleWd3aiJ9.WC0BGBbqYty6GtxqglyUfw';
-const latlngStart = [-90.19, 29.11]
+const lngLatStart = [-90.19, 29.11]
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v11',
-    center: latlngStart,
+    center: lngLatStart,
     zoom: 6
 });
 
@@ -65,9 +65,13 @@ function calculateStorm() {
     let fSpeedKts = parseFloat(document.getElementById("inpt_fSpeedKts").value) * 1.15;
     let headingDeg = parseFloat(document.getElementById("inpt_headingDeg").value) * 1.15;
 
+    let landfallLat = parseFloat(document.getElementById("inpt_landfallLat").value);
+    let landfallLng = parseFloat(document.getElementById("inpt_landfallLng").value);
+    let bboxOffset = parseFloat(document.getElementById("inpt_bboxOffset").value);
+
     let geoJsonString = calculateLandfall(
-        latlngStart[1] + 5, latlngStart[1] - 5, latlngStart[0] - 5, latlngStart[0] + 5,
-        latlngStart[1], latlngStart[0],
+        landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
+        landfallLat, landfallLng,
         maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
         10, 350
     )
