@@ -121,7 +121,7 @@ const wCoriolisConstant float64 = 2.0 * 2.0 * math.Pi / 24
 // rMaxNmi Radius of maximum winds in nautical miles
 //
 // return 0 <= radial decay <= 1
-func radialDecay(rNmi float64, rMaxNmi float64) (radialDecayFactor float64) {
+func radialDecay(rNmi float64, rMaxNmi float64, skipInner bool) (radialDecayFactor float64) {
 	ret := 1.0
 
 	if rMaxNmi < rNmi {
@@ -130,14 +130,14 @@ func radialDecay(rNmi float64, rMaxNmi float64) (radialDecayFactor float64) {
 		slope := (-0.051 * rMaxLog) - 0.1757
 		intercept := (0.4244 * rMaxLog) + 0.7586
 		ret = (slope * math.Log(rNmi)) + intercept
-	}
-	// Skip this else block as a concession for modeling time series, where everything within the max wind radius is
-	//	expected to experience the max wind radius while the storm translates
-	// else {
+	} else if !skipInner {
+		// Skip this else block as a concession for modeling time series, where everything within the max wind radius is
+		//	expected to experience the max wind radius while the storm translates
 
-	// NWS 23 pdf page 54
-	// ret = 1.01231578 / (1 + math.exp(-8.612066494 * ((r_nmi / float(rmax_nmi)) - 0.678031222)))
-	// }
+		//NWS 23 pdf page 54
+		//ret = 1.01231578 / (1 + math.exp(-8.612066494 * ((r_nmi / float(rmax_nmi)) - 0.678031222)))
+		ret = 1.01231578 / (1 + math.Exp(-8.612066494 * ((rNmi / rMaxNmi) - 0.678031222)))
+	}
 
 	// clamp radial decay between 0 and 1
 	return math.Max(math.Min(ret, 1.0), 0.0)
@@ -298,7 +298,30 @@ func CalcWindSpeed(cycloneVelocityMaxKts float64,
 	gradientWindAdjustmentFactor float64) (windSpeedKts float64, asym float64) {
 
 	// Step 1: Calculate the Radial Decay
-	radialDecayFactor := radialDecay(rNmi, rMaxNmi)
+	radialDecayFactor := radialDecay(rNmi, rMaxNmi, true)
+
+	// Step 2: Calculate the Asymmetry Factor
+	asym, _ = asymmetryFactor(fSpeedKts, rNmi, rMaxNmi, bearingFromCenterDeg, cycloneHeadingDegDeg)
+
+	// apply all factors and return wind speed at point
+	windSpeedKts = (cycloneVelocityMaxKts * gradientWindAdjustmentFactor * radialDecayFactor) + asym
+
+	return windSpeedKts, asym
+}
+
+// CalcWindSpeedFrame Calculate the wind speed at a given point from parameters.  This function does the least computational
+// work of the CalcWindSpeedFrame functions
+// gradientWindAdjustmentFactor suggested default: 0.9
+func CalcWindSpeedFrame(cycloneVelocityMaxKts float64,
+	rNmi float64,
+	rMaxNmi float64,
+	fSpeedKts float64,
+	bearingFromCenterDeg float64,
+	cycloneHeadingDegDeg float64,
+	gradientWindAdjustmentFactor float64) (windSpeedKts float64, asym float64) {
+
+	// Step 1: Calculate the Radial Decay
+	radialDecayFactor := radialDecay(rNmi, rMaxNmi, false)
 
 	// Step 2: Calculate the Asymmetry Factor
 	asym, _ = asymmetryFactor(fSpeedKts, rNmi, rMaxNmi, bearingFromCenterDeg, cycloneHeadingDegDeg)

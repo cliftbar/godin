@@ -110,6 +110,50 @@ type CalculatedEvent struct {
 	PixPerDegreeLonX          int               `json:"pix_per_degree_lon_x"`
 }
 
+
+func CalculateEventFrame(bbox BoundingBox,
+						 latYDeg float64,
+						 lonXDeg float64,
+						 maxWindVelocityKts float64,
+						 radiusMaxWindNmi float64,
+						 cycloneForwardSpeedKts float64,
+						 cycloneHeadingDeg float64,
+						 gradientWindAdjustmentFactor float64,
+						 pixPerDegLatY int,
+						 pixPerDegLonX int,
+						 maxCalculationDistanceNmi float64) (windField []CoordinateValue) {
+	gridPoints := bbox.toPoints(pixPerDegLatY, pixPerDegLonX)
+
+	maxDistDegApproxDeg := maxCalculationDistanceNmi / 60 // convert nmi to degrees
+	maxDistDegApproxDegSq := maxDistDegApproxDeg * maxDistDegApproxDeg
+
+	// PERF use pointers and basic iterators instead of range and assignment to dodge duffcopy
+	for i := 0; i < len(gridPoints); i++ {
+		var c = &gridPoints[i]
+		maxWindSpeedAtCoordinate := 0.0
+
+		// PERF use a less accurate, simpler max distance check - this is huge
+		checkDistDegSq := utilities.FastDistanceDegSq(latYDeg, lonXDeg, c.latYDeg, c.lonXDeg) // get the square of the distance to check against
+		if checkDistDegSq < maxDistDegApproxDegSq {
+
+			distanceToCenterNmi := utilities.HaversineDegreesToMeters(latYDeg, lonXDeg, c.latYDeg, c.lonXDeg) / 1000.0 * 0.539957 // convert to nautical miles
+
+			bearingFromCenter := utilities.CalcBearingNorthZero(latYDeg, lonXDeg, c.latYDeg, c.lonXDeg)
+
+			windSpeed, _ := CalcWindSpeedFrame(maxWindVelocityKts, distanceToCenterNmi, radiusMaxWindNmi, cycloneForwardSpeedKts, bearingFromCenter, cycloneHeadingDeg, gradientWindAdjustmentFactor)
+			maxWindSpeedAtCoordinate = math.Max(maxWindSpeedAtCoordinate, windSpeed)
+		}
+
+		windField = append(windField, CoordinateValue{
+			LatYDeg: c.latYDeg,
+			LonXDeg: c.lonXDeg,
+			Value:   maxWindSpeedAtCoordinate,
+		})
+	}
+
+	return windField
+}
+
 func (ei EventInformation) CalculateEvent(pixPerDegLatY int, pixPerDegLonX int, maxCalculationDistanceNmi float64) (event CalculatedEvent) {
 	var windField []CoordinateValue
 
