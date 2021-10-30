@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    position: absolute;
+    height: 96%;
+    width: 96%;
+    top: 2%;
+    bottom: 2%;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+#cntr_map {
+    width: 100%;
+    position: relative;
+    height: 90vh;
+    display: flex;
+}
+
+#cntr_mapForms {
+    margin: 2%;
+}
+
+#frm_calcParams {
+    /*float: left;*/
+    /*width: 50%;*/
+    display: inline;
+}
+
+#frm_calcParams fieldset {
+    display: block;
+    border-style: none;
+}
+
+#frm_mapPointSettings {
+    /*float: right;*/
+    /*width: 50%;*/
+    display: inline;
+}
+
+#frm_mapPointSettings fieldset {
+    display: block;
+    border-style: none;
+}
+
+fieldset {
+    display: inline-block;
+    border-style: none;
+}
+
+fieldset input {
+    width: 80px;
+}
+
+.legend {
+    background-color: #fff;
+    border-radius: 3px;
+
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    right: 3%;
+    top: 3%;
+    z-index: 1;
+}
+
+.legend h4 {
+    margin: 0 0 10px;
+}
+
+.legend div span {
+    border-radius: 50%;
+    border-width: thin;
+    border-style: solid;
+    border-color: black;
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+}
+
+#cntr_mapForms {
+    z-index: 2;
+    background-color: lightgray;
+    /*padding: 0;*/
+    top: 1%;
+    left: 1%;
+    position: absolute;
+    opacity: 80%;
+}
