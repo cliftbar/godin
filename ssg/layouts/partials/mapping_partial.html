@@ -1,0 +1,83 @@
+<main>
+  <link rel="icon" type="image/png" href="/img/godin_icon.png"/>
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/stormCalc.css">
+
+  <script src="/js/wasm_exec.js"></script>
+
+  <script>
+    async function init() {
+      const go = new Go();
+      let result = await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"), go.importObject)
+      await go.run(result.instance);
+    }
+    init();
+  </script>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js'></script>
+
+
+  <div id="cntr_map">
+    <div id="cntr_mapForms">
+      <form id="frm_calcParams">
+        <fieldset>
+          <h3>Settings</h3>
+        </fieldset>
+        <fieldset>
+          <label>Maximum Windspeed (mph)</label>
+          <input type="number" id="inpt_maxWindKts" min="0" value="150">
+        </fieldset>
+        <fieldset>
+          <label>Radius of Maximum Winds (mi)</label>
+          <input type="number" id="inpt_rMaxNmi" min="0" value="15">
+        </fieldset>
+        <fieldset>
+          <label>Storm Forward Speed (mph)</label>
+          <input type="number" id="inpt_fSpeedKts" min="0" value="10">
+        </fieldset>
+        <fieldset>
+          <label>Heading (deg, 0 north)</label>
+          <input type="number" id="inpt_headingDeg" min="0" max="360" value="0">
+        </fieldset>
+        <fieldset>
+          <label>Landfall Point (lat/lng deg)</label>
+          <input type="number" id="inpt_landfallLat" min="-180" max="180" value="29.11">
+          <input type="number" id="inpt_landfallLng" min="-180" max="180" value="-90.19">
+        </fieldset>
+        <fieldset>
+          <label>Bounding Box Size Offset (+/- deg)</label>
+          <input type="number" id="inpt_bboxOffset" min="-180" max="180" value="5">
+        </fieldset>
+      </form>
+      <form id="frm_mapPointSettings">
+        <fieldset>
+          <label>Point Size (px)</label>
+          <input type="number" id="inpt_pointSize" min="0" value="6" onchange="updatePointSize()">
+        </fieldset>
+        <fieldset>
+          <label>Point Opacity (%)</label>
+          <input type="number" id="inpt_pointOpacity" min="0" max="100" value="50" onchange="updatePointOpacity()">
+        </fieldset>
+      </form>
+      <fieldset>
+        <button type="button" onClick="calculateStorm();" id="testButton">
+          Calculate
+        </button>
+      </fieldset>
+    </div>
+    <div id="map"></div>
+    <div id="state-legend" class="legend">
+      <h4>Population</h4>
+      <div><span style="background-color: gray"></span>0-38 mph</div>
+      <div><span style="background-color: darkgreen"></span>38-74 mph</div>
+      <div><span style="background-color: lightgreen"></span>74-96 mph</div>
+      <div><span style="background-color: yellow"></span>96-111 mph</div>
+      <div><span style="background-color: orange"></span>111-130 mph</div>
+      <div><span style="background-color: red"></span>130-156 mph</div>
+      <div><span style="background-color: darkred"></span>156+ mph</div>
+    </div>
+  </div>
+
+  <script src="/js/stormCalc.js"></script>
+</main>
