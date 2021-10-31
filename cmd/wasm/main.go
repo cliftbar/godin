@@ -33,6 +33,8 @@ func calculateLandfall(this js.Value, i []js.Value) interface{} {
 	pixPerDegree := i[11].Int()
 	maxCalcDistNmi := i[12].Float()
 
+	minValue := i[13].Float()
+
 	bbox := hurricane.BoundingBox{
 		LatYTopDeg:    topLatYDeg,
 		LonXLeftDeg:   leftLonXDeg,
@@ -55,21 +57,21 @@ func calculateLandfall(this js.Value, i []js.Value) interface{} {
 	)
 
 	fmt.Println("Landfall calculation done")
-	converted := ToGeoJSONString(windfield)
+	converted := ToGeoJSONString(windfield, minValue)
 	//jsonString, _ := json.MarshalIndent(converted, "", "\t")
 	//fmt.Println(string(jsonString))
 	//ret := js.ValueOf(converted)
 	return converted
 }
 
-func ToGeoJSONString(c []hurricane.CoordinateValue) (g string) {
+func ToGeoJSONString(c []hurricane.CoordinateValue, minValue float64) (g string) {
 	features := make([]map[string]interface{}, 0)
 	zeroValPointCoordinates := make([]interface{}, 0)
 
 	for _, p := range c {
 		if p.Value == 0 {
 			zeroValPointCoordinates = append(zeroValPointCoordinates, []interface{}{p.LonXDeg, p.LatYDeg} )
-		} else {
+		} else if minValue < p.Value {
 			f := map[string]interface{}{
 				"type": "Feature",
 				"geometry": map[string]interface{}{
@@ -96,7 +98,9 @@ func ToGeoJSONString(c []hurricane.CoordinateValue) (g string) {
 		},
 	}
 
-	features = append(features, zeroMultipoint)
+	if minValue < 0 {
+		features = append(features, zeroMultipoint)
+	}
 
 	gObj := map[string]interface{}{
 		"type": "FeatureCollection",
