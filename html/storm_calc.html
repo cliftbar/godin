@@ -34,6 +34,12 @@
                             <h3>Settings</h3>
                         </fieldset>
                         <fieldset>
+                            <label>Landfall Point (lat/lng deg, Double click to set)</label>
+                            <br />
+                            <input type="number" id="inpt_landfallLat" min="-180" max="180" value="29.11">
+                            <input type="number" id="inpt_landfallLng" min="-180" max="180" value="-90.19">
+                        </fieldset>
+                        <fieldset>
                             <label>Maximum Windspeed (mph)</label>
                             <input type="number" id="inpt_maxWindKts" min="0" value="150">
                         </fieldset>
@@ -50,12 +56,7 @@
                             <input type="number" id="inpt_headingDeg" min="0" max="360" value="0">
                         </fieldset>
                         <fieldset>
-                            <label>Landfall Point (lat/lng deg)</label>
-                            <input type="number" id="inpt_landfallLat" min="-180" max="180" value="29.11">
-                            <input type="number" id="inpt_landfallLng" min="-180" max="180" value="-90.19">
-                        </fieldset>
-                        <fieldset>
-                            <label>Bounding Box Size Offset (+/- deg)</label>
+                            <label>Bounding Box Offset (+/- deg)</label>
                             <input type="number" id="inpt_bboxOffset" min="-180" max="180" value="5">
                         </fieldset>
                     </form>
@@ -70,8 +71,14 @@
                         </fieldset>
                     </form>
                     <fieldset>
-                        <button type="button" onClick="calculateStorm();" id="testButton">
+                        <button type="button" onClick="extrapolateTrack()" id="btn_extrapolateTrack">
+                            Extrapolate Track
+                        </button>
+                        <button type="button" onClick="calculateStorm()" id="btn_calculate">
                             Calculate
+                        </button>
+                        <button type="button" onClick="clearStorm()" id="btn_clear">
+                            Clear
                         </button>
                     </fieldset>
                 </div>
