@@ -20,9 +20,10 @@ body {
     display: flex;
 }
 
-#cntr_mapForms {
-    margin: 2%;
-}
+/*#cntr_mapForms {*/
+/*    margin: 2%;*/
+/*    z-index: 2;*/
+/*}*/
 
 #frm_calcParams {
     /*float: left;*/
@@ -52,7 +53,7 @@ fieldset {
 }
 
 fieldset input {
-    width: 80px;
+    width: 70px;
 }
 
 .legend {
@@ -91,4 +92,5 @@ fieldset input {
     left: 1%;
     position: absolute;
     opacity: 80%;
+    margin: 2%;
 }
