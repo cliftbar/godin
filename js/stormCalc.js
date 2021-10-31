@@ -1,3 +1,15 @@
+const none = ['<', ['get', 'zValue'], 34];
+const td = ['all', ['>=', ['get', 'zValue'], 34], ['<', ['get', 'zValue'], 64]];
+const cat1 = ['all', ['>=', ['get', 'zValue'], 64], ['<', ['get', 'zValue'], 83]];
+const cat2 = ['all', ['>=', ['get', 'zValue'], 83], ['<', ['get', 'zValue'], 96]];
+const cat3 = ['all', ['>=', ['get', 'zValue'], 96], ['<', ['get', 'zValue'], 113]];
+const cat4 = ['all', ['>=', ['get', 'zValue'], 113], ['<', ['get', 'zValue'], 137]];
+
+async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+// const cat5 = ['>=', ['get', 'zValue'], 137];
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2xpZnRiYXIiLCJhIjoiY2t2YTk2cXIyOTB6czJ3dDl0cDJleWd3aiJ9.WC0BGBbqYty6GtxqglyUfw';
 const lngLatStart = [-90.19, 29.11];
 const emptyGeoJSON = {
@@ -28,14 +40,6 @@ map.on('load', () => {
         type: 'geojson',
         data: emptyGeoJSON
     });
-
-    const none = ['<', ['get', 'zValue'], 34];
-    const td = ['all', ['>=', ['get', 'zValue'], 34], ['<', ['get', 'zValue'], 64]];
-    const cat1 = ['all', ['>=', ['get', 'zValue'], 64], ['<', ['get', 'zValue'], 83]];
-    const cat2 = ['all', ['>=', ['get', 'zValue'], 83], ['<', ['get', 'zValue'], 96]];
-    const cat3 = ['all', ['>=', ['get', 'zValue'], 96], ['<', ['get', 'zValue'], 113]];
-    const cat4 = ['all', ['>=', ['get', 'zValue'], 113], ['<', ['get', 'zValue'], 137]];
-    // const cat5 = ['>=', ['get', 'zValue'], 137];
 
     map.addLayer({
         'id': 'storm-data-layer',
@@ -75,6 +79,7 @@ map.on('load', () => {
 });
 
 // Calculation Functions
+let allTrackCoords = []
 function calculateStorm() {
     if (!loaded) {
         return;
@@ -94,7 +99,8 @@ function calculateStorm() {
         landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
         landfallLat, landfallLng,
         maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
-        10, 350
+        10, 350,
+        -1
     );
     console.timeEnd('Go calculateLandfall');
     map.getSource('storm-data-source').setData(JSON.parse(geoJsonString));
@@ -113,30 +119,36 @@ function extrapolateTrack() {
     headingXY = headingXY * (Math.PI / 180)
 
     let degPerHour = parseFloat(document.getElementById("inpt_fSpeedKts").value) / 1.15 / 60;
+    let maxWindKts = parseFloat(document.getElementById("inpt_maxWindKts").value) / 1.15;
 
     let front = [];
     for (let i = 0; i <= 24; i++) {
         let newLat = landfallLat + (degPerHour * i * Math.sin(headingXY));
         let newLon = landfallLng + (degPerHour * i * Math.cos(headingXY));
-        front.push([newLat, newLon])
+        let newWind = (((maxWindKts / 3 - maxWindKts) / (24 - 0)) * (i - 0)) + maxWindKts
+        front.push([newLat, newLon, i, newWind])
     }
 
     let back = []
     for (let i = 1; i <= 12; i++) {
         let newLat = landfallLat - (degPerHour * i * Math.sin(headingXY));
         let newLon = landfallLng - (degPerHour * i * Math.cos(headingXY));
-        back.push([newLat, newLon])
+
+        back.push([newLat, newLon, 0-i, maxWindKts])
     }
-    let all = front.concat(back)
+    allTrackCoords = front.concat(back)
 
     let allGeoJSON = []
 
-    all.forEach((e) => {
+    allTrackCoords.forEach((elm) => {
         allGeoJSON.push({
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [e[1], e[0]]
+                "coordinates": [elm[1], elm[0]]
+            },
+            "properties": {
+                "hour": elm[2]
             }
         })
     })
@@ -149,6 +161,100 @@ function extrapolateTrack() {
     map.getSource('track-data-source').setData(trackFeature);
 }
 
+let animationReq = undefined;
+async function calculateStormAnimation() {
+    if (!loaded || animationReq !== undefined) {
+        return;
+    }
+    // let maxWindKts = parseFloat(document.getElementById("inpt_maxWindKts").value) / 1.15;
+    let rMaxNmi = parseFloat(document.getElementById("inpt_rMaxNmi").value) / 1.15;
+    let fSpeedKts = parseFloat(document.getElementById("inpt_fSpeedKts").value) / 1.15;
+
+    let headingDeg = parseFloat(document.getElementById("inpt_headingDeg").value);
+
+    let bboxOffset = parseFloat(document.getElementById("inpt_bboxOffset").value);
+
+    allTrackCoords.sort((firstEl, secondEl) => { return firstEl[2] - secondEl[2] } )
+
+    let sourceName = 'animation-data-source'
+    let layerName = 'animation-data-layer'
+
+    if (map.getSource(sourceName) === undefined) {
+        map.addSource(sourceName, {
+            type: 'geojson',
+            data: emptyGeoJSON
+        });
+    }
+
+    if (map.getLayer(layerName) === undefined) {
+        map.addLayer({
+                'id': layerName,
+                'type': 'circle',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-color': [
+                        'case',
+                        none,
+                        'gray',
+                        td,
+                        'darkgreen',
+                        cat1,
+                        'lightgreen',
+                        cat2,
+                        'yellow',
+                        cat3,
+                        'orange',
+                        cat4,
+                        'red',
+                        'darkred'
+                    ],
+                    'circle-opacity': 0.5,
+                },
+                'source': sourceName // reference the data source
+            },
+            'track-data-layer'
+        );
+    }
+    // for (let i = 0; i < allTrackCoords.length; ++i) {
+    let iter = 0;
+    async function animationLoop(timestamp) {
+        let coord = allTrackCoords[iter]
+        // let sourceName = 'animation-data-source_' + coord[2]
+        // let layerName = 'animation-data-layer_' + coord[2]
+
+        let landfallLat = coord[0]
+        let landfallLng = coord[1]
+        let maxWindKts = coord[3]
+
+        console.time('Go calculateLandfall');
+        let geoJsonString = calculateLandfall(
+            landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
+            landfallLat, landfallLng,
+            maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
+            10, 350,
+            30
+        );
+        console.timeEnd('Go calculateLandfall');
+
+        map.getSource(sourceName).setData(JSON.parse(geoJsonString));
+
+        // window``
+        await sleep(500);
+        iter = iter + 1;
+        animationReq = window.requestAnimationFrame(animationLoop)
+        if (allTrackCoords.length <= iter) {
+            window.cancelAnimationFrame(animationReq);
+            animationReq = undefined;
+        }
+        // if (i === 0){
+        //     map.render()
+        // }
+    }
+
+    await animationLoop(0);
+
+}
+
 // Layer Controls
 map.on("dblclick", (e) => {
     document.getElementById("inpt_landfallLng").value = Math.round((e.lngLat.lng + Number.EPSILON) * 100) / 100
@@ -158,6 +264,9 @@ map.on("dblclick", (e) => {
 function clearStorm(){
     map.getSource('storm-data-source').setData(emptyGeoJSON);
     map.getSource('track-data-source').setData(emptyGeoJSON);
+
+    allTrackCoords = [];
+    map.getSource('animation-data-source').setData(emptyGeoJSON);
 }
 
 function updatePointSize(){
