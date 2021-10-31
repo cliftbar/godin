@@ -4,7 +4,7 @@ body {
 }
 
 #map {
-    position: absolute;
+    position: relative;
     height: 96%;
     width: 96%;
     top: 2%;
@@ -15,39 +15,15 @@ body {
 
 #cntr_map {
     width: 100%;
-    position: relative;
     height: 90vh;
-    display: flex;
+    display: inline-block;
 }
 
-/*#cntr_mapForms {*/
-/*    margin: 2%;*/
-/*    z-index: 2;*/
-/*}*/
-
 #frm_calcParams {
-    /*float: left;*/
-    /*width: 50%;*/
     display: inline;
 }
 
 #frm_calcParams fieldset {
-    display: block;
-    border-style: none;
-}
-
-#frm_mapPointSettings {
-    /*float: right;*/
-    /*width: 50%;*/
-    display: inline;
-}
-
-#frm_mapPointSettings fieldset {
-    display: block;
-    border-style: none;
-}
-
-fieldset {
     display: inline-block;
     border-style: none;
 }
@@ -64,8 +40,8 @@ fieldset input {
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     padding: 10px;
     position: absolute;
-    right: 3%;
-    top: 3%;
+    right: 1%;
+    top: 1%;
     z-index: 1;
 }
 
@@ -85,12 +61,9 @@ fieldset input {
 }
 
 #cntr_mapForms {
+    width: 96%;
     z-index: 2;
     background-color: lightgray;
-    /*padding: 0;*/
-    top: 1%;
-    left: 1%;
-    position: absolute;
-    opacity: 80%;
-    margin: 2%;
+    display: inline-block;
+    margin: 2% 2% 0;
 }

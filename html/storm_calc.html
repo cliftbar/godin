@@ -31,9 +31,6 @@
                 <div id="cntr_mapForms">
                     <form id="frm_calcParams">
                         <fieldset>
-                            <h3>Settings</h3>
-                        </fieldset>
-                        <fieldset>
                             <label>Landfall Point (lat/lng deg, Double click to set)</label>
                             <br />
                             <input type="number" id="inpt_landfallLat" min="-180" max="180" value="29.11">
@@ -59,8 +56,6 @@
                             <label>Bounding Box Offset (+/- deg)</label>
                             <input type="number" id="inpt_bboxOffset" min="-180" max="180" value="5">
                         </fieldset>
-                    </form>
-                    <form id="frm_mapPointSettings">
                         <fieldset>
                             <label>Point Size (px)</label>
                             <input type="number" id="inpt_pointSize" min="0" value="6" onchange="updatePointSize()">
@@ -69,33 +64,37 @@
                             <label>Point Opacity (%)</label>
                             <input type="number" id="inpt_pointOpacity" min="0" max="100" value="50" onchange="updatePointOpacity()">
                         </fieldset>
+                        <br />
+                        <fieldset>
+                            <button type="button" onClick="extrapolateTrack()" id="btn_extrapolateTrack">
+                                Extrapolate Track
+                            </button>
+                            <button type="button" onClick="calculateStorm()" id="btn_calculate">
+                                Calculate
+                            </button>
+                            <button type="button" onClick="calculateStormAnimation()" id="btn_calcAnimation">
+                                Animation
+                            </button>
+                            <button type="button" onClick="clearStorm()" id="btn_clear">
+                                Clear
+                            </button>
+                        </fieldset>
                     </form>
-                    <fieldset>
-                        <button type="button" onClick="extrapolateTrack()" id="btn_extrapolateTrack">
-                            Extrapolate Track
-                        </button>
-                        <button type="button" onClick="calculateStorm()" id="btn_calculate">
-                            Calculate
-                        </button>
-                        <button type="button" onClick="calculateStormAnimation()" id="btn_calcAnimation">
-                            Animation
-                        </button>
-                        <button type="button" onClick="clearStorm()" id="btn_clear">
-                            Clear
-                        </button>
-                    </fieldset>
+
                 </div>
-                <div id="map"></div>
-                <div id="state-legend" class="legend">
-                    <h4>Wind Speed</h4>
-                    <div><span style="background-color: gray"></span>0-38 mph</div>
-                    <div><span style="background-color: darkgreen"></span>38-74 mph</div>
-                    <div><span style="background-color: lightgreen"></span>74-96 mph</div>
-                    <div><span style="background-color: yellow"></span>96-111 mph</div>
-                    <div><span style="background-color: orange"></span>111-130 mph</div>
-                    <div><span style="background-color: red"></span>130-156 mph</div>
-                    <div><span style="background-color: darkred"></span>156+ mph</div>
+                <div id="map">
+                    <div id="state-legend" class="legend">
+                        <h4>Wind Speed</h4>
+                        <div><span style="background-color: gray"></span>0-38 mph</div>
+                        <div><span style="background-color: darkgreen"></span>38-74 mph</div>
+                        <div><span style="background-color: lightgreen"></span>74-96 mph</div>
+                        <div><span style="background-color: yellow"></span>96-111 mph</div>
+                        <div><span style="background-color: orange"></span>111-130 mph</div>
+                        <div><span style="background-color: red"></span>130-156 mph</div>
+                        <div><span style="background-color: darkred"></span>156+ mph</div>
+                    </div>
                 </div>
+
             </div>
 
             <script src="/js/stormCalc.js"></script>
