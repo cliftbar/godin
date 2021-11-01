@@ -23,9 +23,14 @@ Model:
 - Land Friction is currently not considered
 - High resolution model runs (100 pixels per degree) take ~3min single-threaded
 
-Other
+Static Maps
 - Maps generated using QGIS/PyQGIS
 - General scripting done in Python 3
+
+Dynamic Maps
+- Mapbox GL JS for tiles and rendering
+- Go in WebAssembly to run the model
+- GeoJSON for the data format
 
 ### DISCLAIMER
 Nothing on this site is official information or verified modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
