@@ -4,13 +4,13 @@ const cat1 = ['all', ['>=', ['get', 'zValue'], 64], ['<', ['get', 'zValue'], 83]
 const cat2 = ['all', ['>=', ['get', 'zValue'], 83], ['<', ['get', 'zValue'], 96]];
 const cat3 = ['all', ['>=', ['get', 'zValue'], 96], ['<', ['get', 'zValue'], 113]];
 const cat4 = ['all', ['>=', ['get', 'zValue'], 113], ['<', ['get', 'zValue'], 137]];
+// const cat5 = ['>=', ['get', 'zValue'], 137];
 
 async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-// const cat5 = ['>=', ['get', 'zValue'], 137];
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiY2xpZnRiYXIiLCJhIjoiY2t2YTk2cXIyOTB6czJ3dDl0cDJleWd3aiJ9.WC0BGBbqYty6GtxqglyUfw';
+mapboxgl.accessToken = 'pk.eyJ1IjoiY2xpZnRiYXIiLCJhIjoiY2t2ZnduM2l4MjNiYzJvdDJ0eWx2YWF2dSJ9.zKxbrzsoNUpkfA3MQ7EO6Q';
 const lngLatStart = [-90.19, 29.11];
 const emptyGeoJSON = {
     'type': 'FeatureCollection',
