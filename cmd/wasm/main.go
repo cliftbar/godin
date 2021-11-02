@@ -6,10 +6,18 @@ import (
 	"godin/hurricane"
 	"math"
 	"syscall/js"
+	"time"
+	"unsafe"
 )
+
+const BUFF_SIZE = 96708022
+var buffer []byte
+var bigBuf [BUFF_SIZE]byte
+var ptrs = map[string]interface{}{}
 
 
 func calculateLandfall(this js.Value, i []js.Value) interface{} {
+	start := time.Now()
 	if len(i) < 13 {
 		fmt.Println("Not enough arguments")
 	} else {
@@ -35,6 +43,8 @@ func calculateLandfall(this js.Value, i []js.Value) interface{} {
 
 	minValue := i[13].Float()
 
+	//outputPtr := i[13].JSValue()
+
 	bbox := hurricane.BoundingBox{
 		LatYTopDeg:    topLatYDeg,
 		LonXLeftDeg:   leftLonXDeg,
@@ -56,15 +66,53 @@ func calculateLandfall(this js.Value, i []js.Value) interface{} {
 		maxCalcDistNmi,
 	)
 
-	fmt.Println("Landfall calculation done")
-	converted := ToGeoJSONString(windfield, minValue)
+	fmt.Printf("Landfall calculation done in %fs, %d points\n", time.Since(start).Seconds(), len(windfield))
+	ToGeoJSONString(windfield, minValue)
+	fmt.Printf("Marshal %fs\n", time.Since(start).Seconds())
+	//ptr := unsafe.Pointer(&buffer)
+	//stringHeader := &reflect.StringHeader{
+	//	Data: uintptr(ptr),
+	//	Len:  len(buffer),
+	//}
+	//uintptr(outputPtr)
 	//jsonString, _ := json.MarshalIndent(converted, "", "\t")
 	//fmt.Println(string(jsonString))
 	//ret := js.ValueOf(converted)
-	return converted
+	//dst := js.Global().Get("Uint8Array").New(len(converted))
+	//js.Global().Set("output", converted)
+	//js.CopyBytesToJS(dst, []byte(converted))
+	//buffer = []uint8(converted)
+	println(&bigBuf)
+	println(len(bigBuf))
+	//var testBuf [955973]byte
+
+	//copy(testBuf[:], buffer)
+	ptrs["testBuff"] = bigBuf
+
+	retMap := map[string]interface{}{
+		"ptr": uintptr(unsafe.Pointer(&bigBuf)),
+		"len": len(bigBuf),
+	}
+
+	return retMap //unsafe.Pointer(stringHeader)
 }
 
-func ToGeoJSONString(c []hurricane.CoordinateValue, minValue float64) (g string) {
+func InitializeWasmMemory(this js.Value, args []js.Value) interface{} {
+
+	var ptr *[]uint8
+	goArrayLen := 10000
+
+	goArray := make([]uint8, goArrayLen)
+	ptr = &goArray
+
+	boxedPtr := unsafe.Pointer(ptr)
+	boxedPtrMap := map[string]interface{}{
+		"internalptr": boxedPtr,
+	}
+	return js.ValueOf(boxedPtrMap)
+}
+
+func ToGeoJSONString(c []hurricane.CoordinateValue, minValue float64)  {
 	features := make([]map[string]interface{}, 0)
 	zeroValPointCoordinates := make([]interface{}, 0)
 
@@ -106,15 +154,19 @@ func ToGeoJSONString(c []hurricane.CoordinateValue, minValue float64) (g string)
 		"type": "FeatureCollection",
 		"features": features,
 	}
-	gBytes, _ := json.Marshal(gObj)
-	g = string(gBytes)
+	temp, _ := json.Marshal(gObj)
+	println(len(temp))
+	copy(bigBuf[:], temp)
+	fmt.Printf("buffer:\t %v \n", buffer)
+	//g = string(gBytes)
 
 	//g["coordinates"] = coords
-	return g
+	//return gBytes
 }
 
 func registerCallbacks() {
 	js.Global().Set("calculateLandfall", js.FuncOf(calculateLandfall))
+	js.Global().Set("getWasmMemoryBufferPointer", js.FuncOf(InitializeWasmMemory))
 }
 
 func main(){

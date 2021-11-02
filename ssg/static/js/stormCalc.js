@@ -95,15 +95,31 @@ function calculateStorm() {
     let bboxOffset = parseFloat(document.getElementById("inpt_bboxOffset").value);
 
     console.time('Go calculateLandfall');
-    let geoJsonString = calculateLandfall(
+    let ptrMap = calculateLandfall(
         landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
         landfallLat, landfallLng,
         maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
-        10, 350,
+        100, 350,
         -1
     );
+    console.log("out of go")
+    let wasmMemory = new Uint8Array(result.instance.exports.mem.buffer);
     console.timeEnd('Go calculateLandfall');
-    map.getSource('storm-data-source').setData(JSON.parse(geoJsonString));
+
+
+
+    console.time("decode")
+    // let s = "";
+    // for (let i = ptrMap.ptr; i < ptrMap.ptr + ptrMap.len; ++i)
+    //     s += String.fromCharCode(wasmMemory[i]);
+    let strDecode = new TextDecoder("utf-8").decode(result.instance.exports.mem.buffer.slice(ptrMap.ptr, ptrMap.ptr + ptrMap.len))
+
+    console.timeEnd("decode")
+
+    console.time('Map setData');
+    map.getSource('storm-data-source').setData(JSON.parse(strDecode));
+    // map.getSource('storm-data-source').setData("data:application/json,"+geoJsonString);
+    console.timeEnd('Map setData');
 
 }
 
@@ -231,14 +247,18 @@ async function calculateStormAnimation() {
             landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
             landfallLat, landfallLng,
             maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
-            10, 350,
+            100, 350,
             30
         );
         console.timeEnd('Go calculateLandfall');
 
+        console.time('Map setData');
         map.getSource(sourceName).setData(JSON.parse(geoJsonString));
+        // map.getSource(sourceName).setData("data:application/json,base64,"+geoJsonString);
+        console.timeEnd('Map setData');
 
-        // window``
+
+
         await sleep(500);
         iter = iter + 1;
         animationReq = window.requestAnimationFrame(animationLoop)
@@ -246,9 +266,6 @@ async function calculateStormAnimation() {
             window.cancelAnimationFrame(animationReq);
             animationReq = undefined;
         }
-        // if (i === 0){
-        //     map.render()
-        // }
     }
 
     await animationLoop(0);
