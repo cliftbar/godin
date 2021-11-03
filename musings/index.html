@@ -76,6 +76,21 @@ Musings
 <div class="bg-white mb3 pa4 gray overflow-hidden">
 <span class="f6 db">Musings</span>
 <h1 class="f3 near-black">
+<a href=https://www.odinseye.cloud/musings/go_wasm_memory/ class="link black dim">
+Go/Wasm &lt;-> JS Memory
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+This post will be about how I accessed the Go/Wasm memory buffer from the Javascript side. I wanted to get this one out, because it took me a very long time to work through it, and I had to piece together a ton of random internet resources. All the code is pulled from the site, but I&rsquo;ve simplified it the best I can.
+Go/Wasm instantiation in JS When instantiating the Go/Wasm &ldquo;application&rdquo; in JS-land, its important to keep a reference to the WebAssembly object used in that process.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Musings</span>
+<h1 class="f3 near-black">
 <a href=https://www.odinseye.cloud/musings/map/ class="link black dim">
 Maps!
 </a>
@@ -102,21 +117,6 @@ After some fairly manic coding, much trial and error, and some grave computing s
 </div>
 </div>
 </div>
-<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
-<div class="bg-white mb3 pa4 gray overflow-hidden">
-<span class="f6 db">Musings</span>
-<h1 class="f3 near-black">
-<a href=https://www.odinseye.cloud/musings/noaa_rss/ class="link black dim">
-NOAA RSS
-</a>
-</h1>
-<div class="nested-links f5 lh-copy nested-copy-line-height">
-NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
-So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc.
-</div>
-</div>
-</div>
-</div>
 </section>
 <ul class="pagination pagination-default">
 <li class="page-item disabled">
@@ -132,10 +132,13 @@ So, NOAA publishes a ton of data using their feeds, in a few formats. Some is hi
 <a href=https://www.odinseye.cloud/musings/page/2/ aria-label="Page 2" class=page-link role=button>2</a>
 </li>
 <li class=page-item>
+<a href=https://www.odinseye.cloud/musings/page/3/ aria-label="Page 3" class=page-link role=button>3</a>
+</li>
+<li class=page-item>
 <a href=https://www.odinseye.cloud/musings/page/2/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a>
 </li>
 <li class=page-item>
-<a href=https://www.odinseye.cloud/musings/page/2/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
+<a href=https://www.odinseye.cloud/musings/page/3/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
 </li>
 </ul></article>
 </main>
