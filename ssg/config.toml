@@ -17,6 +17,9 @@ googleAnalytics = "G-KWNZJ4607L"
   priority = 0.5
   filename = "sitemap.xml"
 
+[taxonomies]
+   tag = "tags"
+
 [params]
   description = "Tropical Cyclone Modeling"
   mainSections = ["musings", "announcements"]

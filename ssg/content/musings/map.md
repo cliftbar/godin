@@ -2,6 +2,8 @@
 title: "Maps!"
 date: 2021-10-29T18:01:32-07:00
 draft: false
+tags:
+- "30 Minute Post"
 ---
 
 I played with WebAssembly, and now there's a map!
