@@ -11,4 +11,4 @@ availableSecrets:
   secretManager:
     - versionName: projects/godin-324403/secrets/github-token/versions/latest
       env: 'GHT'
-timeout: 1800s
+timeout: 3600s
