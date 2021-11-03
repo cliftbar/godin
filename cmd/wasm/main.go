@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"godin/hurricane"
 	"math"
+	"reflect"
 	"syscall/js"
 	"time"
 	"unsafe"
 )
 
-const BUFF_SIZE = 96708022
+//const BUFF_SIZE = 96708022
 var buffer []byte
-var bigBuf [BUFF_SIZE]byte
+//var bigBuf [BUFF_SIZE]byte
 var ptrs = map[string]interface{}{}
 
 
@@ -82,16 +83,20 @@ func calculateLandfall(this js.Value, i []js.Value) interface{} {
 	//js.Global().Set("output", converted)
 	//js.CopyBytesToJS(dst, []byte(converted))
 	//buffer = []uint8(converted)
-	println(&bigBuf)
-	println(len(bigBuf))
+
 	//var testBuf [955973]byte
 
 	//copy(testBuf[:], buffer)
-	ptrs["testBuff"] = bigBuf
+	ptrs["testBuff"] = buffer
+
+	buffHeader := (*reflect.SliceHeader)(unsafe.Pointer(&buffer))
+
+	println(buffHeader.Data)
+	println(len(buffer))
 
 	retMap := map[string]interface{}{
-		"ptr": uintptr(unsafe.Pointer(&bigBuf)),
-		"len": len(bigBuf),
+		"ptr": buffHeader.Data,
+		"len":  len(buffer),
 	}
 
 	return retMap //unsafe.Pointer(stringHeader)
@@ -154,9 +159,9 @@ func ToGeoJSONString(c []hurricane.CoordinateValue, minValue float64)  {
 		"type": "FeatureCollection",
 		"features": features,
 	}
-	temp, _ := json.Marshal(gObj)
-	println(len(temp))
-	copy(bigBuf[:], temp)
+	buffer, _ = json.Marshal(gObj)
+	//println(len(temp))
+	//copy(bigBuf[:], temp)
 	fmt.Printf("buffer:\t %v \n", buffer)
 	//g = string(gBytes)
 
