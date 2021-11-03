@@ -105,19 +105,12 @@ function calculateStorm() {
     console.log("out of go")
     console.timeEnd('Go calculateLandfall');
 
-
-
     console.time("decode")
-    // let s = "";
-    // for (let i = ptrMap.ptr; i < ptrMap.ptr + ptrMap.len; ++i)
-    //     s += String.fromCharCode(wasmMemory[i]);
-    let strDecode = new TextDecoder("utf-8").decode(result.instance.exports.mem.buffer.slice(ptrMap.ptr, ptrMap.ptr + ptrMap.len))
-
+    let decodedGeoJSON = new TextDecoder("utf-8").decode(result.instance.exports.mem.buffer.slice(ptrMap.ptr, ptrMap.ptr + ptrMap.len))
     console.timeEnd("decode")
 
     console.time('Map setData');
-    map.getSource('storm-data-source').setData(JSON.parse(strDecode));
-    // map.getSource('storm-data-source').setData("data:application/json,"+geoJsonString);
+    map.getSource('storm-data-source').setData(JSON.parse(decodedGeoJSON));
     console.timeEnd('Map setData');
 
 }
@@ -128,9 +121,6 @@ function extrapolateTrack() {
 
     let headingDeg = parseFloat(document.getElementById("inpt_headingDeg").value);
     let headingXY = (90 - headingDeg) % 360
-    // if (headingXY < -180) {
-    //     headingXY = 360 + headingXY
-    // }
     headingXY = headingXY * (Math.PI / 180)
 
     let degPerHour = parseFloat(document.getElementById("inpt_fSpeedKts").value) / 1.15 / 60;
@@ -181,7 +171,6 @@ async function calculateStormAnimation() {
     if (!loaded || animationReq !== undefined) {
         return;
     }
-    // let maxWindKts = parseFloat(document.getElementById("inpt_maxWindKts").value) / 1.15;
     let rMaxNmi = parseFloat(document.getElementById("inpt_rMaxNmi").value) / 1.15;
     let fSpeedKts = parseFloat(document.getElementById("inpt_fSpeedKts").value) / 1.15;
 
@@ -230,30 +219,31 @@ async function calculateStormAnimation() {
             'track-data-layer'
         );
     }
-    // for (let i = 0; i < allTrackCoords.length; ++i) {
+
     let iter = 0;
     async function animationLoop(timestamp) {
         let coord = allTrackCoords[iter]
-        // let sourceName = 'animation-data-source_' + coord[2]
-        // let layerName = 'animation-data-layer_' + coord[2]
 
         let landfallLat = coord[0]
         let landfallLng = coord[1]
         let maxWindKts = coord[3]
 
-        console.time('Go calculateLandfall');
-        let geoJsonString = calculateLandfall(
+        console.time('Go calculateLandfall Frame');
+        let ptrMap = calculateLandfall(
             landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
             landfallLat, landfallLng,
             maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
-            100, 350,
+            10, 350,
             30
         );
-        console.timeEnd('Go calculateLandfall');
+        console.timeEnd('Go calculateLandfall Frame');
+
+        console.time("decode frame")
+        let decodedGeoJSON = new TextDecoder("utf-8").decode(result.instance.exports.mem.buffer.slice(ptrMap.ptr, ptrMap.ptr + ptrMap.len))
+        console.timeEnd("decode frame")
 
         console.time('Map setData');
-        map.getSource(sourceName).setData(JSON.parse(geoJsonString));
-        // map.getSource(sourceName).setData("data:application/json,base64,"+geoJsonString);
+        map.getSource(sourceName).setData(JSON.parse(decodedGeoJSON));
         console.timeEnd('Map setData');
 
 

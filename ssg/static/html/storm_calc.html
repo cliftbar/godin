@@ -19,7 +19,6 @@
                 let result;
                 const go = new Go();
                 async function init() {
-
                     result = await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"), go.importObject)
                     await go.run(result.instance);
                 }
