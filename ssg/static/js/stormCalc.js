@@ -99,11 +99,10 @@ function calculateStorm() {
         landfallLat + bboxOffset, landfallLat - bboxOffset, landfallLng - bboxOffset, landfallLng + bboxOffset,
         landfallLat, landfallLng,
         maxWindKts, rMaxNmi, fSpeedKts, headingDeg, 0.9,
-        100, 350,
+        10, 350,
         -1
     );
     console.log("out of go")
-    let wasmMemory = new Uint8Array(result.instance.exports.mem.buffer);
     console.timeEnd('Go calculateLandfall');
 
 
