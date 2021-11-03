@@ -16,9 +16,10 @@
             <script src="/js/wasm_exec.js"></script>
 
             <script>
+                let result;
+                const go = new Go();
                 async function init() {
-                    const go = new Go();
-                    let result = await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"), go.importObject)
+                    result = await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"), go.importObject)
                     await go.run(result.instance);
                 }
                 init();

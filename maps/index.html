@@ -83,7 +83,7 @@ Map
 <link href=https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css rel=stylesheet>
 <link rel=stylesheet href=https://www.odinseye.cloud/css/stormCalc.css>
 <script src=https://www.odinseye.cloud/js/wasm_exec.js></script>
-<script>async function init(){const a=new Go;let b=await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"),a.importObject);await a.run(b.instance)}init()</script>
+<script>let result;const go=new Go;async function init(){result=await WebAssembly.instantiateStreaming(fetch("/wasm/lib.wasm"),go.importObject),await go.run(result.instance)}init()</script>
 <script src=https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js></script>
 <div id=cntr_map>
 <div id=cntr_mapForms>
