@@ -4,7 +4,7 @@ date: 2021-08-30T16:08:08-04:00
 draft: false
 ---
 
-This site is a place for me to post Hurricane model runs from a program I've developed in my free time.  The code is an implementaiton of the NWS 23 model developed by NOAA.  See my [GitHub](https://github.com/cliftbar) for various versions I've made over the years.  The GitHub [repo](https://github.come/cliftbar/godin) for this site is also where you should report bugs, issues, and improvement suggestions, there's plenty to do!
+This site is a place for me to post Hurricane model runs from a program I've developed in my free time.  The code is an implementaiton of the NWS 23 model developed by NOAA.  See my [GitHub](https://github.com/cliftbar) for various versions I've made over the years.  The GitHub [repo](https://github.com/cliftbar/godin) for this site is also where you should report bugs, issues, and improvement suggestions, there's plenty to do!
 
 Oh, it's called "Odin" because the previous name (FlapyDisaster) was silly, and I had an idea for an icon, nothing too deep there.
 
