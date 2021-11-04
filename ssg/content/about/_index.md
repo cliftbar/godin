@@ -17,6 +17,12 @@ Site:
 - Namecheap for the domain name
 - Google Analytics and ~~Google AdSense~~ (it would seem I'm not yet worthy of AdSense)
 
+Model Processing
+- Google Cloud Functions for fetching NOAA RSS
+- Google Cloud Build for running models
+- Firestore for storing data (permanent and temporary)
+- Google Cloud Scheduler for triggering functions and builds
+
 Model:
 - Model code written in Golang (Python and Scala version also exist)
 - The code is an implementation of the [NOAA NWS 23 Model](https://repository.library.noaa.gov/view/noaa/6948)
