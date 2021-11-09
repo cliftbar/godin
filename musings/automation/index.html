@@ -21,7 +21,7 @@ After some fairly manic coding, much trial and error, and some grave computing s
 <meta itemprop=description content="Turns out Automation is neat.
 After some fairly manic coding, much trial and error, and some grave computing sins (DevOps folks look away), I&rsquo;ve set up a Pipeline for automatically generating hurricane pages on this site. Google Cloud Platform is the MVP here, housing all of the processing pipeline, and (so far) the completely in the free tier. So now new hurricanes will be automatically added to the site as they&rsquo;re tracked by NOAA, and current storms will reflect (more or less) the latest forecasts."><meta itemprop=datePublished content="2021-09-23T22:38:17-07:00">
 <meta itemprop=dateModified content="2021-09-23T22:38:17-07:00">
-<meta itemprop=wordCount content="260">
+<meta itemprop=wordCount content="284">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="Automation!">
 <meta name=twitter:description content="Turns out Automation is neat.
@@ -113,6 +113,11 @@ MUSINGS
 <ul>
 <li>Cloud Build ($0.03): I did lots of lazy iterating of the containers in Build</li>
 <li>Storage ($0.07): I missed that the Container Registry was storing out of date images, so now I&rsquo;m keeping that cleaned up</li>
+</ul>
+</li>
+<li>October 2021: $0.11
+<ul>
+<li>Storage: Images are stored in multi-region storage, which isn&rsquo;t free. At some point I should change that or move the images.</li>
 </ul>
 </li>
 </ul>
