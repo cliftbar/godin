@@ -33,3 +33,5 @@ Over time I'll write about how I managed to get things in place, and any updates
 - September 2021: $0.10
   - Cloud Build ($0.03): I did lots of lazy iterating of the containers in Build
   - Storage ($0.07): I missed that the Container Registry was storing out of date images, so now I'm keeping that cleaned up
+- October 2021: $0.11
+  - Storage: Images are stored in multi-region storage, which isn't free.  At some point I should change that or move the images.
