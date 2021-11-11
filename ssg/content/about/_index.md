@@ -8,7 +8,7 @@ This site is a place for me to post Hurricane model runs from a program I've dev
 
 Oh, it's called "Odin" because the previous name (FlapyDisaster) was silly, and I had an idea for an icon, nothing too deep there.
 
-### Tech
+### Tech Stack
 Site:
 - Hugo as a Static Site Generator
 - Github Pages for site hosting
