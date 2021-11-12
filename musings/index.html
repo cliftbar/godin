@@ -77,6 +77,21 @@ Musings
 <div class="bg-white mb3 pa4 gray overflow-hidden">
 <span class="f6 db">Musings</span>
 <h1 class="f3 near-black">
+<a href=https://www.odinseye.cloud/musings/parameters/ class="link black dim">
+Input Parameters
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+This is just a quick overview of the major parameters and measurements provided by NOAA that get pulled into the model. There are a few different sources for these parameters, though in the end the sources all have pretty much the same data.
+Time Timestamp Data is generally provided in Track datasets, where each set of measurements has a corresponding timestamp. Includes Year, Month, Day, Hour, and often Minute, but hour is the primary resolution measurements are usually at 6 hour intervals, but sometimes interim measurements are made for large or notables storms Models tend to interpolate between time steps for more uniform coverage Position and Movement Position Provided as a Lat/Lng, to a 10th of a degree resolution Range: 90W-90E, 90S-90N Most NOAA products provide this in the format 1234E, 5678S.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Musings</span>
+<h1 class="f3 near-black">
 <a href=https://www.odinseye.cloud/musings/go_wasm_memory/ class="link black dim">
 Go/Wasm &lt;-> JS Memory
 </a>
@@ -99,21 +114,6 @@ Maps!
 <div class="nested-links f5 lh-copy nested-copy-line-height">
 I played with WebAssembly, and now there&rsquo;s a map!
 Well, I hit the &ldquo;compile to WebAssembly&rdquo; button on the Go compiler. Turns out it&rsquo;s not that hard for the basics, which is pretty cool. Most of the work was put into remembering how the GeoJSON format works, so I could do the string formatting on the Go side. I&rsquo;m also taking a bit sending back just a string and parsing the string on the JS side, but it works well enough.
-</div>
-</div>
-</div>
-</div>
-<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
-<div class="bg-white mb3 pa4 gray overflow-hidden">
-<span class="f6 db">Musings</span>
-<h1 class="f3 near-black">
-<a href=https://www.odinseye.cloud/musings/automation/ class="link black dim">
-Automation!
-</a>
-</h1>
-<div class="nested-links f5 lh-copy nested-copy-line-height">
-Turns out Automation is neat.
-After some fairly manic coding, much trial and error, and some grave computing sins (DevOps folks look away), I&rsquo;ve set up a Pipeline for automatically generating hurricane pages on this site. Google Cloud Platform is the MVP here, housing all of the processing pipeline, and (so far) the completely in the free tier. So now new hurricanes will be automatically added to the site as they&rsquo;re tracked by NOAA, and current storms will reflect (more or less) the latest forecasts.
 </div>
 </div>
 </div>
