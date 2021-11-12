@@ -54,4 +54,3 @@ This is just a quick overview of the major parameters and measurements provided 
 # References
 - [Best track Specification](https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt)
 - [Tropical Cyclone Guidance Project](http://hurricanes.ral.ucar.edu/realtime/)
-- 
