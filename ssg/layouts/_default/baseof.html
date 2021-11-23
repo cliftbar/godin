@@ -34,9 +34,10 @@
     {{- template "_internal/twitter_cards.html" . -}}
 
     {{ if or (eq (getenv "HUGO_ENV") "production") (eq .Site.Params.env "production") }}
+      {{ template "_internal/google_analytics.html" . }}
       {{ if or (and (eq .Page.Type "musings") (eq .Page.IsPage true)) (eq .Page.IsHome true) }}
-        {{ template "_internal/google_analytics.html" . }}
         {{ partial "google_adsense.html" . }}
+        {{ partial "adaround.html" . }}
       {{ end }}
     {{ end }}
 
