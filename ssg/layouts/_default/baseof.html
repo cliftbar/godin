@@ -35,9 +35,9 @@
 
     {{ if or (eq (getenv "HUGO_ENV") "production") (eq .Site.Params.env "production") }}
       {{ template "_internal/google_analytics.html" . }}
+      {{ partial "adaround.html" . }}
       {{ if or (and (eq .Page.Type "musings") (eq .Page.IsPage true)) (eq .Page.IsHome true) }}
         {{ partial "google_adsense.html" . }}
-        {{ partial "adaround.html" . }}
       {{ end }}
     {{ end }}
 
