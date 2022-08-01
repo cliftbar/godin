@@ -1,141 +1,29 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
-<title>NOAA RSS | Odin</title>
-<meta name=viewport content="width=device-width,minimum-scale=1">
-<meta name=description content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
-So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc.">
-<meta name=generator content="Hugo 0.92.1">
-<meta name=ROBOTS content="INDEX, FOLLOW">
-<link rel=stylesheet href=https://www.odinseye.cloud/ananke/css/main.min.5634740bea2b6888928cdc68ce34cea639f0daf949dc791c38696b64f8558ca0.css>
-<link rel="shortcut icon" href=https://www.odinseye.cloud/img/godin_icon.png type=image/x-icon>
-<meta property="og:title" content="NOAA RSS">
-<meta property="og:description" content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
-So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.odinseye.cloud/musings/noaa_rss/"><meta property="article:section" content="musings">
-<meta property="article:published_time" content="2021-09-14T17:49:38-07:00">
-<meta property="article:modified_time" content="2021-09-14T17:49:38-07:00">
-<meta itemprop=name content="NOAA RSS">
-<meta itemprop=description content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
-So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc."><meta itemprop=datePublished content="2021-09-14T17:49:38-07:00">
-<meta itemprop=dateModified content="2021-09-14T17:49:38-07:00">
-<meta itemprop=wordCount content="685">
-<meta itemprop=keywords content><meta name=twitter:card content="summary">
-<meta name=twitter:title content="NOAA RSS">
-<meta name=twitter:description content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
-So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc.">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KWNZJ4607L"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-KWNZJ4607L',{anonymize_ip:!1})}</script>
-</head>
-<body class="ma0 avenir bg-near-white production">
-<header>
-<div class=bg-black>
-<nav class="pv3 ph3 ph4-ns" role=navigation>
-<div class="flex-l justify-between items-center center">
-<a href=https://www.odinseye.cloud/ class="f3 fw2 hover-white no-underline white-90 dib">
-<img src=https://www.odinseye.cloud/img/godin_icon.png class="w100 mw5-ns" alt=Odin>
-</a>
-<div class="flex-l items-center">
-<ul class="pl0 mr3">
-<li class="list f5 f4-ns fw4 dib pr3">
-<a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/about/ title="About page">
-About
-</a>
-</li>
-<li class="list f5 f4-ns fw4 dib pr3">
-<a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/announcements/ title="Announcements page">
-Announcements
-</a>
-</li>
-<li class="list f5 f4-ns fw4 dib pr3">
-<a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/hurricane/ title="Hurricanes page">
-Hurricanes
-</a>
-</li>
-<li class="list f5 f4-ns fw4 dib pr3">
-<a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/maps/ title="Map page">
-Map
-</a>
-</li>
-<li class="list f5 f4-ns fw4 dib pr3">
-<a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/musings/ title="Musings page">
-Musings
-</a>
-</li>
-</ul>
-</div>
-</div>
-</nav>
-</div>
-</header>
-<main class=pb7 role=main>
-<article class="flex-l flex-wrap justify-between mw9 center ph3">
-<header class="mt4 w-100">
-<aside class="instapaper_ignoref b helvetica tracked">
-MUSINGS
-</aside>
-<h1 class="f1 athelas mt3 mb1">NOAA RSS</h1>
-<p>
-<time class="f6 mv4 dib tracked" datetime=2021-09-14T17:49:38-07:00>September 14, 2021</time>
-</header>
-<div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h2 id=noaa-rss-feeds>NOAA RSS Feeds</h2>
-<p>Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a <a href=https://en.wikipedia.org/wiki/Atom_(Web_standard)>wikipedia</a> link if you care about that.</p>
-<p>So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc. For this project, the most interesting is the <a href=https://www.nhc.noaa.gov/help/tcp.shtml>Public Advisories</a>, which are issued regularly and contain key statistics and forecaster commentary. The model isn&rsquo;t using the statistics dirctly from th Advisories, but the data is there. The Discussion section is interesting, and now gets included on hurricane pages as updates happen. But, the most useful part of the Advisories is as an update event source: NOAA issues Advisories every 6 hours for active storms, and every 3 hours for major storms.</p>
-<h1 id=reading-atom-in-go>Reading Atom in Go</h1>
-<p>Fetching the feed in Go was fairly easy, as was parsing it according to the Atom spec. <a href=https://github.com/mmcdole/gofeed>gofeed</a> took all the work out of it, put in a URL, get out a feed object.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;github.com/mmcdole/gofeed&#34;</span>
-<span style=color:#a6e22e>fp</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>gofeed</span>.<span style=color:#a6e22e>NewParser</span>()
-<span style=color:#a6e22e>feed</span>, <span style=color:#a6e22e>_</span> <span style=color:#f92672>:=</span> 	<span style=color:#a6e22e>fp</span>.<span style=color:#a6e22e>ParseURL</span>(<span style=color:#e6db74>&#34;https://www.nhc.noaa.gov/index-at.xml&#34;</span>)
-</code></pre></div><p>The URL there will fetch all the &ldquo;active&rdquo; feed items as maps, which each have a text area where the notable content goes. Which NOAA didn&rsquo;t use, they put the text into the description field, odd choice but oh well. From there, loop through the items, sort out which ones are the Public Advisories, and parse the text data into structs. Sounds simple, but next comes Regex.</p>
-<h1 id=regex-parsing-in-go>Regex Parsing in Go</h1>
-<p>The Advisories follow a format, ish, but the best tool I could come up with to extact the data was muddling through a regex matcher. And as with all non-trivial regexes, it&rsquo;s a jumbled mess (citation needed). Behold the hubris!</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>publicAdvRegexOfDoom</span> = <span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>MustCompile</span>(<span style=color:#e6db74>`(?s).*(AL[0-9][0-9][0-9][0-9][0-9][0-9])\n(.*)\n.\n.*\n.\n.*SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)(?:\n[[:blank:]]\n[[:blank:]]\n).*(?:\n[[:blank:]]\n[[:blank:]]\n).*`</span>)
-</code></pre></div><p>Yes I named it <code>publicAdvRegexOfDoom</code> in the actual code, yes I&rsquo;m sticking to that. It is not efficent (I assume) nor robust (I know), but it does the thing I need it to. After using <code>FindAllStringSubmatch</code>, each part of the Advisory text that matches where the Regex is in parenthesis gets pulled out in a slice. Using a less confusing example:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>regex</span> = <span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>MustCompile</span>(<span style=color:#e6db74>`Test ([0-9])([0-9])`</span>)
-<span style=color:#a6e22e>match</span> [][]<span style=color:#66d9ef>string</span> = <span style=color:#a6e22e>regex</span>.<span style=color:#a6e22e>FindAllStringSubmatch</span>(<span style=color:#e6db74>&#34;Test 12&#34;</span>, <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-<span style=color:#75715e>// match[0][0] is 1
-</span><span style=color:#75715e>// match[0][1] is 2
-</span></code></pre></div><p>The parenthesis mark groups that get extracted out when the regex is able to match the text. The matches are only returned as text, so the code needs to deal with conversion to numeric types, parsing out the Latitude/Longitude format, etc. I won&rsquo;t put all of that rather boring code here, you can view that <a href=https://github.com/cliftbar/godin/blob/main/hurricane/nhc/rss.go>here</a>. Its worth noting that Go doesn&rsquo;t support some of the more complex regex features due efficiency concerns, which for me showed up as no support for &ldquo;match everything except &lsquo;x&rsquo;&rdquo;.</p>
-<h1 id=final-stucture>Final Stucture</h1>
-<p>The final struct at the end looks like this</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>StormFeedInfo</span> <span style=color:#66d9ef>struct</span> {
-	<span style=color:#a6e22e>Name</span> <span style=color:#66d9ef>string</span>
-	<span style=color:#a6e22e>StormID</span> <span style=color:#66d9ef>string</span>
-	<span style=color:#a6e22e>AdvNumber</span> <span style=color:#66d9ef>int</span>
-	<span style=color:#a6e22e>Timestamp</span> <span style=color:#a6e22e>time</span>.<span style=color:#a6e22e>Time</span>
-	<span style=color:#a6e22e>LatY</span> <span style=color:#66d9ef>float64</span>
-	<span style=color:#a6e22e>LonX</span> <span style=color:#66d9ef>float64</span>
-	<span style=color:#a6e22e>BearingDeg</span> <span style=color:#66d9ef>float64</span>
-	<span style=color:#a6e22e>ForwardSpeedKts</span> <span style=color:#66d9ef>float64</span>
-	<span style=color:#a6e22e>VMaxKts</span> <span style=color:#66d9ef>float64</span>
-	<span style=color:#a6e22e>MinCpMb</span> <span style=color:#66d9ef>float64</span>
-	<span style=color:#a6e22e>Discussion</span> <span style=color:#66d9ef>string</span>
-	<span style=color:#a6e22e>Graphics</span> []<span style=color:#66d9ef>string</span>
-	<span style=color:#a6e22e>Sources</span> []<span style=color:#66d9ef>string</span>
-}
-</code></pre></div><p>and this is dumped as a document into two Firestore locations: one in a &ldquo;pending&rdquo; collection, and one in a more formal archive location, to be later picked up by the build process.</p>
-<h1 id=where-it-lives>Where It Lives</h1>
-<p>The parser itself is run every 2 hours in Cloud Functions, kicked off by Cloud Scheduler, with PubSub as the glue layer. Cloud Scheduler is pretty straightforward, cron style format pointed to a PubSub topic, the UI and docs will work for setting that up. The Cloud Function is triggered by new messages in the topic, but the message content isn&rsquo;t used for anything. Creating the Cloud Function itself is largely pasting the code into the UI, and making sure the entry point is defined (which is provided by the initial template). The only gotcha here was making sure to also update the <code>go.mod</code> file with any dependancies (gofeed and Firestore in this case).</p>
-<ul class=pa0>
-</ul>
-<div class="mt6 instapaper_ignoref">
-</div>
-</div>
-<aside class="w-30-l mt6-l">
-</aside>
-<div class=_fa7cdd4c68507744 data-zone=204c5806c2404851a377eda9d8eedf91 style="width:240px;height:400px;display:inline-block;margin:0 auto"></div>
-</article>
-</main>
-<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
-<div class="flex justify-between">
-<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://www.odinseye.cloud>
-&copy; Odin 2022
-</a>
-<div>
-</div>
-</div>
-</footer>
-</body>
-</html>
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>NOAA RSS | Odin</title><meta name=viewport content="width=device-width,minimum-scale=1"><meta name=description content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
+So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc."><meta name=generator content="Hugo 0.101.0"><meta name=ROBOTS content="INDEX, FOLLOW"><link rel=stylesheet href=https://www.odinseye.cloud/ananke/css/main.min.5634740bea2b6888928cdc68ce34cea639f0daf949dc791c38696b64f8558ca0.css><link rel="shortcut icon" href=https://www.odinseye.cloud/img/godin_icon.png type=image/x-icon><meta property="og:title" content="NOAA RSS"><meta property="og:description" content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
+So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc."><meta property="og:type" content="article"><meta property="og:url" content="https://www.odinseye.cloud/musings/noaa_rss/"><meta property="article:section" content="musings"><meta property="article:published_time" content="2021-09-14T17:49:38-07:00"><meta property="article:modified_time" content="2021-09-14T17:49:38-07:00"><meta itemprop=name content="NOAA RSS"><meta itemprop=description content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
+So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc."><meta itemprop=datePublished content="2021-09-14T17:49:38-07:00"><meta itemprop=dateModified content="2021-09-14T17:49:38-07:00"><meta itemprop=wordCount content="685"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="NOAA RSS"><meta name=twitter:description content="NOAA RSS Feeds Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a wikipedia link if you care about that.
+So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc."><script async src="https://www.googletagmanager.com/gtag/js?id=G-KWNZJ4607L"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-KWNZJ4607L",{anonymize_ip:!1})}</script></head><body class="ma0 avenir bg-near-white production"><header><div class=bg-black><nav class="pv3 ph3 ph4-ns" role=navigation><div class="flex-l justify-between items-center center"><a href=https://www.odinseye.cloud/ class="f3 fw2 hover-white no-underline white-90 dib"><img src=https://www.odinseye.cloud/img/godin_icon.png class="w100 mw5-ns" alt=Odin></a><div class="flex-l items-center"><ul class="pl0 mr3"><li class="list f5 f4-ns fw4 dib pr3"><a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/about/ title="About page">About</a></li><li class="list f5 f4-ns fw4 dib pr3"><a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/announcements/ title="Announcements page">Announcements</a></li><li class="list f5 f4-ns fw4 dib pr3"><a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/hurricane/ title="Hurricanes page">Hurricanes</a></li><li class="list f5 f4-ns fw4 dib pr3"><a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/maps/ title="Map page">Map</a></li><li class="list f5 f4-ns fw4 dib pr3"><a class="hover-white no-underline white-90" href=https://www.odinseye.cloud/musings/ title="Musings page">Musings</a></li></ul></div></div></nav></div></header><main class=pb7 role=main><article class="flex-l flex-wrap justify-between mw9 center ph3"><header class="mt4 w-100"><aside class="instapaper_ignoref b helvetica tracked">MUSINGS</aside><h1 class="f1 athelas mt3 mb1">NOAA RSS</h1><p><time class="f6 mv4 dib tracked" datetime=2021-09-14T17:49:38-07:00>September 14, 2021</time></header><div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h2 id=noaa-rss-feeds>NOAA RSS Feeds</h2><p>Well, actually they&rsquo;re Atom feeds I guess, but they&rsquo;re basically interchangeable, the library I use handles both automagically, and people know what RSS is. This is more about parsing the data than a web format, so here&rsquo;s a <a href=https://en.wikipedia.org/wiki/Atom_(Web_standard)>wikipedia</a> link if you care about that.</p><p>So, NOAA publishes a ton of data using their feeds, in a few formats. Some is historical data, some is re-analyzed data, graphics, GIS, etc etc. For this project, the most interesting is the <a href=https://www.nhc.noaa.gov/help/tcp.shtml>Public Advisories</a>, which are issued regularly and contain key statistics and forecaster commentary. The model isn&rsquo;t using the statistics dirctly from th Advisories, but the data is there. The Discussion section is interesting, and now gets included on hurricane pages as updates happen. But, the most useful part of the Advisories is as an update event source: NOAA issues Advisories every 6 hours for active storms, and every 3 hours for major storms.</p><h1 id=reading-atom-in-go>Reading Atom in Go</h1><p>Fetching the feed in Go was fairly easy, as was parsing it according to the Atom spec. <a href=https://github.com/mmcdole/gofeed>gofeed</a> took all the work out of it, put in a URL, get out a feed object.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;github.com/mmcdole/gofeed&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>fp</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>gofeed</span>.<span style=color:#a6e22e>NewParser</span>()
+</span></span><span style=display:flex><span><span style=color:#a6e22e>feed</span>, <span style=color:#a6e22e>_</span> <span style=color:#f92672>:=</span> 	<span style=color:#a6e22e>fp</span>.<span style=color:#a6e22e>ParseURL</span>(<span style=color:#e6db74>&#34;https://www.nhc.noaa.gov/index-at.xml&#34;</span>)
+</span></span></code></pre></div><p>The URL there will fetch all the &ldquo;active&rdquo; feed items as maps, which each have a text area where the notable content goes. Which NOAA didn&rsquo;t use, they put the text into the description field, odd choice but oh well. From there, loop through the items, sort out which ones are the Public Advisories, and parse the text data into structs. Sounds simple, but next comes Regex.</p><h1 id=regex-parsing-in-go>Regex Parsing in Go</h1><p>The Advisories follow a format, ish, but the best tool I could come up with to extact the data was muddling through a regex matcher. And as with all non-trivial regexes, it&rsquo;s a jumbled mess (citation needed). Behold the hubris!</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>publicAdvRegexOfDoom</span> = <span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>MustCompile</span>(<span style=color:#e6db74>`(?s).*(AL[0-9][0-9][0-9][0-9][0-9][0-9])\n(.*)\n.\n.*\n.\n.*SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)(?:\n[[:blank:]]\n[[:blank:]]\n).*(?:\n[[:blank:]]\n[[:blank:]]\n).*`</span>)
+</span></span></code></pre></div><p>Yes I named it <code>publicAdvRegexOfDoom</code> in the actual code, yes I&rsquo;m sticking to that. It is not efficent (I assume) nor robust (I know), but it does the thing I need it to. After using <code>FindAllStringSubmatch</code>, each part of the Advisory text that matches where the Regex is in parenthesis gets pulled out in a slice. Using a less confusing example:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>regex</span> = <span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>MustCompile</span>(<span style=color:#e6db74>`Test ([0-9])([0-9])`</span>)
+</span></span><span style=display:flex><span><span style=color:#a6e22e>match</span> [][]<span style=color:#66d9ef>string</span> = <span style=color:#a6e22e>regex</span>.<span style=color:#a6e22e>FindAllStringSubmatch</span>(<span style=color:#e6db74>&#34;Test 12&#34;</span>, <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span><span style=color:#75715e>// match[0][0] is 1
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// match[0][1] is 2
+</span></span></span></code></pre></div><p>The parenthesis mark groups that get extracted out when the regex is able to match the text. The matches are only returned as text, so the code needs to deal with conversion to numeric types, parsing out the Latitude/Longitude format, etc. I won&rsquo;t put all of that rather boring code here, you can view that <a href=https://github.com/cliftbar/godin/blob/main/hurricane/nhc/rss.go>here</a>. Its worth noting that Go doesn&rsquo;t support some of the more complex regex features due efficiency concerns, which for me showed up as no support for &ldquo;match everything except &lsquo;x&rsquo;&rdquo;.</p><h1 id=final-stucture>Final Stucture</h1><p>The final struct at the end looks like this</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>StormFeedInfo</span> <span style=color:#66d9ef>struct</span> {
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>Name</span> <span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>StormID</span> <span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>AdvNumber</span> <span style=color:#66d9ef>int</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>Timestamp</span> <span style=color:#a6e22e>time</span>.<span style=color:#a6e22e>Time</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>LatY</span> <span style=color:#66d9ef>float64</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>LonX</span> <span style=color:#66d9ef>float64</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>BearingDeg</span> <span style=color:#66d9ef>float64</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>ForwardSpeedKts</span> <span style=color:#66d9ef>float64</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>VMaxKts</span> <span style=color:#66d9ef>float64</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>MinCpMb</span> <span style=color:#66d9ef>float64</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>Discussion</span> <span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>Graphics</span> []<span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>Sources</span> []<span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>and this is dumped as a document into two Firestore locations: one in a &ldquo;pending&rdquo; collection, and one in a more formal archive location, to be later picked up by the build process.</p><h1 id=where-it-lives>Where It Lives</h1><p>The parser itself is run every 2 hours in Cloud Functions, kicked off by Cloud Scheduler, with PubSub as the glue layer. Cloud Scheduler is pretty straightforward, cron style format pointed to a PubSub topic, the UI and docs will work for setting that up. The Cloud Function is triggered by new messages in the topic, but the message content isn&rsquo;t used for anything. Creating the Cloud Function itself is largely pasting the code into the UI, and making sure the entry point is defined (which is provided by the initial template). The only gotcha here was making sure to also update the <code>go.mod</code> file with any dependancies (gofeed and Firestore in this case).</p><ul class=pa0></ul><div class="mt6 instapaper_ignoref"></div></div><aside class="w-30-l mt6-l"></aside><div class=_fa7cdd4c68507744 data-zone=204c5806c2404851a377eda9d8eedf91 style="width:240px;height:400px;display:inline-block;margin:0 auto"></div></article></main><footer class="bg-black bottom-0 w-100 pa3" role=contentinfo><div class="flex justify-between"><a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://www.odinseye.cloud>&copy; Odin 2022</a><div></div></div></footer></body></html>
