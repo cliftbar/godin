@@ -27,7 +27,7 @@ def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -
     output_lines: List[str] = model_proc_out.splitlines()
     storm_name: str = [li for li in output_lines if li.startswith("Name:")][0].split(":")[1].strip()
 
-    # print(f"model run for {storm_name} finished")
+    print(f"model run for {storm_name} finished")
     return storm_name
 
 
@@ -52,7 +52,7 @@ def create_update_ssg(storm_id: str, storm_name: str, storm_year: int, res: int,
             stdout=subprocess.PIPE
         )
         hugo_proc.check_returncode()
-        # print("Hugo post created")
+        print(f"Hugo post created for {storm_id} {ssg_data['AdvNumber']}")
 
         if not draft:
             lines_out: List[str] = []
@@ -125,8 +125,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     create_update_ssg(storm_id, name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
     print(f"SSG completed: {time.time() - ssg_start}s")
 
-
-    # print("godin storm finished\n")
+    print(f"godin storm finished for {storm_id} {ssg_data['AdvNumber']}\n")
     return name
 
 
@@ -179,10 +178,10 @@ def cloud_run():
         git_push([s.to_dict()["Name"] for s in pending_storms])
         # print(f"git_push_start completed: {time.time() - git_push_start}s")
 
-    # for storm in pending_storms:
-    #     pending_delete_start: float = time.time()
-    #     db.collection("pending").document(storm.id).delete()
-    #     print(f"pending_delete completed: {time.time() - pending_delete_start}s")
+    for storm in pending_storms:
+        pending_delete_start: float = time.time()
+        db.collection("pending").document(storm.id).delete()
+        print(f"pending_delete completed: {time.time() - pending_delete_start}s")
 
     # git_push_start: float = time.time()
     # git_push([s.to_dict()["Name"] for s in pending_storms])
@@ -246,4 +245,5 @@ def main():
 
 
 if __name__ == "__main__":
+    print("start!")
     main()
