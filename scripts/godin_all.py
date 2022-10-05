@@ -175,7 +175,8 @@ def cloud_run():
         # print(f"pending_delete for {storm_id} completed: {time.time() - pending_delete_start}s")
 
         # git_push_start: float = time.time()
-        git_push([s.to_dict()["Name"] for s in pending_storms])
+        # git_push([s.to_dict()["Name"] for s in pending_storms])
+        git_push([storm_id])
         # print(f"git_push_start completed: {time.time() - git_push_start}s")
 
     for storm in pending_storms:
