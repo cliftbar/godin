@@ -20,7 +20,7 @@ func myUsage() {
 	flag.PrintDefaults()
 }
 
-func main(){
+func main() {
 	// stormID := "al082021" //Henri 2021
 	// stormID := "al092021" //Ida 2021
 	// stormID := "al122005" // katrina 2005
@@ -56,7 +56,7 @@ func main(){
 	SingleCalc(stormID, pixPerDegLatY, pixPerDegLonX, *rMaxDefaultNmi, *maxCalcDistNmi, *gwaf, *includeForecasts)
 }
 
-func cloudCalc(stormID string){
+func cloudCalc(stormID string) {
 	// bucket := "godin_hurricane_data"
 	rMaxNmiDefault := 15.0
 	gwaf := 0.9
@@ -73,7 +73,7 @@ func cloudCalc(stormID string){
 
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.csv", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trakXYZ), 0644)
 
-	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
+	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0/float64(ce.PixPerDegreeLonX), -1.0/float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 
 	_ = ioutil.WriteFile(fmt.Sprintf("%s_%dx%d.wld", ce.Info.Name, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 }
@@ -99,7 +99,7 @@ func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaul
 	dirEntries, _ := os.ReadDir(src)
 	for _, entry := range dirEntries {
 		if !entry.IsDir() {
-			_ = os.Rename(src + "/" + entry.Name(), dest + "/" + entry.Name())
+			_ = os.Rename(src+"/"+entry.Name(), dest+"/"+entry.Name())
 		}
 	}
 
@@ -108,7 +108,7 @@ func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaul
 
 	_ = ioutil.WriteFile(fmt.Sprintf("data/%s/%s_%d_%dx%d.csv", stormNameYear, ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(trackXYZ), 0644)
 
-	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0 / float64(ce.PixPerDegreeLonX), -1.0 / float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
+	wldText := fmt.Sprintf("%f\n0\n0\n%f\n%d\n%d", 1.0/float64(ce.PixPerDegreeLonX), -1.0/float64(ce.PixPerDegreeLatY), ce.Info.Bounds.LonXLeftDeg, ce.Info.Bounds.LatYTopDeg)
 
 	_ = ioutil.WriteFile(fmt.Sprintf("data/%s/%s_%d_%dx%d.wld", stormNameYear, ce.Info.Name, ce.Info.Year, ce.PixPerDegreeLonX, ce.PixPerDegreeLatY), []byte(wldText), 0644)
 
@@ -117,7 +117,7 @@ func SingleCalc(stormID string, pixPerDegLatY int, pixPerDegLonX int, rMaxDefaul
 	return ce
 }
 
-func main2(){
+func jsonRead() {
 	fileContents, _ := ioutil.ReadFile("MATTHEW_2016_Sample.json")
 
 	var event hurricane.EventInformation
