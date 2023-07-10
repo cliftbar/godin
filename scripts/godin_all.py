@@ -129,11 +129,8 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     return name
 
 
-def godin_year():
-    year: int = 2020
-    storm_count: int = 31
+def godin_year(year: int = 2020, storm_count: int = 31, resolution: int = 100):
 
-    resolution: int = 100
     for i in range(1, storm_count + 1):
         storm: str = f"al{i:02d}{year}"
 
@@ -235,6 +232,24 @@ def git_push(storms: List[str]):
     print(str(proc.stdout, "utf-8"))
 
 
+def local_run_year(year: int = 2023, doGit: bool = False):
+    cloud_run_start: float = time.time()
+
+    if doGit:
+        git_setup_start: float = time.time()
+        git_setup()
+        print(f"git_setup completed: {time.time() - git_setup_start}s")
+
+    godin_year(year, 4)
+
+    if doGit:
+        git_push_start: float = time.time()
+        git_push([f"Year {year}"])
+        print(f"git_push_start completed: {time.time() - git_push_start}s")
+
+    print(f"local run completed: {time.time() - cloud_run_start}s, doGit: {doGit}")
+
+
 def main():
     # storm: str = "al022020"
     # storm: str = "al122021"
@@ -242,7 +257,8 @@ def main():
     # storm: str = "al182021"
     # godin_storm(storm, 10, True)
     # godin_year()
-    cloud_run()
+    # cloud_run()
+    local_run_year(doGit=True)
 
 
 if __name__ == "__main__":

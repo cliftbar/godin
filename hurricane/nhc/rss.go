@@ -3,7 +3,10 @@ package nhc
 import (
 	"cloud.google.com/go/firestore"
 	"context"
+	"database/sql"
+	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/mmcdole/gofeed"
 	"log"
@@ -15,6 +18,7 @@ import (
 )
 
 const mphToKts = 0.868976
+
 var publicAdvRegex = regexp.MustCompile(`(?:Tropical (?:Storm|Depression)|Hurricane) (.*) Public Advisory Number (.*)`)
 var publicAdvRegexOfDoom = regexp.MustCompile(`(?s).*(AL[0-9][0-9][0-9][0-9][0-9][0-9])\n(.*)\n.\n.*\n.\n.*SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)(?:\n[[:blank:]]\n[[:blank:]]\n).*(?:\n[[:blank:]]\n[[:blank:]]\n).*`)
 var graphicsRegex = regexp.MustCompile(`(?:Tropical (?:Storm|Depression)|Hurricane) (.*) Graphics`)
@@ -33,26 +37,26 @@ func PubSubEntry(ctx context.Context, m PubSubMessage) error {
 }
 
 type StormFeedInfo struct {
-	Name string
-	StormID string
-	AdvNumber int
-	Timestamp time.Time
-	LatY float64
-	LonX float64
-	BearingDeg float64
+	Name            string
+	StormID         string
+	AdvNumber       int
+	Timestamp       time.Time
+	LatY            float64
+	LonX            float64
+	BearingDeg      float64
 	ForwardSpeedKts float64
-	VMaxKts float64
-	MinCpMb float64
-	Discussion string
-	Graphics []string
-	Sources []string
+	VMaxKts         float64
+	MinCpMb         float64
+	Discussion      string
+	Graphics        []string
+	Sources         []string
 }
 
-func (i *StormFeedInfo) SetGraphics(g []string){
+func (i *StormFeedInfo) SetGraphics(g []string) {
 	i.Graphics = g
 }
 
-func (i *StormFeedInfo) SetSources(g []string){
+func (i *StormFeedInfo) SetSources(g []string) {
 	i.Sources = g
 }
 
@@ -129,17 +133,17 @@ func parsePublicAdv(adv *gofeed.Item) (info StormFeedInfo) {
 	discussionText := strings.TrimSpace(matchVars[10])
 
 	info = StormFeedInfo{
-		Name: name,
-		StormID: strings.ToLower(stormID),
-		AdvNumber: advNumber,
-		Timestamp: ts.UTC(),
-		LatY: lat,
-		LonX: lon,
-		VMaxKts: vMaxKts,
-		BearingDeg: bearingDeg,
+		Name:            name,
+		StormID:         strings.ToLower(stormID),
+		AdvNumber:       advNumber,
+		Timestamp:       ts.UTC(),
+		LatY:            lat,
+		LonX:            lon,
+		VMaxKts:         vMaxKts,
+		BearingDeg:      bearingDeg,
 		ForwardSpeedKts: fSpeedKts,
-		MinCpMb: minCpMb,
-		Discussion: discussionText,
+		MinCpMb:         minCpMb,
+		Discussion:      discussionText,
 	}
 	return info
 }
@@ -154,10 +158,10 @@ func parseStormGraphics(adv *gofeed.Item) (name string, links []string) {
 	return name, links
 }
 
-func ParseFeed(){
+func ParseFeed() {
 	fp := gofeed.NewParser()
 
-	feed, _ := 	fp.ParseURL("https://www.nhc.noaa.gov/index-at.xml")
+	feed, _ := fp.ParseURL("https://www.nhc.noaa.gov/index-at.xml")
 
 	storms := map[string]StormFeedInfo{}
 	links := map[string][]string{}
@@ -177,7 +181,7 @@ func ParseFeed(){
 
 	}
 
-	for name := range storms{
+	for name := range storms {
 		if l, ok := links[name]; ok {
 			info := storms[name]
 			info.SetGraphics(l)
@@ -194,11 +198,12 @@ func ParseFeed(){
 	out, _ := json.MarshalIndent(storms, "", "  ")
 	fmt.Println(string(out))
 	for _, storm := range storms {
-		saveToDB(storm)
+		//saveToGCloudDB(storm)
+		saveToPostgres(storm)
 	}
 }
 
-func saveToDB(info StormFeedInfo) {
+func saveToGCloudDB(info StormFeedInfo) {
 	ctx := context.Background()
 
 	projectID, ok := os.LookupEnv("GCP_PROJECT")
@@ -223,4 +228,41 @@ func saveToDB(info StormFeedInfo) {
 		log.Printf("Doc error: %v", err)
 	}
 	_ = client.Close()
+}
+
+type PostgresStormInfoTable struct {
+	id   int
+	info StormFeedInfo
+}
+
+func (i *StormFeedInfo) Value() (driver.Value, error) {
+	return json.Marshal(i)
+}
+
+func (i *StormFeedInfo) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("StormInfo type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(b, &i)
+}
+
+func saveToPostgres(info StormFeedInfo) {
+	pgpass, _ := os.LookupEnv("GODIN_PG_PASS")
+	pgConnStr := fmt.Sprintf("postgres://postgres:%slocalhost:5432", pgpass)
+	db, err := sql.Open("postgres", pgConnStr)
+	if err != nil {
+		log.Fatalf("conn error: %s", err)
+	}
+
+	db.Exec("CREATE TABLE IF NOT EXISTS PostgresStormInfoTable (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), info JSONB)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec("INSERT INTO PostgresStormInfoTable (info) VALUES($1)", info)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
