@@ -3,12 +3,12 @@ package nhc
 import (
 	"cloud.google.com/go/firestore"
 	"context"
-	"database/sql"
-	"database/sql/driver"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/mmcdole/gofeed"
+	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -19,7 +19,7 @@ import (
 
 const mphToKts = 0.868976
 
-var publicAdvRegex = regexp.MustCompile(`(?:Tropical (?:Storm|Depression)|Hurricane) (.*) Public Advisory Number (.*)`)
+var publicAdvRegex = regexp.MustCompile(`^(?:(?:Post-)Tropical (?:Storm|Depression|Cyclone|Hurricane)) (.*) Public Advisory Number (.*)`)
 var publicAdvRegexOfDoom = regexp.MustCompile(`(?s).*(AL[0-9][0-9][0-9][0-9][0-9][0-9])\n(.*)\n.\n.*\n.\n.*SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)(?:\n[[:blank:]]\n[[:blank:]]\n).*(?:\n[[:blank:]]\n[[:blank:]]\n).*`)
 var graphicsRegex = regexp.MustCompile(`(?:Tropical (?:Storm|Depression)|Hurricane) (.*) Graphics`)
 
@@ -37,19 +37,20 @@ func PubSubEntry(ctx context.Context, m PubSubMessage) error {
 }
 
 type StormFeedInfo struct {
-	Name            string
-	StormID         string
-	AdvNumber       int
-	Timestamp       time.Time
-	LatY            float64
-	LonX            float64
-	BearingDeg      float64
-	ForwardSpeedKts float64
-	VMaxKts         float64
-	MinCpMb         float64
-	Discussion      string
-	Graphics        []string
-	Sources         []string
+	Name            string    `json:"name,omitempty"`
+	StormID         string    `json:"storm_id,omitempty"`
+	AdvNumber       int       `json:"adv_number,omitempty"`
+	Timestamp       time.Time `json:"timestamp"`
+	LatY            float64   `json:"lat_y,omitempty"`
+	LonX            float64   `json:"lon_x,omitempty"`
+	BearingDeg      float64   `json:"bearing_deg,omitempty"`
+	ForwardSpeedKts float64   `json:"forward_speed_kts,omitempty"`
+	VMaxKts         float64   `json:"v_max_kts,omitempty"`
+	MinCpMb         float64   `json:"min_cp_mb,omitempty"`
+	Discussion      string    `json:"discussion,omitempty"`
+	Graphics        []string  `json:"graphics,omitempty"`
+	Sources         []string  `json:"sources,omitempty"`
+	Raw             string    `json:"raw,omitempty"`
 }
 
 func (i *StormFeedInfo) SetGraphics(g []string) {
@@ -144,6 +145,7 @@ func parsePublicAdv(adv *gofeed.Item) (info StormFeedInfo) {
 		ForwardSpeedKts: fSpeedKts,
 		MinCpMb:         minCpMb,
 		Discussion:      discussionText,
+		Raw:             adv.Description,
 	}
 	return info
 }
@@ -159,6 +161,9 @@ func parseStormGraphics(adv *gofeed.Item) (name string, links []string) {
 }
 
 func ParseFeed() {
+	ParseFeedSave(true)
+}
+func ParseFeedSave(doSave bool) {
 	fp := gofeed.NewParser()
 
 	feed, _ := fp.ParseURL("https://www.nhc.noaa.gov/index-at.xml")
@@ -197,13 +202,16 @@ func ParseFeed() {
 
 	out, _ := json.MarshalIndent(storms, "", "  ")
 	fmt.Println(string(out))
-	for _, storm := range storms {
-		//saveToGCloudDB(storm)
-		saveToPostgres(storm)
+
+	if doSave {
+		for _, storm := range storms {
+			//saveToFirestoreDB(storm)
+			saveToPostgresDB(storm)
+		}
 	}
 }
 
-func saveToGCloudDB(info StormFeedInfo) {
+func saveToFirestoreDB(info StormFeedInfo) {
 	ctx := context.Background()
 
 	projectID, ok := os.LookupEnv("GCP_PROJECT")
@@ -230,39 +238,60 @@ func saveToGCloudDB(info StormFeedInfo) {
 	_ = client.Close()
 }
 
-type PostgresStormInfoTable struct {
-	id   int
-	info StormFeedInfo
+type NhcRssWrite struct {
+	StormId string `db:"storm_id"`
+	AdvNum  int    `db:"adv_num"`
+	Raw     string `db:"raw"`
+	Parsed  string `db:"parsed"`
+}
+type NhcRss struct {
+	Id        string    `db:"id"`
+	StormId   string    `db:"storm_id"`
+	AdvNum    int       `db:"adv_num"`
+	Raw       string    `db:"raw"`
+	Parsed    string    `db:"parsed"`
+	Processed bool      `db:"processed"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
-func (i *StormFeedInfo) Value() (driver.Value, error) {
-	return json.Marshal(i)
-}
+func (i *StormFeedInfo) toNhcRssTable() (ret NhcRssWrite) {
+	parsed, _ := json.Marshal(i)
 
-func (i *StormFeedInfo) Scan(value interface{}) error {
-	b, ok := value.([]byte)
-	if !ok {
-		return errors.New("StormInfo type assertion to []byte failed")
+	return NhcRssWrite{
+		StormId: i.StormID,
+		AdvNum:  i.AdvNumber,
+		Raw:     i.Raw,
+		Parsed:  string(parsed),
 	}
-
-	return json.Unmarshal(b, &i)
 }
 
-func saveToPostgres(info StormFeedInfo) {
-	pgpass, _ := os.LookupEnv("GODIN_PG_PASS")
-	pgConnStr := fmt.Sprintf("postgres://postgres:%slocalhost:5432", pgpass)
-	db, err := sql.Open("postgres", pgConnStr)
+type DBConfig struct {
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func saveToPostgresDB(info StormFeedInfo) {
+	fi, _ := os.Open("./sql/db.json")
+
+	var conf DBConfig
+	jsonBytes, _ := ioutil.ReadAll(fi)
+
+	_ = json.Unmarshal(jsonBytes, &conf)
+
+	connStr := fmt.Sprintf("postgresql://%s:%s@%s:%d/postgres?sslmode=disable", conf.Username, conf.Password, conf.Host, conf.Port)
+	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
-		log.Fatalf("conn error: %s", err)
+		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	db.Exec("CREATE TABLE IF NOT EXISTS PostgresStormInfoTable (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), info JSONB)")
+	toWrite := info.toNhcRssTable()
+	tx := db.MustBegin()
+	res, err := tx.NamedExec(`INSERT INTO odin.nhc_rss (storm_id, adv_num, parsed) VALUES (:storm_id, :adv_num, :parsed)`, &toWrite)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	_, err = db.Exec("INSERT INTO PostgresStormInfoTable (info) VALUES($1)", info)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Println(res)
+	_ = tx.Commit()
 }
