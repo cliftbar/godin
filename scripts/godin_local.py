@@ -8,11 +8,9 @@ from subprocess import CompletedProcess
 from typing import Any, List, Dict
 from pathlib import Path
 
-from google.cloud import firestore
-from google.cloud.firestore_v1 import Client, DocumentSnapshot
-from sqlalchemy import Engine, create_engine, Connection, text
+from sqlalchemy import Engine, create_engine, Connection, text, CursorResult
 
-import qgis_layout_exporter
+# import qgis_layout_exporter
 from event_uploader import upload_event
 
 
@@ -29,7 +27,7 @@ def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -
     output_lines: List[str] = model_proc_out.splitlines()
     storm_name: str = [li for li in output_lines if li.startswith("Name:")][0].split(":")[1].strip()
 
-    print(f"model run for {storm_name} finished")
+    # print(f"model run for {storm_name} finished")
     return storm_name
 
 
@@ -54,7 +52,7 @@ def create_update_ssg(storm_id: str, storm_name: str, storm_year: int, res: int,
             stdout=subprocess.PIPE
         )
         hugo_proc.check_returncode()
-        print(f"Hugo post created for {storm_id} {ssg_data['AdvNumber']}")
+        # print("Hugo post created")
 
         if not draft:
             lines_out: List[str] = []
@@ -127,12 +125,16 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     create_update_ssg(storm_id, name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
     print(f"SSG completed: {time.time() - ssg_start}s")
 
-    print(f"godin storm finished for {storm_id} {ssg_data['AdvNumber']}\n")
+
+    # print("godin storm finished\n")
     return name
 
 
-def godin_year(year: int = 2021, storm_count: int = 21, resolution: int = 100):
+def godin_year():
+    year: int = 2021
+    storm_count: int = 21
 
+    resolution: int = 100
     for i in range(1, storm_count + 1):
         storm: str = f"al{i:02d}{year}"
 
@@ -141,53 +143,55 @@ def godin_year(year: int = 2021, storm_count: int = 21, resolution: int = 100):
         print(f"{storm} finished, {i} out of {storm_count} for year {year}")
 
 
-def cloud_run():
+def generate_pending_adv(doGit: bool = False):
     cloud_run_start: float = time.time()
 
-    git_setup_start: float = time.time()
-    git_setup()
-    print(f"git_setup completed: {time.time() - git_setup_start}s")
+    if doGit:
+        git_setup_start: float = time.time()
+        git_setup()
+        print(f"git_setup completed: {time.time() - git_setup_start}s")
 
-    db: Client = firestore.Client(project="godin-324403")
+    with Path("db.json").open(mode="r") as fi:
+        conf: dict[str, Any] = json.load(fi)
+        host: str = conf["host"]
+        port: int = conf["port"]
+        username: str = conf["username"]
+        password: str = conf["password"]
+
+    engine: Engine = create_engine(f"postgresql://{username}:{password}@{host}:{port}/postgres")
 
     pending_storms_start: float = time.time()
-    pending_storms: List[DocumentSnapshot] = [d for d in db.collection("pending").stream()]
+    conn: Connection
+    with engine.begin() as conn:
+        res: CursorResult[Any] = conn.execute(text("""WITH g AS (SELECT *, ROW_NUMBER() OVER(PARTITION BY storm_id ORDER BY adv_num DESC) AS rn FROM odin.nhc_rss) SELECT * FROM g WHERE NOT processed AND rn = 1"""))
+        pending_storms = {r["storm_id"]: r["parsed"] for r in res.mappings().all()}
     print(f"pending_storms completed: {time.time() - pending_storms_start}s")
 
-    run_dict: Dict = {}
-    for storm in pending_storms:
-        storm_dict: Dict = storm.to_dict()
-        storm_id: str = storm_dict["StormID"]
-        if storm_id in run_dict:
-            if storm_dict["AdvNumber"] > run_dict[storm_id]["AdvNumber"]:
-                run_dict[storm_id] = storm_dict
-        else:
-            run_dict[storm_id] = storm_dict
-
-    for storm_id, storm in run_dict.items():
+    # run_dict: Dict = {}
+    # for storm in pending_storms:
+    #     storm_dict: Dict = storm.to_dict()
+    #     storm_id: str = storm_dict["StormID"]
+    #     if storm_id in run_dict:
+    #         if storm_dict["AdvNumber"] > run_dict[storm_id]["AdvNumber"]:
+    #             run_dict[storm_id] = storm_dict
+    #     else:
+    #         run_dict[storm_id] = storm_dict
+    #
+    for storm_id, storm in pending_storms.items():
         godin_storm_start: float = time.time()
-        godin_storm(storm["StormID"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm)
+        godin_storm(storm["storm_id"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm)
         print(f"godin_storm for {storm_id} completed: {time.time() - godin_storm_start}s")
+    #
+    #     # pending_delete_start: float = time.time()
+    #     db.collection("pending").document(storm_id).delete()
+    #     # print(f"pending_delete for {storm_id} completed: {time.time() - pending_delete_start}s")
+    #
+    #     if doGit:
+    #         git_push_start: float = time.time()
+    #         git_push([s.to_dict()["Name"] for s in pending_storms])
+    #         print(f"git_push_start completed: {time.time() - git_push_start}s")
 
-        # pending_delete_start: float = time.time()
-        db.collection("pending").document(storm_id).delete()
-        # print(f"pending_delete for {storm_id} completed: {time.time() - pending_delete_start}s")
-
-        # git_push_start: float = time.time()
-        # git_push([s.to_dict()["Name"] for s in pending_storms])
-        git_push([storm_id])
-        # print(f"git_push_start completed: {time.time() - git_push_start}s")
-
-    for storm in pending_storms:
-        pending_delete_start: float = time.time()
-        db.collection("pending").document(storm.id).delete()
-        print(f"pending_delete completed: {time.time() - pending_delete_start}s")
-
-    # git_push_start: float = time.time()
-    # git_push([s.to_dict()["Name"] for s in pending_storms])
-    # print(f"git_push_start completed: {time.time() - git_push_start}s")
-
-    print(f"cloud_run completed: {time.time() - cloud_run_start}s")
+    print(f"adv gen completed: {time.time() - cloud_run_start}s")
 
 
 def git_setup():
@@ -234,24 +238,6 @@ def git_push(storms: List[str]):
     print(str(proc.stdout, "utf-8"))
 
 
-def local_run_year(year: int = 2023, doGit: bool = False):
-    cloud_run_start: float = time.time()
-
-    if doGit:
-        git_setup_start: float = time.time()
-        git_setup()
-        print(f"git_setup completed: {time.time() - git_setup_start}s")
-
-    godin_year(year, 4)
-
-    if doGit:
-        git_push_start: float = time.time()
-        git_push([f"Year {year}"])
-        print(f"git_push_start completed: {time.time() - git_push_start}s")
-
-    print(f"local run completed: {time.time() - cloud_run_start}s, doGit: {doGit}")
-
-
 def main():
     # storm: str = "al022020"
     # storm: str = "al122021"
@@ -259,10 +245,8 @@ def main():
     # storm: str = "al182021"
     # godin_storm(storm, 10, True)
     # godin_year()
-    # cloud_run()
-    local_run_year(doGit=True)
+    generate_pending_adv()
 
 
 if __name__ == "__main__":
-    print("start!")
     main()
