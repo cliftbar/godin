@@ -18,3 +18,4 @@ ssg/resources/_gen/*
 !*.keep
 *.env
 db.json
+gcp-credentials.json

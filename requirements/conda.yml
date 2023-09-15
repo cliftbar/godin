@@ -3,8 +3,9 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3
+  - python=3.11
   - google-cloud-storage
   - qgis
   - google-cloud-firestore
+  - sqlalchemy
 prefix: /Users/cameronbarclift/opt/miniconda3/envs/odin
