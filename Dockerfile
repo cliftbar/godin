@@ -48,8 +48,6 @@ RUN conda env create --file requirements/conda.yml \
 
 SHELL ["conda", "run", "-n", "odin", "/bin/bash", "-c"]
 
-COPY docker .
-
 ENV CONDA_DEFAULT_ENV=odin
 RUN conda init bash \
   && echo 'conda activate odin' >> ~/.bashrc
@@ -57,6 +55,7 @@ RUN conda init bash \
 RUN python requirements/builder.py
 
 COPY . .
+
 ENV GOOS=linux
 RUN python requirements/builder.py
-CMD xvfb-run --server-args=":1 -screen 0 1920x1080x24" export DISPLAY=:1 && python scripts/godin_all.py
+CMD xvfb-run --server-args=":1 -screen 0 1920x1080x24" export DISPLAY=:1 && python -u scripts/godin_local.py

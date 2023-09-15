@@ -20,9 +20,8 @@ func bsFromPressure(deltaPs_hPa float64, deltaPsRate_hPaPerHr float64, lat_deg f
 // periphPressure: peripheral pressure. unit must match cpMax.  mb or hPa recommended
 // bs: unitless b term
 func bsFromMaxWind(vMax_ms float64, cpMax float64, periphPressure float64) float64 {
-	return (vMax_ms * vMax_ms * cpMax * math.E) / (100 * )
+	return (vMax_ms * vMax_ms * cpMax * math.E) / (100 * 1)
 }
-
 
 // surfacePressureAtRadius
 // pCentral_hPa: pcs
@@ -32,6 +31,6 @@ func bsFromMaxWind(vMax_ms float64, cpMax float64, periphPressure float64) float
 func surfacePressureAtRadius(r_km float64, rMaxWind_km, pCentral_hPa float64, pPeriph_hPa float64) float64 {
 	bScalingParam := 0.9
 	deltaP_hPa := pPeriph_hPa - pCentral_hPa
-	eTerm := -1.0 * math.Pow((rMaxWind_km / r_km), bScalingParam)
+	eTerm := -1.0 * math.Pow((rMaxWind_km/r_km), bScalingParam)
 	return pCentral_hPa + (deltaP_hPa * math.Exp(eTerm))
 }

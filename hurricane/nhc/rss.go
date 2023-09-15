@@ -19,8 +19,8 @@ import (
 
 const mphToKts = 0.868976
 
-var publicAdvRegex = regexp.MustCompile(`^(?:(?:Post-)Tropical (?:Storm|Depression|Cyclone|Hurricane)) (.*) Public Advisory Number (.*)`)
-var publicAdvRegexOfDoom = regexp.MustCompile(`(?s).*(AL[0-9][0-9][0-9][0-9][0-9][0-9])\n(.*)\n.\n.*\n.\n.*SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)(?:\n[[:blank:]]\n[[:blank:]]\n).*(?:\n[[:blank:]]\n[[:blank:]]\n).*`)
+var publicAdvRegex = regexp.MustCompile(`^(?:(?:Post-)?Tropical (?:Storm|Depression|Cyclone)|Hurricane) (.*) Public Advisory Number (.*)`)
+var publicAdvRegexOfDoom = regexp.MustCompile(`(?s)(?:.*)(AL[0-9][0-9][0-9][0-9][0-9][0-9])(?s:.*)SUMMARY.*LOCATION\.\.\.([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([NS]) ([0-9]?[0-9]?[0-9]?\.[0-9]?[0-9]?)([EW]).*MAXIMUM.*\.\.\.([0-9]?[0-9]?[0-9]?) MPH.*PRESENT.*OR ([0-9]?[0-9]?[0-9]?).*AT ([0-9]?[0-9]?[0-9]?) MPH.*MINIMUM CENTRAL PRESSURE\.\.\.([0-9]?[0-9]?[0-9]?[0-9]?) MB.*DISCUSSION AND OUTLOOK\n(?:[-]*\n)(.*)\n.*`)
 var graphicsRegex = regexp.MustCompile(`(?:Tropical (?:Storm|Depression)|Hurricane) (.*) Graphics`)
 
 // PubSubMessage is the payload of a Pub/Sub event. Please refer to the docs for
@@ -98,15 +98,15 @@ func parsePublicAdv(adv *gofeed.Item) (info StormFeedInfo) {
 	ts := adv.PublishedParsed.Truncate(time.Hour)
 
 	// Lat
-	lat, _ := strconv.ParseFloat(matchVars[2], 64)
-	ns := matchVars[3]
+	lat, _ := strconv.ParseFloat(matchVars[1], 64)
+	ns := matchVars[2]
 	if strings.ToLower(ns) == "s" {
 		lat = -lat
 	}
 
 	// Lon
-	lon, _ := strconv.ParseFloat(matchVars[4], 64)
-	ew := matchVars[5]
+	lon, _ := strconv.ParseFloat(matchVars[3], 64)
+	ew := matchVars[4]
 	if strings.ToLower(ew) == "w" {
 		lon = -lon
 	}
@@ -117,21 +117,21 @@ func parsePublicAdv(adv *gofeed.Item) (info StormFeedInfo) {
 	}
 
 	// vMax
-	vMaxMph, _ := strconv.ParseFloat(matchVars[6], 64)
+	vMaxMph, _ := strconv.ParseFloat(matchVars[5], 64)
 	vMaxKts := vMaxMph * mphToKts
 
 	// Bearing
-	bearingDeg, _ := strconv.ParseFloat(matchVars[7], 64)
+	bearingDeg, _ := strconv.ParseFloat(matchVars[6], 64)
 
 	// Forward Speed
-	fSpeedMph, _ := strconv.ParseFloat(matchVars[8], 64)
+	fSpeedMph, _ := strconv.ParseFloat(matchVars[7], 64)
 	fSpeedKts := fSpeedMph * mphToKts
 
 	// Central Pressure
-	minCpMb, _ := strconv.ParseFloat(matchVars[9], 64)
+	minCpMb, _ := strconv.ParseFloat(matchVars[8], 64)
 
 	// Discussion
-	discussionText := strings.TrimSpace(matchVars[10])
+	discussionText := strings.TrimSpace(matchVars[9])
 
 	info = StormFeedInfo{
 		Name:            name,
@@ -283,15 +283,17 @@ func saveToPostgresDB(info StormFeedInfo) {
 	connStr := fmt.Sprintf("postgresql://%s:%s@%s:%d/postgres?sslmode=disable", conf.Username, conf.Password, conf.Host, conf.Port)
 	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
+		log.Fatalf("Failed to create client: %v; %s", err, connStr)
 	}
 
 	toWrite := info.toNhcRssTable()
 	tx := db.MustBegin()
 	res, err := tx.NamedExec(`INSERT INTO odin.nhc_rss (storm_id, adv_num, parsed) VALUES (:storm_id, :adv_num, :parsed)`, &toWrite)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		_ = tx.Rollback()
+	} else {
+		fmt.Println(res)
+		_ = tx.Commit()
 	}
-	fmt.Println(res)
-	_ = tx.Commit()
 }
