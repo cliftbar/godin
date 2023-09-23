@@ -7,10 +7,10 @@ disable_share: true
 storm_name: seventeen
 storm_year: 2023
 resolution: 100
-hurricane_timestamp: 2023-09-23T150300+0000
-adv_number: 1
-last_updated: 2023-09-23T15:03:35+00:00
-adv_sources: https://www.nhc.noaa.gov/text/refresh/MIATCPAT2+shtml/231447.shtml;https://www.nhc.noaa.gov/refresh/graphics_at2+shtml/144938.shtml?cone
+hurricane_timestamp: 2023-09-23T210500+0000
+adv_number: 2
+last_updated: 2023-09-23T21:05:14+00:00
+adv_sources: https://www.nhc.noaa.gov/text/refresh/MIATCPAT2+shtml/232059.shtml;https://www.nhc.noaa.gov/refresh/graphics_at2+shtml/204354.shtml?cone
 storm_id: al172023
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
@@ -40,17 +40,19 @@ File List:
 
 
 ## Official Advisory Discussion
-At 1100 AM AST (1500 UTC), the center of Tropical Depression
-Seventeen was located near latitude 15.6 North, longitude 38.8 West.
-The depression is moving toward the west near 15 mph (24
-km/h) and this general motion with a slight decrease in forward
-speed is expected during the next few days.
+At 500 PM AST (2100 UTC), the center of Tropical Storm Philippe was
+located near latitude 15.6 North, longitude 39.7 West. Philippe is
+moving toward the west near 14 mph (22 km/h). A continued westward 
+motion at a slightly slower forward speed is expected into early 
+next week. 
  
-Satellite-derived wind data indicate that the maximum sustained
-winds are near 35 mph (55 km/h) with higher gusts. Very gradual
-strengthening is expected through early next week.
+Maximum sustained winds are near 40 mph (65 km/h) with higher gusts.
+Very gradual strengthening is expected during the next several days.
  
-The estimated minimum central pressure is 1007 mb (29.74 inches).
+Tropical-storm-force winds extend outward up to 70 miles (110 km)
+from the center.
+ 
+The estimated minimum central pressure is 1005 mb (29.68 inches).
  
  
 HAZARDS AFFECTING LAND
@@ -60,7 +62,7 @@ None
  
 NEXT ADVISORY
 -------------
-Next complete advisory at 500 PM AST.
+Next complete advisory at 1100 PM AST.
  
 $$
 Forecaster D. Zelinsky
