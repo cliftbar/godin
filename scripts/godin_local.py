@@ -47,8 +47,8 @@ def git_setup():
 
 def git_push(storms: List[str]):
     print("git push")
-    # proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    # print(str(proc.stdout, "utf-8"))
+    proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    print(str(proc.stdout, "utf-8"))
     proc = subprocess.run(["git", "add", "ssg/content/*"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(str(proc.stdout, "utf-8"))
     # proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -212,7 +212,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
 # Multi Storm Coordination
 def godin_year(do_git: bool = False):
     year: int = 2025
-    storm_count: int = 11
+    storm_count: int = 10
 
     if do_git:
         git_setup_start: float = time.time()
