@@ -7,9 +7,9 @@ disable_share: true
 storm_name: gabrielle
 storm_year: 2025
 resolution: 100
-hurricane_timestamp: 2025-10-15T081900+0000
+hurricane_timestamp: 2025-10-15T091900+0000
 adv_number: -1
-last_updated: 2025-10-15T08:19:44+00:00
+last_updated: 2025-10-15T09:19:42+00:00
 adv_sources: None
 storm_id: al072025
 ---
