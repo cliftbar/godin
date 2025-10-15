@@ -211,7 +211,7 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
 # Multi Storm Coordination
 def godin_year(do_git: bool = False):
     year: int = 2025
-    storm_count: int = 12
+    storm_count: int = 11
 
     if do_git:
         git_setup_start: float = time.time()
@@ -230,7 +230,7 @@ def godin_year(do_git: bool = False):
 
     if do_git:
         git_push_start: float = time.time()
-        git_push([storms])
+        git_push(storms)
         print(f"git_push_start completed: {time.time() - git_push_start}s")
 
 
@@ -299,8 +299,8 @@ def main():
     # storm: str = "al182021"
     # godin_storm(storm, 10, True)
     # godin_year()
-    generate_pending_adv(do_rss = True, do_git=True, do_uploads=True)
-    # godin_year(True)
+    # generate_pending_adv(do_rss = True, do_git=True, do_uploads=True)
+    godin_year(True)
 
 
 if __name__ == "__main__":
