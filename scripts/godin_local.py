@@ -46,20 +46,23 @@ def git_setup():
 
 
 def git_push(storms: List[str]):
-    print("git push")
-    proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "add", "ssg/content/*"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
-    # proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # print(str(proc.stdout, "utf-8"))
-    # proc = subprocess.run(["git", "commit", "-m", f'"auto build of {", ".join(storms)}"'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    proc = subprocess.run(["git", "commit", "-m", f'"auto build of 2025"'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "push", "--set-upstream", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
-    proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(str(proc.stdout, "utf-8"))
+    try:
+        print("git push begins")
+        proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print(str(proc.stdout, "utf-8"))
+        proc = subprocess.run(["git", "add", "ssg/content/*"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print(str(proc.stdout, "utf-8"))
+        # proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # print(str(proc.stdout, "utf-8"))
+        # proc = subprocess.run(["git", "commit", "-m", f'"auto build of {", ".join(storms)}"'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        proc = subprocess.run(["git", "commit", "-m", f'"auto build of 2025"'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print(str(proc.stdout, "utf-8"))
+        proc = subprocess.run(["git", "push", "--set-upstream", "origin", "main"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print(str(proc.stdout, "utf-8"))
+        proc = subprocess.run(["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print(str(proc.stdout, "utf-8"))
+    except e:
+        print(str(e))
 
 
 # Hugo
