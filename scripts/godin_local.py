@@ -209,17 +209,29 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
 
 
 # Multi Storm Coordination
-def godin_year():
-    year: int = 2023
-    storm_count: int = 13
+def godin_year(do_git: bool = False):
+    year: int = 2025
+    storm_count: int = 12
 
+    if do_git:
+        git_setup_start: float = time.time()
+        git_setup()
+        print(f"git_setup completed: {time.time() - git_setup_start}s")
+
+    storms: list = []
     resolution: int = 100
     for i in range(1, storm_count + 1):
         storm: str = f"al{i:02d}{year}"
+        storms.append(storm)
 
         godin_storm(storm, resolution, include_forecasts=False, ssg_draft=False)
 
         print(f"{storm} finished, {i} out of {storm_count} for year {year}")
+
+    if do_git:
+        git_push_start: float = time.time()
+        git_push([storms])
+        print(f"git_push_start completed: {time.time() - git_push_start}s")
 
 
 def nhc_adv_rss():
@@ -263,8 +275,6 @@ def generate_pending_adv(do_rss: bool = True, do_git: bool = False, do_uploads: 
         print(f"git_setup completed: {time.time() - git_setup_start}s")
 
     for storm_id, storm in pending_storms.items():
-
-
         godin_storm_start: float = time.time()
         godin_storm(storm["storm_id"], 100, include_forecasts=True, ssg_draft=False, ssg_data=storm, do_uploads=do_uploads)
         print(f"godin_storm for {storm_id} completed: {time.time() - godin_storm_start}s")
@@ -290,6 +300,7 @@ def main():
     # godin_storm(storm, 10, True)
     # godin_year()
     generate_pending_adv(do_rss = True, do_git=True, do_uploads=True)
+    # godin_year(True)
 
 
 if __name__ == "__main__":
