@@ -20,7 +20,7 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/workspace/gcp-credentials.json
 ENV DISPLAY=:1
 
 RUN apt update \
-    && apt install -y wget git libgl1-mesa-glx tar xvfb libxkbcommon-x11-0 libxcb-xinerama0 \
+    && apt install -y wget git libgl1 libglx-mesa0 tar xvfb libxkbcommon-x11-0 libxcb-xinerama0 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget -P /tmp https://dl.google.com/go/go1.16.8.linux-amd64.tar.gz \
@@ -39,6 +39,8 @@ RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b \
     && rm Miniconda3-latest-Linux-x86_64.sh
 
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 RUN conda update -y conda
 
 COPY requirements ./requirements
