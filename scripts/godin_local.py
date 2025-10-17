@@ -303,8 +303,8 @@ def main():
     # storm: str = "al182021"
     # godin_storm(storm, 10, True)
     # godin_year()
-    # generate_pending_adv(do_rss = True, do_git=True, do_uploads=True)
-    godin_year(True)
+    generate_pending_adv(do_rss = True, do_git=True, do_uploads=True)
+    # godin_year(True)
 
 
 if __name__ == "__main__":
