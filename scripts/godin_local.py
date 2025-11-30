@@ -1,5 +1,3 @@
-import importlib
-
 import datetime
 import json
 import os
@@ -11,9 +9,13 @@ from typing import Any, List, Dict
 from pathlib import Path
 
 from sqlalchemy import Engine, create_engine, Connection, text, CursorResult
+from datetime import timezone, datetime
 
-import qgis_layout_exporter
-from event_uploader import upload_event
+# import qgis_layout_exporter
+import cartopy_layout
+# from event_uploader import upload_event
+from event_uploader_aws import upload_event as upload_event_aws
+from jinja2 import Environment
 
 
 ## Git
@@ -137,6 +139,50 @@ def create_update_ssg(storm_id: str, storm_name: str, storm_year: int, res: int,
         with post_path.open("w") as p:
             p.writelines(lines_out)
 
+def create_ssg_from_jinja(storm_name=None, storm_year=None, is_draft=None, storm_id=None, resolution=None,
+                          hurricane_raster_ts=None, adv_num=None, storm_preview_address=None, storm_zip_address=None,
+                          sources: list[str] = None, storm_discussion=None):
+    """
+    Render the generic hurricane markdown from the Jinja template, filling in all
+    required variables from environment defaults. This function only returns the
+    rendered markdown and does not write any files or trigger side-effects.
+    """
+
+    template_path: Path = Path("generic_ssg/_hurricane.md.jinja")
+    if not template_path.exists():
+        raise FileNotFoundError(f"Jinja template not found at {template_path}")
+
+    template_text: str = template_path.read_text(encoding="utf-8")
+
+    now_iso: str = datetime.now(tz=timezone.utc).replace(microsecond=0).isoformat()
+    context: Dict[str, Any] = {
+        "title": f"{storm_name.title()} {storm_year}",
+        "created_at": hurricane_raster_ts,
+        "updated_at": now_iso,
+        "draft": is_draft,
+        "storm_id": storm_id,
+        "storm_name": storm_name,
+        "storm_year": storm_year,
+        "resolution": resolution,
+        "adv_num": adv_num,
+        "storm_preview_address": storm_preview_address,
+        "storm_zip_address": storm_zip_address,
+        "sources": sources or [],
+        "storm_discussion": storm_discussion,
+    }
+
+    jenv = Environment(autoescape=False, trim_blocks=True, lstrip_blocks=True)
+    template = jenv.from_string(template_text)
+
+    render = template.render(**context)
+
+    storm_ssg_name: str = f"{storm_id}_{storm_name.lower()}{storm_year}.md"
+    post_path: Path = Path(f"generic_ssg/hurricane/{storm_year}/{storm_ssg_name}")
+    post_path.parent.mkdir(parents=True, exist_ok=True)
+    with post_path.open("w") as p:
+        p.write(render)
+    return
+
 
 # Go Code
 def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -> str:
@@ -160,6 +206,7 @@ def run_model(storm_id: str, resolution: int, include_forecasts: bool = False) -
 
 # Single Storm Coordination
 def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = False, ssg_draft: bool = True, ssg_data: Dict = None, do_uploads: bool = True) -> str:
+    ssg_data = ssg_data or {}
     print(f"running {storm_id}")
     year: int = int(storm_id[-4:])
 
@@ -170,18 +217,18 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
     # importlib.reload(qgis_layout_exporter)
     # print("qgis reloaded")
 
-    smol = False
-    if smol:
-        print("1: " + qgis_layout_exporter.smol_run(hurricane_base, include_forecasts))
-        print("2: " + qgis_layout_exporter.smol_run(hurricane_base, include_forecasts))
-        return name
-    hurricane_raster: str = qgis_layout_exporter.export_qgis_layout_png(hurricane_base, include_forecasts)
+    # smol = False
+    # if smol:
+    #     print("1: " + cartopy_layout.smol_run(hurricane_base, include_forecasts))
+    #     print("2: " + cartopy_layout.smol_run(hurricane_base, include_forecasts))
+    #     return name
+    hurricane_raster: str = cartopy_layout.export_layout_png(hurricane_base, include_forecasts)
 
-    model_proc: CompletedProcess[Any] = subprocess.run(["python", "./scripts/qgis_layout_exporter.py", hurricane_base, str(include_forecasts)],
-                                                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(f"model stdout: {model_proc.stdout}")
-    print(f"model stderr: {model_proc.stderr}")
-    model_proc.check_returncode()
+    # model_proc: CompletedProcess[Any] = subprocess.run(["python", "./scripts/qgis_layout_exporter.py", hurricane_base, str(include_forecasts)],
+    #                                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # print(f"model stdout: {model_proc.stdout}")
+    # print(f"model stderr: {model_proc.stderr}")
+    # model_proc.check_returncode()
     # hurricane_raster: str = str(model_proc.stdout, "utf-8")
     print("qgis done")
     # print(ssg_data)
@@ -194,25 +241,42 @@ def godin_storm(storm_id: str, resolution: int = 100, include_forecasts: bool = 
 
     hurricane_raster_path: Path = Path(hurricane_raster)
     hurricane_raster_ts: str = hurricane_raster_path.stem.split("_")[-1]
+    hurricane_raster_dt = datetime.strptime(hurricane_raster_ts, "%Y-%m-%dT%H%M%S%z")
+
     print(f"Raster completed: {time.time() - raster_start}s")
 
     if do_uploads:
         upload_start: float = time.time()
-        upload_event(hurricane_raster_path.name)
+        # upload_event(hurricane_raster_path.name)
+        zip_path, gis_path = upload_event_aws(hurricane_raster_path.name)
         print(f"Upload completed: {time.time() - upload_start}s")
 
+        bucket_url: str = "https://s3w.cliftbar.site/godin-data/"
+
         ssg_start: float = time.time()
-        create_update_ssg(storm_id, name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
-        print(f"SSG completed: {time.time() - ssg_start}s")
+        create_ssg_from_jinja(
+            storm_name=name,
+            storm_id=storm_id,
+            storm_year=year,
+            is_draft=ssg_draft,
+            resolution=resolution,
+            hurricane_raster_ts=hurricane_raster_dt,
+            adv_num=ssg_data.get("adv_number", "-1"),
+            storm_preview_address=bucket_url + gis_path,
+            storm_zip_address=bucket_url + zip_path,
+            sources=ssg_data.get("sources", []),
+            storm_discussion=ssg_data.get("discussion", "No Discussion")
+        )
+        # create_update_ssg(storm_id, name, year, resolution, hurricane_raster_ts, ssg_draft, ssg_data)
+        print(f"generic SSG completed: {time.time() - ssg_start}s")
 
     # print("godin storm finished\n")
     return name
 
 
 # Multi Storm Coordination
-def godin_year(do_git: bool = False):
-    year: int = 2025
-    storm_count: int = 10
+def godin_year(year: int = 2025, resolution: int = 10, do_git: bool = False):
+    storm_count: int = 12
 
     if do_git:
         git_setup_start: float = time.time()
@@ -220,12 +284,11 @@ def godin_year(do_git: bool = False):
         print(f"git_setup completed: {time.time() - git_setup_start}s")
 
     storms: list = []
-    resolution: int = 100
     for i in range(1, storm_count + 1):
         storm: str = f"al{i:02d}{year}"
         storms.append(storm)
 
-        godin_storm(storm, resolution, include_forecasts=False, ssg_draft=False)
+        godin_storm(storm, resolution, include_forecasts=True, ssg_draft=False, do_uploads=True)
 
         print(f"{storm} finished, {i} out of {storm_count} for year {year}")
 
@@ -248,13 +311,13 @@ def nhc_adv_rss():
     print(f"rss took {end_time - start_time}s")
 
 
-def generate_pending_adv(do_rss: bool = True, do_git: bool = False, do_uploads: bool = True):
+def generate_from_adv(do_rss: bool = True, do_git: bool = False, do_uploads: bool = True, pending_only: bool = True):
     cloud_run_start: float = time.time()
 
     if do_rss:
         nhc_adv_rss()
 
-    with Path("scripts/db.json").open(mode="r") as fi:
+    with Path("sql/db.json").open(mode="r") as fi:
         conf: dict[str, Any] = json.load(fi)
         host: str = conf["host"]
         port: int = conf["port"]
@@ -266,7 +329,10 @@ def generate_pending_adv(do_rss: bool = True, do_git: bool = False, do_uploads: 
     pending_storms_start: float = time.time()
     conn: Connection
     with engine.begin() as conn:
-        res: CursorResult[Any] = conn.execute(text("""WITH g AS (SELECT *, ROW_NUMBER() OVER(PARTITION BY storm_id ORDER BY adv_num DESC) AS rn FROM odin.nhc_rss) SELECT * FROM g WHERE NOT processed AND rn = 1 --LIMIT 1"""))
+        pending_only_check: str = ""
+        if pending_only:
+            pending_only_check = "NOT processed AND"
+        res: CursorResult[Any] = conn.execute(text(f"WITH g AS (SELECT *, ROW_NUMBER() OVER(PARTITION BY storm_id ORDER BY adv_num DESC) AS rn FROM odin.nhc_rss) SELECT * FROM g WHERE {pending_only_check} rn = 1 --LIMIT 1"))
         pending_storms = {r["storm_id"]: r["parsed"] for r in res.mappings().all()}
     print(f"pending_storms completed: {time.time() - pending_storms_start}s")
 
@@ -300,8 +366,10 @@ def main():
     # storm: str = "al182021"
     # godin_storm(storm, 10, True)
     # godin_year()
-    generate_pending_adv(do_rss = True, do_git=True, do_uploads=True)
-    godin_year(True)
+    godin_year(2024, 100, False)
+    godin_year(2025, 100, False)
+    generate_from_adv(do_rss = True, do_git=False, do_uploads=True, pending_only=False)
+    # godin_year(False)
 
 
 if __name__ == "__main__":

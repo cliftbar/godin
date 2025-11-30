@@ -47,7 +47,7 @@ project_instance: QgsProject = QgsProject.instance()
 # https://gis.stackexchange.com/questions/40375/fixing-importerror-no-module-named-qgis-core
 
 # Run from project root
-def export_qgis_layout_png(hurricane_file_base: str, include_forecasts: bool = False) -> str:
+def export_layout_png(hurricane_file_base: str, include_forecasts: bool = False) -> str:
     print("qgis start")
     # Paths
     # qgis_install_path: str = "/Applications/QGIS.app/Contents/MacOS"  # This is for pycharm run
@@ -247,4 +247,4 @@ if __name__ == "__main__":
     hurricane_base: str = sys.argv[1]
     include_forecasts: bool = bool(sys.argv[2])
     # hurricane_base: str = "LARRY_2021_100x100"
-    export_qgis_layout_png(hurricane_base, include_forecasts)
+    export_layout_png(hurricane_base, include_forecasts)

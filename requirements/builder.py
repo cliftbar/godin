@@ -21,7 +21,7 @@ def requirements() -> None:
 
 def main():
     go_build()
-    requirements()
+    # requirements()
 
 
 if __name__ == "__main__":

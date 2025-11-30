@@ -1,0 +1,40 @@
+---
+title: {{ title }}
+createdAt: {{ created_at }}
+updatedAt: {{ updated_at }}
+draft: {{ draft }}
+summary: Tropical System {{ storm_id }}
+storm_name: {{ storm_name }}
+storm_year: {{ storm_year }}
+resolution: {{ resolution }}x{{ resolution }}
+adv_number: {{ adv_num }}
+bucket_url: http://godin-data.goose.hive/
+---
+*DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
+
+## Windfield Map
+![gis_img]({{ storm_preview_address }})
+
+- as of {{updated_at}}
+- {{resolution}}px per degree
+- GWAF 0.9
+- No Friction
+
+## Useful Links
+- [NOAA Active Cyclones](https://www.nhc.noaa.gov/)
+- [Tropical Tidbits](https://www.tropicaltidbits.com/storminfo/)
+{% for s in sources %}
+- {{ s }}
+{% endfor %}
+
+## Data Files
+[Download Zip]({{ storm_zip_address }})
+
+File List:
+- `{{storm_name}}{{storm_year}}_{{resolution}}x{{resolution}}.csv`
+- `{{storm_name}}{{storm_year}}_{{resolution}}x{{resolution}}.png`
+- `{{storm_name}}{{storm_year}}_{{resolution}}x{{resolution}}.wld`
+- `{{storm_name}}{{storm_year}}_{{resolution}}x{{resolution}}_{{created_at}}.jpeg`
+
+## Official Advisory Discussion
+{{ storm_discussion }}
