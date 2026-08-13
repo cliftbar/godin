@@ -7,10 +7,10 @@ disable_share: true
 storm_name: cristobal
 storm_year: 2026
 resolution: 100
-hurricane_timestamp: 2026-08-12T210000+0000
-adv_number: 2
-last_updated: 2026-08-12T21:01:00+00:00
-adv_sources: https://www.nhc.noaa.gov/text/refresh/MIATCPAT3+shtml/122034.shtml;https://www.nhc.noaa.gov/refresh/graphics_at3+shtml/203640.shtml?cone
+hurricane_timestamp: 2026-08-13T030000+0000
+adv_number: 3
+last_updated: 2026-08-13T03:01:05+00:00
+adv_sources: https://www.nhc.noaa.gov/text/refresh/MIATCPAT3+shtml/130233.shtml;https://www.nhc.noaa.gov/refresh/graphics_at3+shtml/023516.shtml?cone
 storm_id: al032026
 ---
 *DISCLAIMER* This is not official information or modeling, I'm just a dude on the internet.  Please follow all guidance from NOAA and your local officials.
@@ -40,19 +40,19 @@ File List:
 
 
 ## Official Advisory Discussion
-At 900 PM GMT (2100 UTC), the center of Tropical Storm Cristobal was 
-located near latitude 37.2 North, longitude 41.0 West. Cristobal is 
-moving toward the east near 21 mph (33 km/h). A turn toward the 
-east-northeast and a slower forward motion is expected tonight.
+At 300 AM GMT (0300 UTC), the center of Tropical Storm Cristobal was
+located near latitude 37.7 North, longitude 39.5 West. Cristobal is
+moving toward the east-northeast near 16 mph (26 km/h), and this
+general motion is expected to continue through today.
  
-Maximum sustained winds are near 45 mph (75 km/h) with higher gusts. 
-Slow weakening is forecast, and Cristobal is forecast to dissipate 
-on Thursday.
+Maximum sustained winds are near 40 mph (65 km/h) with higher gusts.
+Weakening is forecast, and Cristobal is forecast to dissipate
+tonight.
  
 Tropical-storm-force winds extend outward up to 80 miles (130 km)
 from the center.
  
-The estimated minimum central pressure is 1008 mb (29.77 inches).
+The estimated minimum central pressure is 1010 mb (29.83 inches).
  
  
 HAZARDS AFFECTING LAND
@@ -62,6 +62,6 @@ None.
  
 NEXT ADVISORY
 -------------
-Next complete advisory at 300 AM GMT.
+Next complete advisory at 900 AM GMT.
  
 $$
